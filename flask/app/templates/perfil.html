@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil - MACUIN</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root { --primary-orange: #ff7324; --dark: #1e1e1e; --bg: #f8f9fa; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); }
+        nav { background: var(--dark); padding: 15px 40px; display: flex; justify-content: space-between; color: white; }
+        .profile-card { max-width: 600px; margin: 60px auto; background: white; padding: 40px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div style="font-weight: 800;">MACUIN <i class="bi bi-car-front-fill" style="color: var(--primary-orange);"></i></div>
+        <div><a href="dashboard.html" style="color: white; text-decoration: none;">Inicio</a></div>
+    </nav>
+    <div class="profile-card">
+        <div style="font-size: 5rem; color: var(--dark);"><i class="bi bi-person-circle"></i></div>
+        <h2>Daniel</h2>
+        <p style="color: #888;">Administrador de Inventario</p>
+        <div style="text-align: left; background: #f9f9f9; padding: 20px; border-radius: 15px; margin: 20px 0;">
+            <p><strong>Email:</strong> daniel@macuin.com</p>
+            <p><strong>Rol:</strong> Personal Interno</p>
+        </div>
+        <a href="index.html" style="display: block; width: 100%; padding: 15px; background: #ff4d4d; color: white; border-radius: 12px; text-decoration: none; font-weight: 700;">Cerrar Sesión</a>
+    </div>
+</body>
+</html>
