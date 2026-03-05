@@ -36,23 +36,42 @@
         <div class="form-side">
             <div class="header">
                 <div class="logo"><h1>MACUIN <i class="bi bi-car-front-fill"></i></h1></div>
-                <a href="productos.html" class="btn-regresar">REGRESAR</a>
+                <a href="{{ url_for('main.productos') }}" class="btn-regresar">REGRESAR</a>
             </div>
             <h2>Editar autoparte</h2>
-            <form action="productos.html">
-                <div class="input-group"><label>Código de artículo</label><input type="text" value="ART-9920" class="input-id" readonly></div>
-                <div class="input-group"><label>Nombre del artículo</label><input type="text" placeholder="Filtro de Aire Premium"></div>
-                <div class="input-group"><label>Cantidad en stock</label><input type="number" value="45"></div>
-                <div class="input-group"><label>Precio unitario</label><input type="text" value="$350.00"></div>
-                <div class="input-group"><label>Estado actual</label>
-                    <select><option selected>Disponible</option><option>Stock bajo</option><option>Agotado</option></select>
+            <form action="{{ url_for('main.productos') }}" method="GET">
+                <div class="input-group">
+                    <label>Código de artículo</label>
+                    <input type="text" value="ART-9920" class="input-id" readonly>
+                </div>
+                <div class="input-group">
+                    <label>Nombre del artículo</label>
+                    <input type="text" placeholder="Filtro de Aire Premium" required>
+                </div>
+                <div class="input-group">
+                    <label>Cantidad en stock</label>
+                    <input type="number" value="45" required>
+                </div>
+                <div class="input-group">
+                    <label>Precio unitario</label>
+                    <input type="text" value="$350.00" required>
+                </div>
+                <div class="input-group">
+                    <label>Estado actual</label>
+                    <select>
+                        <option selected>Disponible</option>
+                        <option>Stock bajo</option>
+                        <option>Agotado</option>
+                    </select>
                 </div>
                 <button type="submit" class="btn-actualizar">Actualizar Datos</button>
             </form>
         </div>
         <div class="image-side">
             <p style="margin-bottom: 20px; font-size: 0.9rem; color: #888;">Imagen actual del producto</p>
-            <div class="current-image-preview"><i class="bi bi-image" style="font-size: 4rem; color: #444;"></i></div>
+            <div class="current-image-preview">
+                <i class="bi bi-image" style="font-size: 4rem; color: #444;"></i>
+            </div>
             <button class="btn-subir-nueva"><i class="bi bi-camera"></i> Cambiar imagen</button>
         </div>
     </div>

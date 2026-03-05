@@ -16,38 +16,63 @@
         .logo h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 10px; font-weight: 800; }
         .logo h1 i { color: var(--primary-orange); }
         .btn-regresar { text-decoration: none; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 8px 18px; border-radius: 12px; border: 1px solid #eee; transition: 0.3s; }
+        .btn-regresar:hover { background-color: var(--primary-dark); color: white; }
         h2 { font-size: 2.2rem; font-weight: 800; text-align: center; margin-bottom: 50px; text-transform: uppercase; }
         .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
         .chart-card { background: var(--primary-dark); padding: 40px; border-radius: 25px; color: white; display: flex; flex-direction: column; align-items: center; }
         .chart-wrapper { width: 100%; max-width: 320px; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        td { padding: 15px; background-color: #f9f9f9; font-size: 0.85rem; border-radius: 10px; }
+        td { padding: 15px; background-color: #f9f9f9; font-size: 0.85rem; border-radius: 10px; border: 1px solid #f1f1f1; }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
             <div class="logo"><h1>MACUIN <i class="bi bi-car-front-fill"></i></h1></div>
-            <a href="dashboard.html" class="btn-regresar"><i class="bi bi-arrow-left"></i> REGRESAR</a>
+            <a href="{{ url_for('main.dashboard') }}" class="btn-regresar"><i class="bi bi-arrow-left"></i> REGRESAR</a>
         </header>
         <h2>Reportes de Pedidos</h2>
         <div class="report-grid">
             <div class="chart-card">
-                <h3>Resumen de estatus</h3>
+                <h3 style="margin-bottom: 25px;">Resumen de estatus</h3>
                 <div class="chart-wrapper"><canvas id="pieChart"></canvas></div>
             </div>
             <div class="table-wrapper">
                 <table>
                     <tbody>
-                        <tr><td>#P-1001</td><td>24/02/26</td><td>Refaccionaria S.</td><td style="color: var(--primary-orange); font-weight: 700;">$4,500.00</td></tr>
-                    </tbody>
+                        <tr>
+                            <td style="font-weight: 700; color: #666;">#P-1001</td>
+                            <td>24/02/26</td>
+                            <td style="font-weight: 600;">Refaccionaria S.</td>
+                            <td style="color: var(--primary-orange); font-weight: 700; text-align: right;">$4,500.00</td>
+                        </tr>
+                        </tbody>
                 </table>
             </div>
         </div>
     </div>
     <script>
         const ctx = document.getElementById('pieChart');
-        new Chart(ctx, { type: 'pie', data: { labels: ['Entregado', 'Pendiente', 'En proceso', 'Enviado'], datasets: [{ data: [20, 12, 38, 30], backgroundColor: ['#e91e63', '#2196f3', '#9c27b0', '#673ab7'], borderWidth: 0 }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } } } });
+        new Chart(ctx, { 
+            type: 'pie', 
+            data: { 
+                labels: ['Entregado', 'Pendiente', 'En proceso', 'Enviado'], 
+                datasets: [{ 
+                    data: [20, 12, 38, 30], 
+                    backgroundColor: ['#e91e63', '#2196f3', '#9c27b0', '#673ab7'], 
+                    borderWidth: 0 
+                }] 
+            }, 
+            options: { 
+                responsive: true, 
+                plugins: { 
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { color: '#fff', font: { family: 'Inter', size: 12 } } 
+                    } 
+                } 
+            } 
+        });
     </script>
 </body>
 </html>

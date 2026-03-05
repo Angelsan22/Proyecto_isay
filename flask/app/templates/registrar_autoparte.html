@@ -36,22 +36,43 @@
         <div class="form-side">
             <div class="header">
                 <div class="logo"><h1>MACUIN <i class="bi bi-car-front-fill"></i></h1></div>
-                <a href="productos.html" class="btn-regresar">REGRESAR</a>
+                <a href="{{ url_for('main.productos') }}" class="btn-regresar">REGRESAR</a>
             </div>
             <h2>Registrar autoparte</h2>
-            <form action="productos.html">
-                <div class="input-group"><label>Nombre</label><input type="text" placeholder="Ej. Filtro de Aceite"></div>
-                <div class="input-group"><label>Cantidad</label><input type="number" placeholder="0"></div>
-                <div class="input-group"><label>Precio unitario</label><input type="text" placeholder="$0.00"></div>
-                <div class="input-group"><label>Estado</label>
-                    <select><option>Disponible</option><option>Stock bajo</option><option>Agotado</option></select>
+            
+            <form action="{{ url_for('main.productos') }}" method="GET">
+                <div class="input-group">
+                    <label>Nombre</label>
+                    <input type="text" placeholder="Ej. Filtro de Aceite" required>
                 </div>
-                <div class="input-group"><label>Descripción</label><textarea rows="2" placeholder="Detalles técnicos..."></textarea></div>
+                <div class="input-group">
+                    <label>Cantidad</label>
+                    <input type="number" placeholder="0" required>
+                </div>
+                <div class="input-group">
+                    <label>Precio unitario</label>
+                    <input type="text" placeholder="$0.00" required>
+                </div>
+                <div class="input-group">
+                    <label>Estado</label>
+                    <select>
+                        <option>Disponible</option>
+                        <option>Stock bajo</option>
+                        <option>Agotado</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Descripción</label>
+                    <textarea rows="2" placeholder="Detalles técnicos..."></textarea>
+                </div>
                 <button type="submit" class="btn-registrar">Registrar</button>
             </form>
         </div>
         <div class="image-side">
-            <div class="upload-area"><i class="bi bi-cloud-arrow-up"></i><p style="font-size: 0.9rem; color: #aaa;">Arrastra tu imagen aquí</p></div>
+            <div class="upload-area">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <p style="font-size: 0.9rem; color: #aaa;">Arrastra tu imagen aquí</p>
+            </div>
             <button class="btn-subir">Subir imagen</button>
         </div>
     </div>

@@ -31,10 +31,11 @@
     <div class="detail-card">
         <header class="header">
             <div class="logo"><h1>MACUIN <i class="bi bi-car-front-fill"></i></h1></div>
-            <a href="pedidos.html" class="btn-regresar">REGRESAR</a>
+            <a href="{{ url_for('main.pedidos') }}" class="btn-regresar">REGRESAR</a>
         </header>
         <h2>Detalle de Pedido</h2>
-        <form action="pedidos.html">
+        
+        <form action="{{ url_for('main.pedidos') }}" method="GET">
             <div class="info-grid">
                 <div class="info-column">
                     <h3 class="column-title">Información general</h3>

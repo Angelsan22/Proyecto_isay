@@ -43,7 +43,7 @@
         </div>
         <div class="form-section">
             <h2>Iniciar Sesión</h2>
-            <form action="dashboard.html">
+            <form action="{{ url_for('main.dashboard') }}">
                 <div class="input-group">
                     <i class="bi bi-person"></i>
                     <input type="text" placeholder="Usuario" required>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="options">
                     <label><input type="checkbox"> Recordarme</label>
-                    <a href="recuperar_clave.html">¿Olvidaste tu clave?</a>
+                    <a href="{{ url_for('main.recuperar') }}">¿Olvidaste tu clave?</a>
                 </div>
                 <button type="submit" class="btn-login">Ingresar al Sistema</button>
             </form>

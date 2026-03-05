@@ -39,16 +39,24 @@
                 <h1>MACUIN <i class="bi bi-car-front-fill"></i></h1>
                 <p style="font-size: 0.7rem; color: #aaa; margin-top: -5px;">SISTEMA DE GESTIÓN</p>
             </div>
-            <a href="dashboard.html" class="btn-regresar"><i class="bi bi-grid"></i> DASHBOARD</a>
+            <a href="{{ url_for('main.dashboard') }}" class="btn-regresar"><i class="bi bi-grid"></i> DASHBOARD</a>
         </header>
+
         <div class="title-section">
             <h2>INVENTARIO</h2>
             <div class="divider"></div>
         </div>
+
         <div class="table-wrapper">
             <table>
                 <thead>
-                    <tr><th>Nombre del Artículo</th><th>Stock Actual</th><th>Stock Mínimo</th><th>Estado</th><th style="text-align: center;">Acción</th></tr>
+                    <tr>
+                        <th>Nombre del Artículo</th>
+                        <th>Stock Actual</th>
+                        <th>Stock Mínimo</th>
+                        <th>Estado</th>
+                        <th style="text-align: center;">Acción</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr>
@@ -56,9 +64,13 @@
                         <td class="stock-val" style="color: var(--danger);">5</td>
                         <td>10 unidades</td>
                         <td><span class="status-badge status-critical">Reordenar</span></td>
-                        <td style="text-align: center;"><button class="btn-edit-stock" onclick="location.href='actualizar_stock.html'"><i class="bi bi-pencil-square"></i></button></td>
+                        <td style="text-align: center;">
+                            <button class="btn-edit-stock" onclick="location.href='{{ url_for('main.actualizar_stock') }}'">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
                     </tr>
-                </tbody>
+                    </tbody>
             </table>
         </div>
     </div>

@@ -29,16 +29,22 @@
     <div class="stock-card">
         <header class="header">
             <div class="logo"><h1>MACUIN <i class="bi bi-car-front-fill"></i></h1></div>
-            <a href="gestion_inventario.html" class="btn-regresar">REGRESAR</a>
+            <a href="{{ url_for('main.gestion_inventario') }}" class="btn-regresar">REGRESAR</a>
         </header>
         <h2>Actualizar stock</h2>
-        <form action="gestion_inventario.html">
+        
+        <form action="{{ url_for('main.gestion_inventario') }}" method="GET">
             <div class="form-group"><label>Código de artículo</label><input type="text" value="ART-12345" class="readonly-field" readonly></div>
             <div class="form-group"><label>Nombre del artículo</label><input type="text" value="Bomba de Agua G-Pro" class="readonly-field" readonly></div>
             <div class="form-group"><label>Cantidad actual</label><input type="number" value="15" class="readonly-field" readonly></div>
             <div class="form-group"><label style="color: var(--primary-orange);">Nueva cantidad</label><input type="number" placeholder="Ingresa el nuevo total" required></div>
             <div class="form-group"><label>Motivo</label>
-                <select required><option value="" disabled selected>Selecciona una opción</option><option>Entrada por compra</option><option>Salida por venta</option><option>Ajuste (Daño/Pérdida)</option></select>
+                <select required>
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option>Entrada por compra</option>
+                    <option>Salida por venta</option>
+                    <option>Ajuste (Daño/Pérdida)</option>
+                </select>
             </div>
             <button type="submit" class="btn-actualizar">Confirmar actualización</button>
         </form>
