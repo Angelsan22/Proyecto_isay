@@ -1,0 +1,265 @@
+/**
+ * MACUIN - Sistema de Autopartes
+ * Archivo CSS Unificado (Autenticación y Dashboard)
+ */
+
+:root {
+    --primary-orange: #f05a24;
+    --primary-hover: #d14d1f;
+    --text-dark: #111827;
+    --text-light: #6b7280;
+    --border-gray: #e5e7eb;
+    --bg-input: #f3f4f6;
+    --bg-white: #ffffff;
+    --nav-bg: #1f2937;
+    --font-main: 'Inter', sans-serif;
+}
+
+/* --- RESET & GLOBAL --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+    font-family: var(--font-main);
+    background-color: var(--bg-white);
+    color: var(--text-dark);
+}
+
+/* --- LAYOUT SPLIT-SCREEN --- */
+.container-fluid {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+/* Panel Visual (Imagen) */
+.image-panel, .image-panel-right {
+    flex: 1.2;
+    position: relative;
+    overflow: hidden;
+    background-color: #000;
+    display: none; 
+}
+
+@media (min-width: 992px) {
+    .image-panel, .image-panel-right {
+        display: block;
+    }
+}
+
+.image-panel img, .image-panel-right img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.slogan-text, .overlay-text {
+    color: white;
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: center;
+    text-shadow: 2px 2px 15px rgba(0,0,0,0.5);
+    font-family: 'Urbanist', sans-serif;
+}
+
+/* Panel de Formulario */
+.form-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    background-color: var(--bg-white);
+    overflow-y: auto;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 420px;
+}
+
+/* --- COMPONENTES DE FORMULARIO --- */
+.brand-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.logo-text {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.form-title {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: var(--text-dark);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.label-text {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon-wrapper i {
+    position: absolute;
+    left: 15px;
+    color: var(--text-light);
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 18px;
+    background-color: var(--bg-input);
+    border: 1px solid transparent;
+    border-radius: 50px; /* Estilo redondeado unificado */
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.input-icon-wrapper .form-input {
+    padding-left: 45px;
+}
+
+.form-input:focus {
+    outline: none;
+    background-color: white;
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(240, 90, 36, 0.1);
+}
+
+/* Grid para Registro/Recuperar */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.full-width { grid-column: span 2; }
+
+/* Botones Unificados */
+.btn-primary-macuin, .btn-submit, .btn-orange {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-orange);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn-primary-macuin:hover, .btn-submit:hover, .btn-orange:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* Enlaces */
+.auth-links, .footer-link {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.auth-links a, .footer-link a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.auth-links a:hover, .footer-link a:hover {
+    text-decoration: underline;
+    color: var(--text-dark);
+}
+
+.link-highlight {
+    color: var(--text-dark) !important;
+    font-weight: 700 !important;
+}
+
+/* --- DASHBOARD NAVBAR (INICIO) --- */
+.main-navbar {
+    background-color: var(--nav-bg);
+    display: flex;
+    justify-content: center;
+    height: 65px;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    height: 100%;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 0 30px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    position: relative;
+    transition: 0.3s;
+}
+
+.nav-link:hover { color: var(--primary-orange); }
+
+.nav-link.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    width: 60%;
+    height: 4px;
+    background-color: var(--primary-orange);
+}
+
+/* --- UTILIDADES --- */
+.is-invalid { border-color: #ef4444 !important; }
+.invalid-feedback { color: #ef4444; font-size: 0.8rem; margin-top: 5px; }
+.footer-brand { margin-top: 40px; color: var(--text-light); font-size: 0.85rem; text-align: center; }

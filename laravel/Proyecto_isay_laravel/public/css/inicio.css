@@ -1,0 +1,200 @@
+/**
+ * MACUIN — Sistema de Autopartes
+ * CSS Unificado v2 (Simplificado para Cliente Externo)
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+:root {
+    --orange: #f05a24;
+    --orange-hover: #d14d1f;
+    --orange-glow: rgba(240, 90, 36, 0.1);
+    
+    --bg-dark: #0E0F11;
+    --bg-panel: #141518;
+    --bg-card: #1C1D21;
+    --border: rgba(255,255,255,0.06);
+    
+    --text: #ECEAE5;
+    --text-muted: #7C7A84;
+    --text-dim: #45434C;
+
+    --sidebar-w: 240px;
+    --font-display: 'Barlow Condensed', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+}
+
+/* --- Global --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text);
+    font-family: var(--font-body);
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    padding: 30px 15px;
+}
+
+.sidebar-logo {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+    padding-left: 10px;
+}
+
+.sidebar-logo span { color: var(--orange); }
+
+.nav-menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: 0.25s;
+}
+
+.nav-link i { font-size: 1.1rem; width: 20px; text-align: center; }
+
+.nav-link:hover {
+    background: rgba(255,255,255,0.05);
+    color: white;
+}
+
+.nav-link.active {
+    background: var(--orange-glow);
+    color: var(--orange);
+}
+
+.logout-btn {
+    margin-top: auto;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+}
+
+/* --- Main Content --- */
+.main-content {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    padding: 40px;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Banner de Bienvenida */
+.welcome-banner {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 35px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-banner::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--orange);
+}
+
+.welcome-banner h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.welcome-banner p { color: var(--text-muted); }
+
+/* --- Cards / Grid --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 25px;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(240, 90, 36, 0.3);
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+    color: var(--orange);
+    margin-bottom: 15px;
+}
+
+.stat-value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); width: 0; padding: 0; }
+    .main-content { margin-left: 0; padding: 20px; }
+}
