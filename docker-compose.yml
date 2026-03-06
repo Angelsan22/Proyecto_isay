@@ -1,0 +1,9 @@
+services:
+
+  fastapi:
+    build: ./FastAPI
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./FastAPI:/app
+    container_name: api_fastapi
