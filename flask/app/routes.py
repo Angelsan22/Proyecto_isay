@@ -25,7 +25,7 @@ def pedidos():
 
 # --- NUEVA RUTA: DETALLE DE PEDIDO ---
 # Nota: Usamos el nombre físico 'datalle_pedido.html' que aparece en tus archivos
-@main.route("/detalle_pedido")
+@main.route("/datalle_pedido")
 def detalle_pedido():
     return render_template("datalle_pedido.html")
 
