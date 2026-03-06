@@ -1,0 +1,2 @@
+class Config:
+    SECRET_KEY = "clave_super_secreta_123"

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Inventario - MACUIN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root { --primary-orange: #ff7324; --primary-dark: #1e1e1e; --bg-light: #f8f9fa; --danger: #dc3545; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-light); color: var(--primary-dark); padding: 30px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
+        .view-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .logo h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 10px; font-weight: 800; }
+        .logo h1 i { color: var(--primary-orange); }
+        .btn-regresar { text-decoration: none; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 12px; transition: 0.3s; border: 1px solid #eee; }
+        .btn-regresar:hover { background-color: var(--primary-dark); color: white; }
+        .title-section { margin-bottom: 35px; }
+        .title-section h2 { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
+        .divider { width: 80px; height: 6px; background: var(--primary-orange); margin-top: 10px; border-radius: 10px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { padding: 15px 25px; text-align: left; font-size: 0.75rem; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1.5px; }
+        td { padding: 20px 25px; background-color: #fdfdfd; border-top: 1px solid #f1f1f1; border-bottom: 1px solid #f1f1f1; font-size: 0.95rem; transition: 0.2s; }
+        tr td:first-child { border-left: 1px solid #f1f1f1; border-radius: 15px 0 0 15px; }
+        tr td:last-child { border-right: 1px solid #f1f1f1; border-radius: 0 15px 15px 0; }
+        tr:hover td { background-color: #fff; border-color: var(--primary-orange); transform: scale(1.005); }
+        .stock-val { font-weight: 700; font-size: 1.1rem; }
+        .status-badge { padding: 6px 15px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; display: inline-block; }
+        .status-critical { background-color: #ffe5e5; color: var(--danger); }
+        .status-ok { background-color: #e6f9ed; color: #155724; }
+        .btn-edit-stock { color: var(--primary-orange); background: none; border: none; cursor: pointer; font-size: 1.2rem; transition: 0.2s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="view-header">
+            <div class="logo">
+                <h1>MACUIN <i class="bi bi-car-front-fill"></i></h1>
+                <p style="font-size: 0.7rem; color: #aaa; margin-top: -5px;">SISTEMA DE GESTIÓN</p>
+            </div>
+            <a href="{{ url_for('main.dashboard') }}" class="btn-regresar"><i class="bi bi-grid"></i> DASHBOARD</a>
+        </header>
+
+        <div class="title-section">
+            <h2>INVENTARIO</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre del Artículo</th>
+                        <th>Stock Actual</th>
+                        <th>Stock Mínimo</th>
+                        <th>Estado</th>
+                        <th style="text-align: center;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 600;">Pastillas de Freno Delanteras</td>
+                        <td class="stock-val" style="color: var(--danger);">5</td>
+                        <td>10 unidades</td>
+                        <td><span class="status-badge status-critical">Reordenar</span></td>
+                        <td style="text-align: center;">
+                            <button class="btn-edit-stock" onclick="location.href='{{ url_for('main.actualizar_stock') }}'">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

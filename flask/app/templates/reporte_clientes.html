@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes Clientes - MACUIN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary-orange: #ff7324; --primary-dark: #1e1e1e; --bg-light: #f8f9fa; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-light); padding: 30px; color: var(--primary-dark); }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .logo h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 10px; font-weight: 800; }
+        .logo h1 i { color: var(--primary-orange); }
+        .btn-regresar { text-decoration: none; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 8px 18px; border-radius: 12px; border: 1px solid #eee; transition: 0.3s; }
+        .btn-regresar:hover { background-color: var(--primary-dark); color: white; }
+        h2 { font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 50px; color: #4b0082; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; }
+        .chart-card { background: var(--primary-dark); padding: 35px; border-radius: 25px; color: white; }
+        .chart-container { height: 300px; width: 300px; margin: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        td { padding: 18px 15px; background-color: #fcfcfc; border-radius: 15px; font-size: 0.9rem; border: 1px solid #f1f1f1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo"><h1>MACUIN <i class="bi bi-car-front-fill"></i></h1></div>
+            <a href="{{ url_for('main.dashboard') }}" class="btn-regresar">REGRESAR</a>
+        </header>
+        <h2>Reportes de Clientes</h2>
+        <div class="grid-layout">
+            <div class="chart-card">
+                <h3 style="margin-bottom: 20px; text-align: center;">Top Clientes</h3>
+                <div class="chart-container"><canvas id="topClientsChart"></canvas></div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td style="color: #6f42c1; font-weight: 700;">cliente1</td>
+                            <td style="font-weight: 600;">Refaccionaria Sánchez</td>
+                            <td>24 pedidos</td>
+                            <td style="color: var(--primary-orange); font-weight: 700;">$45,200.00</td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        const ctx = document.getElementById('topClientsChart');
+        new Chart(ctx, { 
+            type: 'pie', 
+            data: { 
+                labels: ['Cliente 1', 'Cliente 2', 'Cliente 3'], 
+                datasets: [{ 
+                    data: [47.5, 15, 37.5], 
+                    backgroundColor: ['#9c27b0', '#2196f3', '#e91e63'], 
+                    borderWidth: 0 
+                }] 
+            }, 
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { color: '#fff', font: { family: 'Inter' } } 
+                    } 
+                } 
+            } 
+        });
+    </script>
+</body>
+</html>
