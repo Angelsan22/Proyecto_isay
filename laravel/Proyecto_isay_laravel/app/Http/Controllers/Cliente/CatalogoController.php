@@ -4,63 +4,88 @@ namespace App\Http\Controllers\Cliente;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class CatalogoController extends Controller
 {
-    private function getAutopartes()
-    {
-        return collect([
-            (object)['id' => 1, 'nombre' => 'Disco de Freno Cerámico',          'sku' => 'ABC12345', 'precio' => 120.50, 'imagen_url' => 'https://placehold.co/200x200?text=Freno',   'categoria' => (object)['id' => 1, 'nombre' => 'Suspensión'],   'marca' => (object)['id' => 1, 'nombre' => 'Brembo']],
-            (object)['id' => 2, 'nombre' => 'Bujía de Iridio Alto Rendimiento', 'sku' => 'ABC12346', 'precio' =>  45.00, 'imagen_url' => 'https://placehold.co/200x200?text=Bujia',   'categoria' => (object)['id' => 2, 'nombre' => 'Motor'],        'marca' => (object)['id' => 2, 'nombre' => 'NGK']],
-            (object)['id' => 3, 'nombre' => 'Filtro de Aire Deportivo',         'sku' => 'ABC12347', 'precio' =>  35.00, 'imagen_url' => 'https://placehold.co/200x200?text=Filtro',  'categoria' => (object)['id' => 2, 'nombre' => 'Motor'],        'marca' => (object)['id' => 3, 'nombre' => 'K&N']],
-            (object)['id' => 4, 'nombre' => 'Faro Denalter LED',                'sku' => 'ABC12348', 'precio' => 120.50, 'imagen_url' => 'https://placehold.co/200x200?text=Faro',    'categoria' => (object)['id' => 3, 'nombre' => 'Electricidad'], 'marca' => (object)['id' => 4, 'nombre' => 'Philips']],
-            (object)['id' => 5, 'nombre' => 'Batería de Gel',                   'sku' => 'ABC12350', 'precio' => 200.00, 'imagen_url' => 'https://placehold.co/200x200?text=Bateria', 'categoria' => (object)['id' => 3, 'nombre' => 'Electricidad'], 'marca' => (object)['id' => 5, 'nombre' => 'Bosch']],
-        ]);
-    }
+    private string $apiUrl = 'http://localhost:8000';
 
     public function index(Request $request)
     {
-        $autopartes = $this->getAutopartes();
+        $response  = Http::get("{$this->apiUrl}/productos");
+        $productos = collect($response->json());
 
-        if ($request->filled('categoria')) {
-            $autopartes = $autopartes->filter(fn($a) => $a->categoria->id == $request->categoria);
-        }
-        if ($request->filled('marca')) {
-            $autopartes = $autopartes->filter(fn($a) => $a->marca->id == $request->marca);
-        }
+        // Filtro por búsqueda
         if ($request->filled('buscar')) {
-            $buscar = strtolower($request->buscar);
-            $autopartes = $autopartes->filter(fn($a) => str_contains(strtolower($a->nombre), $buscar) || str_contains(strtolower($a->sku), $buscar));
+            $buscar    = strtolower($request->buscar);
+            $productos = $productos->filter(
+                fn($p) => str_contains(strtolower($p['producto']), $buscar) ||
+                    str_contains(strtolower($p['sku']), $buscar)
+            );
         }
 
-        $categorias = collect([
-            (object)['id' => 1, 'nombre' => 'Suspensión'],
-            (object)['id' => 2, 'nombre' => 'Motor'],
-            (object)['id' => 3, 'nombre' => 'Electricidad'],
+        // Filtro por categoría
+        if ($request->filled('categoria')) {
+            $productos = $productos->filter(
+                fn($p) => strtolower($p['categoria']) === strtolower($request->categoria)
+            );
+        }
+
+        // Filtro por marca
+        if ($request->filled('marca')) {
+            $productos = $productos->filter(
+                fn($p) => strtolower($p['marca']) === strtolower($request->marca)
+            );
+        }
+
+        $autopartes = $productos->map(fn($p) => (object)[
+            'id'         => $p['id'],
+            'nombre'     => $p['producto'],
+            'sku'        => $p['sku'],
+            'precio'     => $p['precio'],
+            'imagen_url' => 'https://placehold.co/200x200?text=' . urlencode($p['producto']),
+            'categoria'  => (object)['id' => $p['categoria'], 'nombre' => $p['categoria']],
+            'marca'      => (object)['id' => $p['marca'],     'nombre' => $p['marca']],
         ]);
 
-        $marcas = collect([
-            (object)['id' => 1, 'nombre' => 'Brembo'],
-            (object)['id' => 2, 'nombre' => 'NGK'],
-            (object)['id' => 3, 'nombre' => 'K&N'],
-            (object)['id' => 4, 'nombre' => 'Philips'],
-            (object)['id' => 5, 'nombre' => 'Bosch'],
-        ]);
+        // Categorías y marcas únicas para los filtros
+        $categorias = collect($response->json())
+            ->pluck('categoria')
+            ->unique()
+            ->values()
+            ->map(fn($c) => (object)['id' => $c, 'nombre' => $c]);
+
+        $marcas = collect($response->json())
+            ->pluck('marca')
+            ->unique()
+            ->values()
+            ->map(fn($m) => (object)['id' => $m, 'nombre' => $m]);
 
         return view('clientes.catalogo.index', compact('autopartes', 'categorias', 'marcas'));
     }
 
     public function show($id)
     {
-        $autoparte = $this->getAutopartes()->firstWhere('id', (int)$id);
+        $response  = Http::get("{$this->apiUrl}/productos");
+        $productos = collect($response->json());
 
-        if (!$autoparte) abort(404);
+        $producto = $productos->firstWhere('id', (int)$id);
 
-        $autoparte->stock            = 10;
-        $autoparte->numero_parte     = $autoparte->sku;
-        $autoparte->descripcion      = "Material de alta calidad\nCompatible con múltiples vehículos\nGarantía de 1 año";
-        $autoparte->especificaciones = "Resistente a altas temperaturas\nFácil instalación\nCertificado ISO 9001";
-        $autoparte->imagenes         = collect([]);
+        if (!$producto) abort(404);
+
+        $autoparte = (object)[
+            'id'               => $producto['id'],
+            'nombre'           => $producto['producto'],
+            'sku'              => $producto['sku'],
+            'numero_parte'     => $producto['sku'],
+            'precio'           => $producto['precio'],
+            'stock'            => 10,
+            'imagen_url'       => 'https://placehold.co/300x300?text=' . urlencode($producto['producto']),
+            'descripcion'      => "Producto obtenido desde la API\nDisponible para entrega inmediata",
+            'especificaciones' => "Categoría: {$producto['categoria']}\nMarca: {$producto['marca']}",
+            'imagenes'         => collect([]),
+            'marca'            => (object)['nombre' => $producto['marca']],
+        ];
 
         return view('clientes.catalogo.show', compact('autoparte'));
     }

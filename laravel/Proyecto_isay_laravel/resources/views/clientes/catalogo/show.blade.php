@@ -1,4 +1,4 @@
-@extends('cliente.layout')
+@extends('clientes.layout')
 @section('title', $autoparte->nombre)
 
 @section('content')
