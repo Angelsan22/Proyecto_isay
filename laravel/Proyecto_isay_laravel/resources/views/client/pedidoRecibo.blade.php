@@ -272,10 +272,10 @@
         <tbody>
             @php
             $items = [
-                ['qty'=>1,'name'=>'Aceite Sintético 5W-30','sku'=>'ACT-5W30','unit'=>150.00],
-                ['qty'=>4,'name'=>'Bujías de Iridio NGK','sku'=>'BUJ-NGK','unit'=>75.00],
-                ['qty'=>1,'name'=>'Filtro de Aceite Mann-Filter','sku'=>'FLT-001','unit'=>90.00],
-                ['qty'=>2,'name'=>'Pastillas Freno Delanteras','sku'=>'FRN-045','unit'=>320.00],
+                ['qty'=>1,'name'=>'Aceite Sintético 5W-30','sku'=>'ACT-5W30','unit'=>450.00],
+                ['qty'=>4,'name'=>'Bujías de Iridio NGK','sku'=>'BUJ-NGK','unit'=>150.00],
+                ['qty'=>1,'name'=>'Filtro de Aceite Mann-Filter','sku'=>'FLT-001','unit'=>280.00],
+                ['qty'=>2,'name'=>'Pastillas Freno Delanteras','sku'=>'FRN-045','unit'=>650.00],
             ];
             @endphp
 
@@ -296,18 +296,18 @@
         <table class="totals-table">
             <tr>
                 <td class="t-label">Subtotal</td>
-                <td class="t-value">$1,180.00</td>
+                <td class="t-value">$2,880.00</td>
             </tr>
             <tr>
                 <td class="t-label">Envío</td>
-                <td class="t-value">$50.00</td>
+                <td class="t-value">$150.00</td>
             </tr>
             <tr class="t-divider">
                 <td></td><td></td>
             </tr>
             <tr class="t-grand">
                 <td class="t-label">TOTAL GENERAL</td>
-                <td class="t-value">$1,230.00</td>
+                <td class="t-value">$3,030.00</td>
             </tr>
         </table>
     </div>

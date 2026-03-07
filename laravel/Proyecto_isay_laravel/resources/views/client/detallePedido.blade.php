@@ -133,7 +133,7 @@
                     </div>
                     <div class="detail-row detail-row-total">
                         <span class="dr-label">Total del Pedido</span>
-                        <span class="dr-value dr-big">$1,250.00</span>
+                        <span class="dr-value dr-big">$5,980.00</span>
                     </div>
                 </div>
             </div>
@@ -148,9 +148,9 @@
 
                     @php
                     $articles = [
-                        ['icon'=>'fa-circle-dot','name'=>'Pastillas de Freno Delanteras','qty'=>2,'unit'=>60.00],
-                        ['icon'=>'fa-oil-can','name'=>'Filtro de Aceite X200','qty'=>1,'unit'=>30.00],
-                        ['icon'=>'fa-circle','name'=>'Neumático Michelin Pilot Sport 4S','qty'=>1,'unit'=>1100.00],
+                        ['icon'=>'fa-circle-dot','name'=>'Pastillas de Freno Delanteras','qty'=>2,'unit'=>650.00],
+                        ['icon'=>'fa-oil-can','name'=>'Filtro de Aceite X200','qty'=>1,'unit'=>180.00],
+                        ['icon'=>'fa-circle','name'=>'Neumático Michelin Pilot Sport 4S','qty'=>1,'unit'=>4500.00],
                     ];
                     @endphp
 
@@ -168,9 +168,9 @@
                     @endforeach
 
                     <div class="articles-summary">
-                        <div class="as-row"><span>Subtotal</span><span>$1,250.00</span></div>
-                        <div class="as-row"><span>Envío</span><span>$25.00</span></div>
-                        <div class="as-row as-total"><span>Total</span><span>$1,275.00</span></div>
+                        <div class="as-row"><span>Subtotal</span><span>$5,980.00</span></div>
+                        <div class="as-row"><span>Envío</span><span>$150.00</span></div>
+                        <div class="as-row as-total"><span>Total</span><span>$6,130.00</span></div>
                     </div>
                 </div>
             </div>

@@ -23,21 +23,21 @@
         [
             'name' => 'Bujía de Iridio NGK',
             'sku' => 'MAC-9912',
-            'price' => 45.00,
+            'price' => 150.00,
             'cantidad' => 4,
             'img' => 'https://imgs.search.brave.com/nXLKfizbHpJL1Nj0V7bYazxZMMWY3fWzKuuSugNTVJY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/bWlyZWZhY2Npb24u/Y29tLm14L2Nkbi9z/aG9wL3Byb2R1Y3Rz/L2lsemthcjhqOHN5/X25na19sYXJnZV8z/ZmQ3ZmZmMy00OWI2/LTQwNmYtYTgxNi04/NDc2MTY5MjQ0ZWRf/NTMweEAyeC5wbmc_/dj0xNzEwNjA4MDM1'
         ],
         [
             'name' => 'Filtro de Aceite',
             'sku' => 'MAC-4451',
-            'price' => 30.00,
+            'price' => 180.00,
             'cantidad' => 2,
             'img' => 'https://imgs.search.brave.com/9jilBVRWgjrXTUY_yIZB7wjHdSqHpgDqu3BPL2Q1wc0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9odHRw/Mi5tbHN0YXRpYy5j/b20vRF9OUV9OUF83/MTQ1NDMtTUxNNzI5/NjQ0MTQ5OTJfMTEy/MDIzLU8ud2VicA'
         ],
         [
             'name' => 'Pastillas de Freno',
             'sku' => 'MAC-8821',
-            'price' => 60.00,
+            'price' => 650.00,
             'cantidad' => 1,
             'img' => 'https://imgs.search.brave.com/NWy6J1s9ECuViecIODR_NNt7QNOHk4RZWqYxS6Etg2E/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLmVi/YXlpbWcuY29tL2lt/YWdlcy9nL0s4OEFB/T1N3SC1Ob0FmMC0v/cy1sOTYwLndlYnA'
         ]
