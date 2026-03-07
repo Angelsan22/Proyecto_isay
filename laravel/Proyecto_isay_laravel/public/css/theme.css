@@ -1,0 +1,121 @@
+/**
+ * MACUIN — theme.css
+ * Modo claro: sobrescribe las variables del tema oscuro.
+ * Incluir DESPUÉS de cualquier CSS de vista.
+ * El toggle JS añade/quita data-theme="light" en <html>.
+ */
+
+/* ── Transición global suave al cambiar tema ── */
+*,
+*::before,
+*::after {
+    transition:
+        background-color 0.25s ease,
+        border-color     0.25s ease,
+        color            0.2s ease,
+        box-shadow       0.2s ease !important;
+}
+
+/* ══════════════════════════════════════════
+   MODO CLARO
+══════════════════════════════════════════ */
+[data-theme="light"] {
+    --orange:        #e04e18;
+    --orange-hover:  #c84415;
+    --orange-soft:   rgba(224, 78, 24, 0.08);
+    --orange-border: rgba(224, 78, 24, 0.22);
+
+    --bg:            #F2F3F5;
+    --bg-panel:      #FFFFFF;
+    --bg-card:       #FFFFFF;
+    --bg-row:        rgba(0, 0, 0, 0.025);
+    --bg-hover:      #F7F8FA;
+
+    --border:        rgba(0, 0, 0, 0.08);
+    --border-soft:   rgba(0, 0, 0, 0.14);
+
+    --text:          #18191C;
+    --text-muted:    #5C5E66;
+    --text-dim:      #9B9DA6;
+
+    --green:         #2e8f5c;
+    --green-soft:    rgba(46, 143, 92, 0.09);
+    --green-border:  rgba(46, 143, 92, 0.22);
+    --blue:          #2563eb;
+    --blue-soft:     rgba(37, 99, 235, 0.09);
+    --blue-border:   rgba(37, 99, 235, 0.22);
+}
+
+/* ── Sidebar en modo claro: sombra lateral en lugar de borde ── */
+[data-theme="light"] .sidebar {
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Nav link activo más visible en claro ── */
+[data-theme="light"] .nav-link.active {
+    background: rgba(224, 78, 24, 0.10);
+}
+
+/* ── Cards con sombra suave en lugar de borde brillante ── */
+[data-theme="light"] .order-card,
+[data-theme="light"] .detail-card,
+[data-theme="light"] .tracking-card,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .product-card,
+[data-theme="light"] .quick-card,
+[data-theme="light"] .confirm-section,
+[data-theme="light"] .welcome-banner,
+[data-theme="light"] .order-status-bar {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Product image background ── */
+[data-theme="light"] .product-img-wrap {
+    background: #EAEBEE;
+}
+
+/* ── Cart drawer ── */
+[data-theme="light"] .cart-drawer {
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.10);
+}
+
+/* ══════════════════════════════════════════
+   BOTÓN TOGGLE (en la sidebar)
+══════════════════════════════════════════ */
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 500;
+    width: 100%;
+    cursor: pointer;
+    font-family: var(--font-b);
+    transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-soft);
+    color: var(--text);
+}
+
+.theme-toggle-btn i { font-size: 0.82rem; flex-shrink: 0; }
+
+/* Ícono: sol en modo oscuro, luna en modo claro */
+.theme-toggle-btn .icon-dark { display: inline-block; }
+.theme-toggle-btn .icon-light { display: none; }
+
+[data-theme="light"] .theme-toggle-btn .icon-dark { display: none; }
+[data-theme="light"] .theme-toggle-btn .icon-light { display: inline-block; }
+
+.theme-toggle-btn .toggle-label-dark  { display: inline; }
+.theme-toggle-btn .toggle-label-light { display: none; }
+
+[data-theme="light"] .theme-toggle-btn .toggle-label-dark  { display: none; }
+[data-theme="light"] .theme-toggle-btn .toggle-label-light { display: inline; }

@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,29 +19,69 @@ use App\Http\Controllers\ClientController;
 
 // Redirección inicial al Login
 Route::get('/', function () {
-    return redirect()->route('login');
+return redirect()->route('login');
 });
 
 /**
- * RUTAS DE INTERFACES (Libres para visualización)
- */
 
-// 1. Iniciar Sesión
+==========================================================
+
+RUTAS DE AUTENTICACIÓN
+
+==========================================================
+*/
+// Iniciar Sesión
 Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 
-// 2. Registro de nuevos Clientes
+// Registro de nuevos Clientes
 Route::get('/registro', [RegisterController::class, 'show'])->name('register');
 Route::post('/registro', [RegisterController::class, 'store'])->name('register.store');
 
-// 3. Recuperación de Contraseña
+// Recuperación de Contraseña
 Route::get('/recuperar-contrasena', [PasswordController::class, 'showResetForm'])->name('password.request');
 Route::post('/recuperar-contrasena', [PasswordController::class, 'update'])->name('password.update');
 
-// 4. Panel de Cliente (Acceso libre para pruebas visuales)
-Route::get('/inicio', [ClientController::class, 'index'])->name('client.index');
-Route::get('/catalogo', [ClientController::class, 'catalog'])->name('client.catalog');
-Route::get('/mis-pedidos', [ClientController::class, 'orders'])->name('client.orders');
-
 // Cerrar Sesión
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+/**
+
+==========================================================
+
+RUTAS GENERALES DEL CLIENTE
+
+==========================================================
+*/
+// Panel de Inicio (Dashboard)
+Route::get('/inicio', [ClientController::class, 'index'])->name('client.index');
+
+/**
+
+==========================================================
+
+RUTAS DE PEDIDOS Y CARRITO (ClientOrderController)
+
+==========================================================
+*/
+
+// Catálogo para explorar productos
+Route::get('/catalogo', [ClientOrderController::class, 'catalog'])->name('client.catalog');
+
+// Vista del Carrito de Compras
+Route::get('/carrito', [ClientOrderController::class, 'cart'])->name('client.cart');
+
+// Procesar y Guardar el pedido final desde el carrito
+Route::post('/pedido/confirmar', [ClientOrderController::class, 'store'])->name('client.orders.store');
+
+// Historial general de pedidos realizados
+Route::get('/mis-pedidos', [ClientOrderController::class, 'index'])->name('client.orders');
+
+// Ver detalle completo de un pedido específico
+Route::get('/pedido/{id}', [ClientOrderController::class, 'show'])->name('client.orders.show');
+
+// Pantalla de seguimiento (timeline)
+Route::get('/pedido/{id}/seguimiento', [ClientOrderController::class, 'tracking'])->name('client.orders.tracking');
+
+// Recibo / Factura
+Route::get('/pedido/{id}/recibo', [ClientOrderController::class, 'downloadReceipt'])->name('client.orders.pdf');

@@ -1,4 +1,4 @@
-{{-- resources/views/client/order-receipt.blade.php --}}
+{{-- resources/views/client/pedido-recibo.blade.php --}}
 {{-- Esta vista se renderiza como PDF con DomPDF o Browsershot --}}
 <!DOCTYPE html>
 <html lang="es">

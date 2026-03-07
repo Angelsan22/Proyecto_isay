@@ -1,4 +1,4 @@
-{{-- resources/views/client/order-detail.blade.php --}}
+{{-- resources/views/client/detalle-pedido.blade.php --}}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,7 +7,13 @@
     <title>MACUIN | Detalle del Pedido</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/macuin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/macAut.css') }}">
+    <script>
+        (function(){
+            if(localStorage.getItem('macuin_theme')==='light')
+            document.documentElement.setAttribute('data-theme','light');
+        })();
+    </script>
 </head>
 <body class="dashboard-page">
 
@@ -24,6 +30,10 @@
             <a href="{{ route('client.catalog') }}" class="nav-link">
                 <i class="fa-solid fa-layer-group"></i><span>Catálogo</span>
             </a>
+        <a href="{{ route('client.cart') }}" class="nav-link">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Carrito</span>
+        </a>
             <a href="{{ route('client.orders') }}" class="nav-link active">
                 <i class="fa-solid fa-receipt"></i><span>Mis Pedidos</span>
             </a>
@@ -36,6 +46,12 @@
                     <span class="user-role">Cliente</span>
                 </div>
             </div>
+            <button class="theme-toggle-btn" id="theme-toggle">
+                <i class="fa-solid fa-sun  icon-dark"></i>
+                <i class="fa-solid fa-moon icon-light"></i>
+                <span class="toggle-label-dark">Modo Claro</span>
+                <span class="toggle-label-light">Modo Oscuro</span>
+            </button>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="logout-btn">
@@ -162,6 +178,6 @@
         </div>
 
     </main>
-
+<script src="{{ asset('js/macuin.js') }}"></script>
 </body>
 </html>
