@@ -7,3 +7,43 @@ services:
     volumes:
       - ./FastAPI:/app
     container_name: api_fastapi
+    networks:
+      - maccuin_net
+    restart: unless-stopped
+
+  flask:
+    build: ./Flask
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./Flask:/app
+    container_name: api_flask
+    environment:
+      - FASTAPI_URL=http://fastapi:8000
+    networks:
+      - maccuin_net
+    depends_on:
+      - fastapi
+    restart: unless-stopped
+
+  laravel:
+    build: ./Laravel
+    ports:
+      - "8001:80"
+    volumes:
+      - ./Laravel/Proyecto_isay_laravel:/var/www/html
+    container_name: api_laravel
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - SESSION_DRIVER=file
+      - FASTAPI_URL=http://fastapi:8000
+    networks:
+      - maccuin_net
+    depends_on:
+      - fastapi
+    restart: unless-stopped
+
+networks:
+  maccuin_net:
+    driver: bridge

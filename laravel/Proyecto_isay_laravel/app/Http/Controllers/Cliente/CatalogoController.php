@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 
 class CatalogoController extends Controller
 {
-    private string $apiUrl = 'http://localhost:8000';
+    private string $apiUrl = 'http://fastapi:8000';
 
     public function index(Request $request)
     {
