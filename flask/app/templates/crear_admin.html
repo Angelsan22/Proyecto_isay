@@ -3,87 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Administrador - MACUIN</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Gestión de Usuarios - MACUIN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        :root { --primary-orange: #ff7324; --secondary-orange: #ffeadf; --dark-grey: #1e1e1e; --light-grey: #f8f9fa; }
+        :root { 
+            --primary-orange: #ff7324; 
+            --light-orange: #fff1e5;
+            --primary-dark: #1e1e1e;
+            --bg-body: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --border-light: #e5e7eb;
+            --badge-admin: #1e293b;
+            --badge-client: #fff1e5;
+            --badge-client-text: #ff7324;
+            --danger: #ef4444;
+            --danger-bg: #fef2f2;
+            --success: #10b981;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { display: flex; min-height: 100vh; background-color: var(--light-grey); }
+        body { background-color: var(--bg-body); color: var(--text-dark); padding: 40px; }
         
-        /* Sidebar */
-        .sidebar { width: 260px; background-color: var(--dark-grey); color: white; display: flex; flex-direction: column; padding: 30px 20px; position: fixed; height: 100vh; }
-        .sidebar-logo h1 { font-size: 1.4rem; color: white; display: flex; align-items: center; gap: 10px; }
-        .sidebar-logo h1 i { color: var(--primary-orange); }
-        .nav-menu { list-style: none; margin-top: 40px; flex-grow: 1; }
-        .nav-link { display: flex; align-items: center; gap: 12px; color: #aaa; text-decoration: none; padding: 12px 15px; border-radius: 12px; margin-bottom: 5px; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { background-color: var(--primary-orange); color: white; }
+        /* Header */
+        .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+        .page-title { display: flex; align-items: center; gap: 15px; }
+        .page-title h1 { font-size: 2rem; color: var(--primary-dark); font-weight: 700; letter-spacing: -0.5px; }
+        .page-title p { color: var(--text-gray); font-size: 0.95rem; margin-top: 5px; }
+        .page-title .icon-bg { background-color: var(--light-orange); padding: 12px; border-radius: 12px; color: var(--primary-orange); font-size: 1.5rem; }
         
-        /* Main Content */
-        .main-content { margin-left: 260px; flex-grow: 1; padding: 40px; }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background-color: white; border: 1px solid var(--border-light); color: var(--primary-dark); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+        .btn-back:hover { background-color: var(--light-orange); color: var(--primary-orange); border-color: var(--primary-orange); }
+
+        /* Cards */
+        .card { background-color: var(--card-bg); border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .card-title { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); }
+        .card-subtitle { color: var(--text-gray); font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px; display: block; }
         
-        /* Form Card */
-        .form-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); max-width: 600px; }
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark-grey); }
-        .input-group input { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; outline: none; }
-        .input-group input:focus { border-color: var(--primary-orange); }
-        .btn-submit { background-color: var(--primary-orange); color: white; border: none; padding: 12px 30px; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 1rem; transition: 0.3s; }
+        /* Form Inline */
+        .form-inline { display: grid; grid-template-columns: 2fr 2fr 2fr auto; gap: 20px; align-items: end; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { font-size: 0.75rem; font-weight: 600; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-control { padding: 12px 15px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; background-color: #f8fafc; }
+        .input-control:focus { border-color: var(--primary-orange); background-color: white; }
+        .btn-submit { padding: 12px 25px; background-color: var(--primary-orange); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background-color 0.2s; height: 43px;}
         .btn-submit:hover { background-color: #e66015; }
-        .messages { margin-bottom: 20px; }
-        .alert { padding: 15px; border-radius: 8px; margin-bottom: 10px; font-weight: 600; }
-        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 30px; border-bottom: 1px solid var(--border-light); margin-bottom: 20px; }
+        .tab { padding: 10px 5px; cursor: pointer; color: var(--text-gray); font-weight: 600; font-size: 0.95rem; position: relative; }
+        .tab.active { color: var(--primary-orange); }
+        .tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background-color: var(--primary-orange); border-radius: 3px 3px 0 0; }
+        
+        .badge-count { background-color: var(--primary-dark); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;}
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; font-size: 0.75rem; color: var(--text-gray); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-light); }
+        td { padding: 15px; vertical-align: middle; border-bottom: 1px solid #f3f4f6; }
+        tr:last-child td { border-bottom: none; }
+        
+        .user-cell { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; flex-shrink: 0;}
+        .avatar.admin { background-color: var(--badge-admin); color: white; }
+        .avatar.client { background-color: var(--light-orange); color: var(--primary-orange); }
+        .user-info { display: flex; flex-direction: column; }
+        .user-name { font-weight: 600; color: var(--text-dark); font-size: 0.95rem; }
+        .user-email { color: var(--text-gray); font-size: 0.85rem; }
+
+        .type-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; border: 1px solid transparent; }
+        .type-admin { background-color: var(--badge-admin); color: white; }
+        .type-client { background-color: var(--badge-client); color: var(--badge-client-text); border-color: #bfdbfe; }
+        
+        .status { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; color: var(--text-gray); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--success); }
+
+        .date-cell { font-size: 0.9rem; color: var(--text-gray); display: flex; align-items: center; gap: 8px;}
+        .date-cell i { color: #9ca3af; }
+
+        .btn-action { padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; transition: background-color 0.2s;}
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-danger:hover { background-color: #dc2626; }
+        .btn-disabled { background-color: transparent; color: var(--text-gray); cursor: default; }
+
+        /* Alerts */
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; font-size: 0.95rem;}
+        .alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert-danger { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* Rows handling via JS */
+        .row-admin[data-type="client"], .row-client[data-type="admin"] { display: none; }
     </style>
 </head>
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-logo">
-            <h1>MACUIN <i class="bi bi-car-front-fill"></i></h1>
-            <p style="font-size: 0.7rem; color: #888;">PERSONAL INTERNO</p>
-        </div>
-        <ul class="nav-menu">
-            <li><a href="{{ url_for('main.index') }}" class="nav-link"><i class="bi bi-house"></i> Inicio</a></li>
-            <li><a href="{{ url_for('main.dashboard') }}" class="nav-link"><i class="bi bi-grid"></i> Dashboard</a></li>
-            <li><a href="{{ url_for('main.productos') }}" class="nav-link"><i class="bi bi-tools"></i> Autopartes</a></li>
-            <li><a href="{{ url_for('main.gestion_inventario') }}" class="nav-link"><i class="bi bi-box-seam"></i> Inventario</a></li>
-            <li><a href="{{ url_for('main.pedidos') }}" class="nav-link"><i class="bi bi-cart"></i> Pedidos</a></li>
-            <li><a href="{{ url_for('main.crear_admin') }}" class="nav-link active" style="color: #4da6ff;"><i class="bi bi-person-plus"></i> Crear Admin</a></li>
-        </ul>
-        <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid #333;">
-            <a href="{{ url_for('main.reporte_clientes') }}" class="nav-link"><i class="bi bi-person"></i> Mi Perfil</a>
-            <a href="{{ url_for('main.logout') }}" class="nav-link" style="color: #ff4d4d;"><i class="bi bi-box-arrow-left"></i> Salir</a>
-        </div>
-    </nav>
 
-    <main class="main-content">
-        <h2 style="margin-bottom: 30px;">Añadir Nuevo Administrador</h2>
-        
-        <div class="form-card">
-            <div class="messages">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                  {% if messages %}
-                    {% for category, message in messages %}
-                      <div class="alert alert-{{ category }}">
-                        {{ message }}
-                      </div>
-                    {% endfor %}
-                  {% endif %}
-                {% endwith %}
+    <div class="page-header">
+        <div class="page-title">
+            <div class="icon-bg"><i class="bi bi-people-fill"></i></div>
+            <div>
+                <h1>Gestión de Usuarios</h1>
+                <p>Administra usuarios del sistema y crea nuevos administradores</p>
             </div>
-
-            <form method="POST" action="{{ url_for('main.crear_admin') }}">
-                <div class="input-group">
-                    <label>Correo Electrónico (Email)</label>
-                    <input type="email" name="email" placeholder="ejemplo@macuin.com" required>
-                </div>
-                <div class="input-group">
-                    <label>Contraseña Temporal</label>
-                    <input type="password" name="password" placeholder="Mínimo 8 caracteres" required>
-                </div>
-                <button type="submit" class="btn-submit"><i class="bi bi-person-plus-fill"></i> Crear Cuenta Admin</button>
-            </form>
         </div>
-    </main>
+        <a href="{{ url_for('main.dashboard') }}" class="btn-back"><i class="bi bi-arrow-left"></i> Volver al panel</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Create Admin Card -->
+    <div class="card">
+        <div class="card-title"><i class="bi bi-person-plus-fill" style="color: #4da6ff;"></i> Crear Nuevo Administrador</div>
+        <span class="card-subtitle">Genera credenciales para un nuevo usuario administrador del sistema</span>
+        
+        <form method="POST" action="{{ url_for('main.crear_admin') }}" class="form-inline">
+            <div class="input-group">
+                <label>Nombre Completo</label>
+                <input type="text" name="nombre" class="input-control" placeholder="Ej: Juan Pérez" required>
+            </div>
+            <div class="input-group">
+                <label>Correo Electrónico</label>
+                <input type="email" name="email" class="input-control" placeholder="admin@macuin.com" required>
+            </div>
+            <div class="input-group">
+                <label>Contraseña</label>
+                <div style="position: relative; width: 100%;">
+                    <input type="password" name="password" class="input-control" placeholder="••••••••" style="width: 100%;" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit"><i class="bi bi-plus-circle-fill"></i> Crear Admin</button>
+        </form>
+    </div>
+
+    <!-- User List Card -->
+    <div class="card" style="padding-bottom: 10px;">
+        <div class="card-header" style="margin-bottom: 5px;">
+            <div class="card-title"><i class="bi bi-list-ul"></i> Todos los Usuarios</div>
+            <div class="badge-count">{{ admins|length + usuarios|length }} registrados</div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="filterTable('all', this)">Todos</div>
+            <div class="tab" onclick="filterTable('admin', this)">Admins</div>
+            <div class="tab" onclick="filterTable('client', this)">Clientes</div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 30%;">USUARIO</th>
+                    <th style="width: 15%;">TIPO</th>
+                    <th style="width: 15%;">ESTADO</th>
+                    <th style="width: 20%;">REGISTRADO</th>
+                    <th style="width: 20%; text-align: right;">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <!-- Administradores -->
+                {% for admin in admins %}
+                <tr class="user-row" data-role="admin">
+                    <td>
+                        <div class="user-cell">
+                            <div class="avatar admin">{{ admin.nombre[0].upper() if admin.nombre else 'A' }}</div>
+                            <div class="user-info">
+                                <span class="user-name">{{ admin.nombre }}</span>
+                                <span class="user-email">{{ admin.email }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="type-badge type-admin"><i class="bi bi-shield-shaded"></i> ADMIN</span></td>
+                    <td>
+                        <div class="status"><div class="status-dot"></div> Activo</div>
+                    </td>
+                    <td>
+                        <div class="date-cell"><i class="bi bi-calendar-event"></i> {{ admin.fecha_creacion.strftime('%d/%m/%Y') }}</div>
+                    </td>
+                    <td style="text-align: right;">
+                        {% if current_user.id == admin.id %}
+                        <span class="btn-disabled"><i class="bi bi-lock-fill"></i> Tú</span>
+                        {% else %}
+                        <button class="btn-action btn-danger"><i class="bi bi-person-x-fill"></i> Desactivar</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+
+                <!-- Clientes / Usuarios Regulares -->
+                {% for usuario in usuarios %}
+                <tr class="user-row" data-role="client">
+                    <td>
+                        <div class="user-cell">
+                            <div class="avatar client">{{ usuario.nombre[0].upper() }}</div>
+                            <div class="user-info">
+                                <span class="user-name">{{ usuario.nombre }}</span>
+                                <span class="user-email">{{ usuario.correo }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="type-badge type-client"><i class="bi bi-person-fill"></i> CLIENTE</span></td>
+                    <td>
+                        <div class="status"><div class="status-dot"></div> Activo</div>
+                    </td>
+                    <td>
+                        <div class="date-cell"><i class="bi bi-calendar-event"></i> {{ usuario.fecha_registro.strftime('%d/%m/%Y') }}</div>
+                    </td>
+                    <td style="text-align: right;">
+                        <button class="btn-action btn-danger"><i class="bi bi-person-x-fill"></i> Desactivar</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Historial de Creación -->
+    <div style="margin-top: 40px;">
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+            <i class="bi bi-clock-history"></i> Historial de Administración
+        </h2>
+        <div class="card" style="box-shadow: none; border: 1px solid var(--border-light); padding: 20px;">
+            <table style="font-size: 0.9rem;">
+                <thead>
+                    <tr>
+                        <th style="padding: 10px;">Administrador Creado</th>
+                        <th style="padding: 10px;">Creado Por</th>
+                        <th style="padding: 10px;">Fecha y Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for admin in admins %}
+                    <tr>
+                        <td style="padding: 10px;">{{ admin.email }}</td>
+                        <td style="padding: 10px; font-weight: 500;">
+                            {{ admin.creador_info }}
+                        </td>
+                        <td style="padding: 10px; color: var(--text-gray);">{{ admin.fecha_creacion.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function filterTable(role, element) {
+            // Update active tab styling
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+
+            // Filter rows
+            const rows = document.querySelectorAll('.user-row');
+            rows.forEach(row => {
+                if (role === 'all' || row.dataset.role === role) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

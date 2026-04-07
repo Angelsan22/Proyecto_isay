@@ -1,18 +1,27 @@
-from app import db, login_manager
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
+from app import login_manager
+import requests
 
-class Admin(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
+API_URL = "http://127.0.0.1:8000"
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+class AdminSession(UserMixin):
+    def __init__(self, admin_id, nombre, email):
+        self.id = str(admin_id)
+        self.nombre = nombre
+        self.email = email
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Admin.query.get(int(user_id))
+    # In a real app we might fetch user details from API again
+    # For now, since we only need the session, we could store info in flask session 
+    # But since user_loader only receives user_id, let's fetch from API to get name/email
+    try:
+        response = requests.get(f"{API_URL}/admins/")
+        if response.status_code == 200:
+            admins = response.json()
+            for admin in admins:
+                if str(admin['id']) == user_id:
+                    return AdminSession(admin['id'], admin['nombre'], admin['email'])
+    except Exception as e:
+        print("Error fetching user from API:", e)
+    return None

@@ -12,8 +12,9 @@ with app.app_context():
     
     if not admin:
         print(f"Creando cuenta de administrador inicial: {admin_email}")
-        nuevo_admin = Admin(email=admin_email)
+        nuevo_admin = Admin(nombre="Administrador Principal", email=admin_email)
         nuevo_admin.set_password("admin123")
+        # El administrador principal no tiene creador_id, o podemos dejarlo None
         db.session.add(nuevo_admin)
         db.session.commit()
         print("Administrador creado con éxito.")
