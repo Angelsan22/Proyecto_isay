@@ -4,8 +4,10 @@ import requests
 from app.models import AdminSession
 from datetime import datetime
 
+import os
+
 main = Blueprint('main', __name__)
-API_URL = "http://127.0.0.1:8000"
+API_URL = os.environ.get("FASTAPI_URL", "http://127.0.0.1:8000")
 
 @main.route("/", methods=["GET", "POST"])
 def index():
@@ -105,7 +107,39 @@ def crear_admin():
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    stats = {
+        "pendientes": 0,
+        "en_proceso": 0,
+        "stock_bajo": 0,
+        "completados": 0,
+        "top_productos": []
+    }
+    
+    try:
+        # 1. Obtener Pedidos y clasificar por estatus
+        r_pedidos = requests.get(f"{API_URL}/pedidos/")
+        if r_pedidos.status_code == 200:
+            pedidos = r_pedidos.json()
+            stats["pendientes"] = len([p for p in pedidos if p["estatus"] == "En Proceso"])
+            stats["en_proceso"] = len([p for p in pedidos if p["estatus"] == "Enviado"])
+            stats["completados"] = len([p for p in pedidos if p["estatus"] == "Entregado"])
+        
+        # 2. Obtener Productos y detectar Stock Bajo
+        r_productos = requests.get(f"{API_URL}/productos/")
+        if r_productos.status_code == 200:
+            productos = r_productos.json()
+            # Identificar productos que necesitan reabastecimiento (Stock Bajo)
+            stats["stock_bajo_lista"] = [p for p in productos if p["stock_actual"] <= p.get("stock_minimo", 0)]
+            stats["stock_bajo"] = len(stats["stock_bajo_lista"])
+            
+            # Tomar los 5 productos más valiosos o con más stock como "Top"
+            stats["top_productos"] = sorted(productos, key=lambda x: x["precio"], reverse=True)[:5]
+
+    except Exception as e:
+        print(f"Error cargando dashboard real: {e}")
+        flash("La conexión con el servidor de datos ha fallado. Usando datos de respaldo.", "warning")
+
+    return render_template("dashboard.html", stats=stats)
 
 @main.route("/editar_autoparte")
 @login_required
@@ -115,12 +149,75 @@ def editar_autoparte():
 @main.route("/gestion_inventario")
 @login_required
 def gestion_inventario():
-    return render_template("gestion_inventario.html")
+    nombre = request.args.get("nombre", "")
+    categoria = request.args.get("categoria", "Todas las categorías")
+    
+    productos_data = []
+    try:
+        # Petición a la API central con filtros
+        params = {"nombre": nombre, "categoria": categoria}
+        response = requests.get(f"{API_URL}/productos/", params=params)
+        if response.status_code == 200:
+            productos_data = response.json()
+        else:
+            flash("Error al obtener inventario de la API", "warning")
+    except Exception as e:
+        print(f"Error conexión API Inventario: {e}")
+        flash("No se pudo conectar con el servidor de inventario", "danger")
+
+    # Estadísticas para el dashboard de inventario con seguridad ante errores de llaves
+    stats = {
+        "total_articulos": len(productos_data),
+        "total_unidades": sum([p.get("stock_actual", 0) for p in productos_data]),
+        "bajo_stock": len([p for p in productos_data if p.get("stock_actual", 0) <= p.get("stock_minimo", 0)]),
+        "valoracion_total": sum([p.get("stock_actual", 0) * p.get("precio", 0) for p in productos_data]),
+        "categorias": len(set([p.get("categoria", "Sin Categoría") for p in productos_data if p.get("categoria")]))
+    }
+
+    return render_template("gestion_inventario.html", productos=productos_data,
+                           filtro_nombre=nombre, filtro_categoria=categoria,
+                           stats=stats)
 
 @main.route("/pedidos")
 @login_required
 def pedidos():
-    return render_template("pedidos.html")
+    cliente = request.args.get("usuario", "")
+    estatus = request.args.get("estatus", "Todos los pedidos")
+    
+    pedidos_data = []
+    try:
+        # Petición a la API central con filtros
+        params = {"cliente": cliente, "estatus": estatus}
+        response = requests.get(f"{API_URL}/pedidos/", params=params)
+        if response.status_code == 200:
+            pedidos_data = response.json()
+            
+            # De forma simplificada, vamos a pedir la info de los usuarios para mostrar nombres
+            # (En producción esto se haría con un join en la API, pero aquí para ser explícitos:)
+            for p in pedidos_data:
+                user_res = requests.get(f"{API_URL}/usuarios/") # Podríamos filtrar por ID pero esto es una demo
+                if user_res.status_code == 200:
+                    users = user_res.json()
+                    user = next((u for u in users if u["id"] == p["cliente_id"]), None)
+                    p["cliente_nombre"] = user["nombre"] if user else "Desconocido"
+        else:
+            flash("Error al obtener pedidos de la API", "warning")
+    except Exception as e:
+        print(f"Error conexión API Pedidos: {e}")
+        flash("No se pudo conectar con el servidor de pedidos", "danger")
+
+    # Estadísticas para las tarjetas del dashboard
+    stats = {
+        "total": len(pedidos_data),
+        "proceso": len([p for p in pedidos_data if p["estatus"] == "En Proceso"]),
+        "enviado": len([p for p in pedidos_data if p["estatus"] == "Enviado"]),
+        "entregado": len([p for p in pedidos_data if p["estatus"] == "Entregado"]),
+        "monto_total": sum([p["total"] for p in pedidos_data])
+    }
+
+    return render_template("pedidos.html", pedidos=pedidos_data, 
+                           filtro_cliente=cliente, filtro_estatus=estatus,
+                           stats=stats)
 
 @main.route("/datalle_pedido")
 @login_required
@@ -130,12 +227,60 @@ def detalle_pedido():
 @main.route("/perfil")
 @login_required
 def perfil():
-    return render_template("perfil.html")
+    # Obtener algunas estadísticas básicas para que el perfil se vea más completo
+    stats = {
+        "productos_totales": 0,
+        "pedidos_gestionados": 0,
+        "clientes_activos": 0
+    }
+    try:
+        r_productos = requests.get(f"{API_URL}/productos/")
+        if r_productos.status_code == 200:
+            stats["productos_totales"] = len(r_productos.json())
+        
+        r_pedidos = requests.get(f"{API_URL}/pedidos/")
+        if r_pedidos.status_code == 200:
+            stats["pedidos_gestionados"] = len(r_pedidos.json())
+
+        r_usuarios = requests.get(f"{API_URL}/usuarios/")
+        if r_usuarios.status_code == 200:
+            stats["clientes_activos"] = len(r_usuarios.json())
+            
+    except Exception as e:
+        print(f"Error cargando estadísticas de perfil: {e}")
+
+    return render_template("perfil.html", stats=stats)
 
 @main.route("/productos")
 @login_required
 def productos():
-    return render_template("productos.html")
+    nombre = request.args.get("nombre", "")
+    categoria = request.args.get("categoria", "Todas las categorías")
+    
+    productos_data = []
+    try:
+        # Petición a la API central para el catálogo
+        params = {"nombre": nombre, "categoria": categoria}
+        response = requests.get(f"{API_URL}/productos/", params=params)
+        if response.status_code == 200:
+            productos_data = response.json()
+        else:
+            flash("Error al obtener catálogo de la API", "warning")
+    except Exception as e:
+        print(f"Error conexión API Catálogo: {e}")
+        flash("No se pudo conectar con el servidor de catálogo", "danger")
+
+    # Estadísticas para el encabezado del catálogo
+    stats = {
+        "total": len(productos_data),
+        "categorias": len(set([p.get("categoria", "N/A") for p in productos_data if p.get("categoria")])),
+        "precio_promedio": sum([p.get("precio", 0) for p in productos_data]) / len(productos_data) if productos_data else 0,
+        "agotados": len([p for p in productos_data if p.get("stock_actual", 0) <= 0])
+    }
+
+    return render_template("productos.html", productos=productos_data,
+                           filtro_nombre=nombre, filtro_categoria=categoria,
+                           stats=stats)
 
 @main.route("/recuperar")
 def recuperar():
@@ -151,14 +296,94 @@ def registrar_autoparte():
 @main.route("/reporte_clientes")
 @login_required
 def reporte_clientes():
-    return render_template("reporte_clientes.html")
+    stats = {
+        "clientes_totales": 0,
+        "pedidos_totales": 0,
+        "productos_stock": 0,
+        "valor_inventario": 0,
+        "top_clientes": []
+    }
+    
+    try:
+        # 1. Obtener Clientes
+        r_clientes = requests.get(f"{API_URL}/usuarios/")
+        if r_clientes.status_code == 200:
+            clientes = r_clientes.json()
+            stats["clientes_totales"] = len(clientes)
+            # Mock de top clientes basado en la lista real (para la tabla)
+            for i, c in enumerate(clientes[:10]):
+                stats["top_clientes"].append({
+                    "nombre": c["nombre"],
+                    "siglas": "".join([n[0] for n in c["nombre"].split()[:2]]).upper(),
+                    "pedidos": 10 - i, # Simulado por ahora hasta tener joins
+                    "total": (10 - i) * 1200
+                })
+        
+        # 2. Obtener Pedidos
+        r_pedidos = requests.get(f"{API_URL}/pedidos/")
+        if r_pedidos.status_code == 200:
+            stats["pedidos_totales"] = len(r_pedidos.json())
+            
+        # 3. Obtener Inventario
+        r_productos = requests.get(f"{API_URL}/productos/")
+        if r_productos.status_code == 200:
+            productos = r_productos.json()
+            stats["productos_stock"] = len(productos)
+            stats["valor_inventario"] = sum(p["precio"] * p["stock_actual"] for p in productos)
+            
+    except Exception as e:
+        print(f"Error cargando reportes: {e}")
+        flash("Error al conectar con la base de datos para los reportes", "warning")
+
+    return render_template("reporte_clientes.html", stats=stats)
 
 @main.route("/reportes_pedidos")
 @login_required
 def reportes_pedidos():
     return render_template("reportes_pedidos.html")
 
-@main.route("/actualizar_stock")
+@main.route("/actualizar_stock/<int:id>", methods=["GET", "POST"])
 @login_required
-def actualizar_stock():
-    return render_template("actualizar_stock.html")
+def actualizar_stock(id):
+    producto = None
+    try:
+        # Recuperar datos del producto actual
+        response = requests.get(f"{API_URL}/productos/{id}")
+        if response.status_code == 200:
+            producto = response.json()
+        else:
+            flash("Producto no encontrado", "danger")
+            return redirect(url_for('main.gestion_inventario'))
+    except Exception as e:
+        flash("Error de conexión con la API", "danger")
+        return redirect(url_for('main.gestion_inventario'))
+
+    if request.method == "POST":
+        nueva_cantidad = request.form.get("nueva_cantidad")
+        nuevo_precio = request.form.get("precio")
+        nueva_descripcion = request.form.get("descripcion")
+        motivo = request.form.get("motivo")
+        
+        if not nueva_cantidad or not nuevo_precio:
+            flash("Debes completar todos los campos obligatorios", "warning")
+        else:
+            try:
+                # El esquema espera todos los campos, así que enviamos el objeto actualizado
+                payload = producto.copy()
+                payload["stock_actual"] = int(nueva_cantidad)
+                payload["precio"] = float(nuevo_precio)
+                payload["descripcion"] = nueva_descripcion
+                
+                # Quitar campos que la API no espera en el body si es necesario (id, etc)
+                # En FastAPI models.ProductoCreate no tiene ID
+                update_response = requests.put(f"{API_URL}/productos/{id}", json=payload)
+                
+                if update_response.status_code == 200:
+                    flash(f"¡Stock de '{producto['nombre']}' actualizado a {nueva_cantidad}!", "success")
+                    return redirect(url_for('main.gestion_inventario'))
+                else:
+                    flash("No se pudo actualizar el stock en el servidor", "danger")
+            except Exception as e:
+                flash(f"Error al procesar actualización: {e}", "danger")
+
+    return render_template("actualizar_stock.html", producto=producto)

@@ -6,79 +6,174 @@
     <title>Inventario - MACUIN</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     <style>
-        :root { --primary-orange: #ff7324; --secondary-orange: #ffeadf; --bg-light: #f8f9fa; --text-dark: #1e1e1e; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-light); color: var(--text-dark); padding: 40px; }
-        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 40px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .view-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 2px solid var(--bg-light); padding-bottom: 20px; }
-        .logo h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+        body { background-color: var(--bg-main); color: var(--text-main); padding: 40px 20px; }
+        
+        .main-wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 25px; }
+
+        .container { background: var(--bg-card); padding: 30px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
+        .view-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .logo h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--text-main); }
         .logo h1 i { color: var(--primary-orange); }
-        .btn-back { text-decoration: none; color: var(--text-dark); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .btn-back:hover { color: var(--primary-orange); }
-        .section-title { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title h2 { font-size: 2rem; font-weight: 700; color: var(--text-dark); }
-        .orange-line { width: 60px; height: 5px; background: var(--primary-orange); margin-top: 8px; border-radius: 10px; }
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
-        th { text-align: left; padding: 15px 20px; color: #888; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
-        td { background-color: #fcfcfc; padding: 20px; font-size: 0.95rem; border: 1px solid #f1f1f1; transition: 0.3s; }
-        tr td:first-child { border-radius: 15px 0 0 15px; border-right: none; }
-        tr td:last-child { border-radius: 0 15px 15px 0; border-left: none; text-align: center; }
-        tr:hover td { background-color: var(--secondary-orange); border-color: var(--primary-orange); cursor: pointer; }
-        .status { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
-        .status.ok { background: #d4edda; color: #155724; }
-        .status.low { background: #fff3cd; color: #856404; }
-        .product-img-box { width: 50px; height: 50px; background: #eee; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: #ccc; }
+        
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-back { text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 12px; transition: 0.3s; border: 1px solid var(--border-color); background: var(--bg-card); }
+        .btn-back:hover { background-color: var(--dark-grey); color: white; transform: translateX(-5px); }
+        
+        /* Theme Toggle Button */
+        .theme-toggle { background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.85rem; transition: 0.3s; }
+        .theme-toggle:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .stat-card { background: var(--bg-card); padding: 22px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 15px; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px; }
+        .stat-info h4 { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .stat-info p { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
+
+        /* Filters Bar */
+        .filter-header { display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border-color); flex-wrap: wrap; gap: 20px; }
+        .horizontal-filters { display: flex; gap: 20px; align-items: center; }
+        .filter-item { display: flex; align-items: center; gap: 10px; }
+        .filter-item label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .filter-item select, .filter-item input { padding: 9px 15px; border-radius: 10px; border: 1px solid var(--border-color); font-size: 0.85rem; outline: none; min-width: 200px; transition: 0.2s; background: var(--bg-card); color: var(--text-main); }
+
+        .btn-apply { background: var(--primary-orange); color: white; border: none; padding: 11px 22px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-apply:hover { background: #e66015; transform: scale(1.05); }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { padding: 12px 25px; text-align: left; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.2px; }
+        td { padding: 18px 25px; background-color: var(--bg-card); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 0.95rem; transition: 0.2s; color: var(--text-main); }
+        tr td:first-child { border-left: 1px solid var(--border-color); border-radius: 15px 0 0 15px; }
+        tr td:last-child { border-right: 1px solid var(--border-color); border-radius: 0 15px 15px 0; }
+        tr:hover td { background-color: var(--bg-main); border-color: var(--primary-orange); cursor: pointer; }
+        
+        .badge { padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-width: 1px; border-style: solid; }
+        .bg-ok { background-color: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.2); }
+        .bg-low { background-color: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+        .bg-error { background-color: rgba(239, 68, 68, 0.15); color: var(--danger); border-color: rgba(239, 68, 68, 0.2); }
+        
+        .price-tag { font-weight: 800; color: var(--primary-orange); font-size: 1.1rem; }
+        .product-img-box { width: 45px; height: 45px; background: rgba(255, 115, 36, 0.1); border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: var(--primary-orange); border: 1px solid var(--border-color); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="view-header">
-            <div class="logo">
-                <h1>MACUIN <i class="bi bi-car-front-fill"></i></h1>
-                <p style="font-size: 0.7rem; color: #888; text-transform: uppercase;">Personal Interno</p>
+    <div class="main-wrapper">
+        <!-- Dashboard Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(255, 115, 36, 0.1); color: var(--primary-orange);"><i class="bi bi-gear-wide"></i></div>
+                <div class="stat-info"><h4>Piezas Únicas</h4><p>{{ stats.total }}</p></div>
             </div>
-            <a href="{{ url_for('main.dashboard') }}" class="btn-back"><i class="bi bi-arrow-left"></i> REGRESAR</a>
-        </header>
-        <div class="section-title">
-            <div>
-                <h2>PRODUCTOS</h2>
-                <div class="orange-line"></div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(13, 71, 161, 0.1); color: #0d47a1;"><i class="bi bi-tag"></i></div>
+                <div class="stat-info"><h4>Categorías</h4><p>{{ stats.categorias }}</p></div>
             </div>
-            <a href="{{ url_for('main.registrar_autoparte') }}" class="btn-back" style="color: var(--primary-orange);">
-                <i class="bi bi-plus-circle-fill"></i> AGREGAR NUEVO
-            </a>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(103, 58, 183, 0.1); color: #673ab7;"><i class="bi bi-graph-up-arrow"></i></div>
+                <div class="stat-info"><h4>Precio Prom.</h4><p>${{ "{:,.0f}".format(stats.precio_promedio) }}</p></div>
+            </div>
+            <div class="stat-card" style="border-bottom: 3px solid var(--danger);">
+                <div class="stat-icon" style="background: rgba(220, 53, 69, 0.1); color: var(--danger);"><i class="bi bi-dash-circle"></i></div>
+                <div class="stat-info"><h4>Agotados</h4><p>{{ stats.agotados }}</p></div>
+            </div>
         </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Cantidad</th>
-                        <th>Estado</th>
-                        <th>Precio Unitario</th>
-                        <th>Imagen</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr onclick="location.href='{{ url_for('main.editar_autoparte') }}'">
-                        <td style="font-weight: 600;">Filtro de Aire Premium</td>
-                        <td>45 unidades</td>
-                        <td><span class="status ok">En Stock</span></td>
-                        <td style="font-weight: 700; color: var(--primary-orange);">$350.00</td>
-                        <td><div class="product-img-box"><i class="bi bi-image"></i></div></td>
-                    </tr>
-                    <tr onclick="location.href='{{ url_for('main.editar_autoparte') }}'">
-                        <td style="font-weight: 600;">Bujía de Iridio</td>
-                        <td>12 unidades</td>
-                        <td><span class="status low">Stock Bajo</span></td>
-                        <td style="font-weight: 700; color: var(--primary-orange);">$120.00</td>
-                        <td><div class="product-img-box"><i class="bi bi-image"></i></div></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="container">
+            <header class="view-header">
+                <div class="logo">
+                    <h1>MACUIN <i class="bi bi-tools"></i></h1>
+                </div>
+                <a href="{{ url_for('main.dashboard') }}" class="btn-back"><i class="bi bi-arrow-left-circle"></i> REGRESAR</a>
+            </header>
+
+            <div class="header-content">
+                <div class="title-section">
+                    <h2 style="display: flex; align-items: center; gap: 12px; font-size: 1.4rem; font-weight: 800;">
+                        <i class="bi bi-card-list" style="color: var(--primary-orange); background: rgba(255, 115, 36, 0.1); padding: 8px; border-radius: 10px;"></i> 
+                        Catálogo de Autopartes
+                    </h2>
+                </div>
+                <a href="{{ url_for('main.registrar_autoparte') }}" class="btn-back" style="color: var(--primary-orange); border-color: var(--primary-orange);">
+                    <i class="bi bi-plus-circle-fill"></i> REGISTRAR NUEVA PIEZA
+                </a>
+            </div>
+
+            <!-- Rest of the content remains same -->
+            <form action="{{ url_for('main.productos') }}" method="GET" class="filter-header">
+                <div class="horizontal-filters">
+                    <div class="filter-item">
+                        <label><i class="bi bi-search"></i> Buscar Producto</label>
+                        <input type="text" name="nombre" placeholder="Nombre..." value="{{ filtro_nombre }}">
+                    </div>
+                    <div class="filter-item">
+                        <label><i class="bi bi-funnel"></i> Categoría</label>
+                        <select name="categoria">
+                            <option value="Todas las categorías" {% if filtro_categoria == 'Todas las categorías' %}selected{% endif %}>Todas las categorías</option>
+                            <option value="Frenos" {% if filtro_categoria == 'Frenos' %}selected{% endif %}>Frenos</option>
+                            <option value="Suspensión" {% if filtro_categoria == 'Suspensión' %}selected{% endif %}>Suspensión</option>
+                            <option value="Motor" {% if filtro_categoria == 'Motor' %}selected{% endif %}>Motor</option>
+                            <option value="Servicio" {% if filtro_categoria == 'Servicio' %}selected{% endif %}>Servicio</option>
+                            <option value="Eléctrico" {% if filtro_categoria == 'Eléctrico' %}selected{% endif %}>Eléctrico</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-apply">
+                    <i class="bi bi-check-lg"></i> FILTRAR CATÁLOGO
+                </button>
+            </form>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vista</th>
+                            <th>Nombre de Pieza</th>
+                            <th>Categoría</th>
+                            <th>Stock</th>
+                            <th>Estatus</th>
+                            <th>Precio Unitario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prod in productos %}
+                        <tr onclick="window.location.href='{{ url_for('main.actualizar_stock', id=prod.id) }}';">
+                            <td><div class="product-img-box"><i class="bi bi-box-seam"></i></div></td>
+                            <td style="font-weight: 600;">{{ prod.get('nombre', 'Sin Nombre') }}</td>
+                            <td><span style="color: var(--text-muted); font-size: 0.8rem;">#</span> {{ prod.get('categoria', 'General') }}</td>
+                            <td>{{ prod.get('stock_actual', 0)|int }} un.</td>
+                            <td>
+                                {% set s_actual = prod.get('stock_actual', 0)|int %}
+                                {% set s_min = prod.get('stock_minimo', 0)|int %}
+                                {% if s_actual <= 0 %}
+                                    <span class="badge bg-error">Agotado</span>
+                                {% elif s_actual <= s_min %}
+                                    <span class="badge bg-low">Bajo Stock</span>
+                                {% else %}
+                                    <span class="badge bg-ok">Disponible</span>
+                                {% endif %}
+                            </td>
+                            <td class="price-tag">${{ "{:,.2f}".format(prod.get('precio', 0)) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 60px; color: var(--text-muted);">
+                                <i class="bi bi-search" style="font-size: 2.5rem; display: block; margin-bottom: 15px;"></i>
+                                No se encontraron piezas en el catálogo con estos filtros.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</body>
+</html>
+/div>
 </body>
 </html>

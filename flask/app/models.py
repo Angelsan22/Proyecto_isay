@@ -2,7 +2,9 @@ from flask_login import UserMixin
 from app import login_manager
 import requests
 
-API_URL = "http://127.0.0.1:8000"
+import os
+
+API_URL = os.environ.get("FASTAPI_URL", "http://127.0.0.1:8000")
 
 class AdminSession(UserMixin):
     def __init__(self, admin_id, nombre, email):

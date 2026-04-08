@@ -6,208 +6,126 @@
     <title>Lista Global de Pedidos - MACUIN</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     <style>
-        :root {
-            --primary-orange: #ff7324;
-            --secondary-orange: #ffeadf;
-            --bg-light: #f8f9fa;
-            --text-dark: #1e1e1e;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+        body { background-color: var(--bg-main); color: var(--text-main); padding: 40px 20px; }
+        
+        .main-wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 25px; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            padding: 30px;
-        }
-
-        .main-wrapper {
-            max-width: 1300px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 25px;
-        }
-
-        .content-container {
-            background: white;
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .content-container { background: var(--bg-card); padding: 30px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .logo h1 { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
         .logo h1 i { color: var(--primary-orange); }
+        
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .btn-regresar { text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 0.85rem; border-bottom: 2px solid var(--primary-orange); transition: 0.3s; }
+        .btn-regresar:hover { opacity: 0.7; }
+        
+        /* Theme Toggle Button */
+        .theme-toggle { background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.85rem; transition: 0.3s; }
+        .theme-toggle:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
 
-        .btn-regresar {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 700;
-            font-size: 0.85rem;
-            border-bottom: 2px solid var(--primary-orange);
-        }
+        .title-section h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 30px; text-transform: uppercase; display: flex; align-items: center; gap: 15px; color: var(--text-main); }
+        .title-section h2 i { color: var(--primary-orange); background: rgba(255, 115, 36, 0.1); padding: 10px; border-radius: 12px; }
 
-        .title-section h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-        }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { text-align: left; padding: 10px 20px; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        td { background-color: var(--bg-card); padding: 18px 20px; font-size: 0.9rem; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); transition: 0.2s; color: var(--text-main); }
+        tr td:first-child { border-left: 1px solid var(--border-color); border-radius: 12px 0 0 12px; font-weight: 700; color: var(--text-muted); }
+        tr td:last-child { border-right: 1px solid var(--border-color); border-radius: 0 12px 12px 0; }
+        tr:hover td { background-color: var(--bg-main); border-color: var(--primary-orange); cursor: pointer; }
 
-        .table-responsive {
-            overflow-x: auto;
-        }
+        .badge { padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .bg-process { background: rgba(13, 71, 161, 0.15); color: #2196f3; }
+        .bg-shipped { background: rgba(230, 81, 0, 0.15); color: #ff9800; }
+        .bg-done { background: rgba(27, 94, 32, 0.15); color: #4caf50; }
 
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-        }
+        /* Stats Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 5px; }
+        .stat-card { background: var(--bg-card); padding: 24px; border-radius: 20px; display: flex; align-items: center; gap: 18px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+        .stat-info h4 { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-info p { font-size: 1.5rem; font-weight: 800; color: var(--text-main); }
 
-        th {
-            text-align: left;
-            padding: 10px 20px;
-            font-size: 0.75rem;
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        /* Filter Bar */
+        .filter-header { display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border-color); flex-wrap: wrap; gap: 20px; }
+        .horizontal-filters { display: flex; gap: 20px; align-items: center; }
+        .filter-item { display: flex; align-items: center; gap: 10px; }
+        .filter-item label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .filter-item select, .filter-item input { padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border-color); font-size: 0.85rem; outline: none; min-width: 180px; background: var(--bg-card); color: var(--text-main); }
+        .filter-item input:focus { border-color: var(--primary-orange); }
 
-        td {
-            background-color: #fdfdfd;
-            padding: 18px 20px;
-            font-size: 0.9rem;
-            border-top: 1px solid #f1f1f1;
-            border-bottom: 1px solid #f1f1f1;
-            transition: 0.2s;
-        }
-
-        tr td:first-child { border-left: 1px solid #f1f1f1; border-radius: 12px 0 0 12px; font-weight: 700; color: #888; }
-        tr td:last-child { border-right: 1px solid #f1f1f1; border-radius: 0 12px 12px 0; }
-
-        /* Conexión visual: cursor pointer para indicar que es clickeable */
-        tr:hover td {
-            background-color: var(--secondary-orange);
-            border-color: var(--primary-orange);
-            cursor: pointer;
-        }
-
-        .badge {
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .bg-process { background: #e3f2fd; color: #0d47a1; }
-        .bg-shipped { background: #fff3e0; color: #e65100; }
-        .bg-done { background: #e8f5e9; color: #1b5e20; }
-
-        .filter-card {
-            background: var(--text-dark);
-            color: white;
-            padding: 35px;
-            border-radius: 30px;
-            height: fit-content;
-            position: sticky;
-            top: 30px;
-        }
-
-        .filter-card h3 {
-            font-size: 1rem;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-left: 4px solid var(--primary-orange);
-            padding-left: 15px;
-        }
-
-        .filter-group {
-            margin-bottom: 20px;
-        }
-
-        .filter-group label {
-            display: block;
-            font-size: 0.75rem;
-            color: #888;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .filter-group select, .filter-group input {
-            width: 100%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px;
-            border-radius: 10px;
-            color: white;
-            outline: none;
-            font-size: 0.85rem;
-        }
-
-        .filter-group input:focus {
-            border-color: var(--primary-orange);
-        }
-
-        .btn-filter {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary-orange);
-            border: none;
-            color: white;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
-        }
-
-        .btn-filter:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 115, 36, 0.4);
-        }
+        .btn-apply { background: var(--primary-orange); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-apply:hover { background: #e66015; }
 
         @media (max-width: 1000px) {
             .main-wrapper { grid-template-columns: 1fr; }
-            .filter-card { order: -1; position: relative; top: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="main-wrapper">
-        <div class="content-container">
-            <header class="header">
-                <div class="logo">
-                    <h1>MACUIN <i class="bi bi-car-front-fill"></i></h1>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(255, 115, 36, 0.1); color: #ff7324;"><i class="bi bi-cart-check"></i></div>
+                    <div class="stat-info"><h4>Total Pedidos</h4><p>{{ stats.total }}</p></div>
                 </div>
-                <a href="dashboard.html" class="btn-regresar">REGRESAR</a>
-            </header>
-
-            <div class="title-section">
-                <h2>Lista Global de Pedidos</h2>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(13, 71, 161, 0.1); color: #0d47a1;"><i class="bi bi-gear-wide-connected"></i></div>
+                    <div class="stat-info"><h4>En Proceso</h4><p>{{ stats.proceso }}</p></div>
+                </div>
+                <div class="stat-card" style="border-bottom: 3px solid #e65100;">
+                    <div class="stat-icon" style="background: rgba(230, 81, 0, 0.1); color: #e65100;"><i class="bi bi-truck"></i></div>
+                    <div class="stat-info"><h4>Enviado</h4><p>{{ stats.enviado }}</p></div>
+                </div>
+                <div class="stat-card" style="border-bottom: 3px solid #1b5e20;">
+                    <div class="stat-icon" style="background: rgba(27, 94, 32, 0.1); color: #1b5e20;"><i class="bi bi-check-circle"></i></div>
+                    <div class="stat-info"><h4>Entregado</h4><p>{{ stats.entregado }}</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(255, 193, 7, 0.1); color: #ffc107;"><i class="bi bi-currency-dollar"></i></div>
+                    <div class="stat-info"><h4>Ventas Totales</h4><p>${{ "{:,.0f}".format(stats.monto_total) }}</p></div>
+                </div>
             </div>
+
+            <div class="content-container">
+                <header class="header">
+                    <div class="logo">
+                        <h1>MACUIN <i class="bi bi-box-seam" style="color: var(--primary-orange);"></i></h1>
+                    </div>
+                    <a href="{{ url_for('main.dashboard') }}" class="btn-regresar">
+                        <i class="bi bi-arrow-left-circle"></i> REGRESAR
+                    </a>
+                </header>
+
+                <div class="title-section" style="margin-bottom: 10px;">
+                    <h2 style="font-size: 1.4rem;">Gestión Administrativa de Pedidos</h2>
+                </div>
+
+                <!-- Horizontal Filter Bar -->
+                <form action="{{ url_for('main.pedidos') }}" method="GET" class="filter-header">
+                    <div class="horizontal-filters">
+                        <div class="filter-item">
+                            <label><i class="bi bi-search"></i> Buscar Cliente</label>
+                            <input type="text" name="usuario" placeholder="Nombre..." value="{{ filtro_cliente }}">
+                        </div>
+                        <div class="filter-item">
+                            <label><i class="bi bi-funnel"></i> Estatus</label>
+                            <select name="estatus">
+                                <option value="Todos los pedidos" {% if filtro_estatus == 'Todos los pedidos' %}selected{% endif %}>Todos los pedidos</option>
+                                <option value="En Proceso" {% if filtro_estatus == 'En Proceso' %}selected{% endif %}>En proceso</option>
+                                <option value="Enviado" {% if filtro_estatus == 'Enviado' %}selected{% endif %}>Enviado</option>
+                                <option value="Entregado" {% if filtro_estatus == 'Entregado' %}selected{% endif %}>Entregado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-apply">
+                        <i class="bi bi-check-lg"></i> FILTRAR RESULTADOS
+                    </button>
+                </form>
 
             <div class="table-responsive">
                 <table>
@@ -221,56 +139,37 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr onclick="location.href='detalle_pedido.html'">
-                            <td>#P-1024</td>
-                            <td style="font-weight: 600;">Refaccionaria Sánchez</td>
-                            <td>24 Feb, 2026</td>
-                            <td style="font-weight: 700; color: var(--primary-orange);">$4,250.00</td>
-                            <td><span class="badge bg-process">En Proceso</span></td>
+                        {% for p in pedidos %}
+                        <tr onclick="window.location.href='{{ url_for('main.detalle_pedido') }}';">
+                            <td>#P-{{ p.id }}</td>
+                            <td style="font-weight: 600;">{{ p.cliente_nombre }}</td>
+                            <td>{{ p.fecha[:10] if p.fecha is string else p.fecha }}</td>
+                            <td style="font-weight: 700; color: var(--primary-orange);">${{ "{:,.2f}".format(p.total) }}</td>
+                            <td>
+                                {% if p.estatus == 'En Proceso' %}
+                                    <span class="badge bg-process">En Proceso</span>
+                                {% elif p.estatus == 'Enviado' %}
+                                    <span class="badge bg-shipped">Enviado</span>
+                                {% else %}
+                                    <span class="badge bg-done">Entregado</span>
+                                {% endif %}
+                            </td>
                         </tr>
-                        <tr onclick="location.href='detalle_pedido.html'">
-                            <td>#P-1023</td>
-                            <td style="font-weight: 600;">Taller Mecánico "El Rayo"</td>
-                            <td>22 Feb, 2026</td>
-                            <td style="font-weight: 700; color: var(--primary-orange);">$1,890.00</td>
-                            <td><span class="badge bg-shipped">Enviado</span></td>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 50px; color: var(--text-muted);">
+                                <i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                                No se encontraron pedidos con estos filtros.
+                            </td>
                         </tr>
-                        <tr onclick="location.href='detalle_pedido.html'">
-                            <td>#P-1022</td>
-                            <td style="font-weight: 600;">Autopartes Express</td>
-                            <td>20 Feb, 2026</td>
-                            <td style="font-weight: 700; color: var(--primary-orange);">$12,400.00</td>
-                            <td><span class="badge bg-done">Entregado</span></td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
+            </div>
         </div>
-
-        <aside class="filter-card">
-            <h3>Filtros</h3>
-            <form action="pedidos.html" method="GET">
-                <div class="filter-group">
-                    <label>BUSCAR POR CLIENTE</label>
-                    <input type="text" placeholder="Nombre o ID...">
-                </div>
-                <div class="filter-group">
-                    <label>ESTATUS DEL PEDIDO</label>
-                    <select>
-                        <option>Todos los pedidos</option>
-                        <option>En proceso</option>
-                        <option>Enviado</option>
-                        <option>Entregado</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>FECHA</label>
-                    <input type="date">
-                </div>
-                <button type="submit" class="btn-filter">Aplicar Filtros</button>
-            </form>
-        </aside>
     </div>
-
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>
+>

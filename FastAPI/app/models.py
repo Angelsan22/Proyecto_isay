@@ -22,3 +22,28 @@ class Usuario(Base):
     nombre = Column(String(100), nullable=False)
     correo = Column(String(120), unique=True, index=True, nullable=False)
     fecha_registro = Column(DateTime, default=datetime.utcnow)
+
+    pedidos = relationship("Pedido", back_populates="cliente")
+
+class Pedido(Base):
+    __tablename__ = "pedidos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    cliente_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    fecha = Column(DateTime, default=datetime.utcnow)
+    total = Column(Integer, nullable=False)
+    estatus = Column(String(50), default="En Proceso") # En Proceso, Enviado, Entregado
+
+    cliente = relationship("Usuario", back_populates="pedidos")
+
+class Producto(Base):
+    __tablename__ = "productos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(100), nullable=False)
+    categoria = Column(String(50), nullable=True)
+    descripcion = Column(String(255), nullable=True)
+    precio = Column(Integer, nullable=False)
+    stock_actual = Column(Integer, default=0)
+    stock_minimo = Column(Integer, default=5)
+    fecha_actualizacion = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

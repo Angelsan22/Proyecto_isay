@@ -7,22 +7,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     <style>
-        :root { --primary-orange: #ff7324; --primary-dark: #1e1e1e; --bg-light: #f8f9fa; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-light); padding: 30px; color: var(--primary-dark); }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+        body { background-color: var(--bg-main); padding: 30px; color: var(--text-main); }
+        
+        .container { max-width: 1200px; margin: 0 auto; background: var(--bg-card); padding: 40px; border-radius: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+        
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .logo h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 10px; font-weight: 800; }
+        .logo h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--text-main); }
         .logo h1 i { color: var(--primary-orange); }
-        .btn-regresar { text-decoration: none; color: var(--primary-dark); font-weight: 700; font-size: 0.85rem; padding: 8px 18px; border-radius: 12px; border: 1px solid #eee; transition: 0.3s; }
-        .btn-regresar:hover { background-color: var(--primary-dark); color: white; }
-        h2 { font-size: 2.2rem; font-weight: 800; text-align: center; margin-bottom: 50px; text-transform: uppercase; }
+        
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-regresar { text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 0.85rem; padding: 10px 20px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-main); transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-regresar:hover { border-color: var(--primary-orange); color: var(--primary-orange); transform: translateY(-2px); }
+
+        /* Compact Theme Toggle */
+        .theme-toggle { background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.75rem; transition: 0.3s; }
+        .theme-toggle:hover { border-color: var(--primary-orange); }
+
+        h2 { font-size: 2.2rem; font-weight: 800; text-align: center; margin-bottom: 50px; text-transform: uppercase; letter-spacing: -1px; }
+        
         .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        .chart-card { background: var(--primary-dark); padding: 40px; border-radius: 25px; color: white; display: flex; flex-direction: column; align-items: center; }
+        
+        .chart-card { background: var(--bg-main); padding: 40px; border-radius: 28px; color: var(--text-main); display: flex; flex-direction: column; align-items: center; border: 1px solid var(--border-color); }
         .chart-wrapper { width: 100%; max-width: 320px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        td { padding: 15px; background-color: #f9f9f9; font-size: 0.85rem; border-radius: 10px; border: 1px solid #f1f1f1; }
+        
+        table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+        td { padding: 18px; background-color: var(--bg-main); font-size: 0.9rem; border-radius: 14px; border: 1px solid var(--border-color); color: var(--text-main); }
+        
+        @media (max-width: 900px) { .report-grid { grid-template-columns: 1fr; } .container { padding: 30px 20px; } }
     </style>
 </head>
 <body>
@@ -34,45 +48,81 @@
         <h2>Reportes de Pedidos</h2>
         <div class="report-grid">
             <div class="chart-card">
-                <h3 style="margin-bottom: 25px;">Resumen de estatus</h3>
+                <h3 style="margin-bottom: 25px; font-weight: 800;">Resumen de estatus</h3>
                 <div class="chart-wrapper"><canvas id="pieChart"></canvas></div>
             </div>
             <div class="table-wrapper">
                 <table>
                     <tbody>
                         <tr>
-                            <td style="font-weight: 700; color: #666;">#P-1001</td>
-                            <td>24/02/26</td>
-                            <td style="font-weight: 600;">Refaccionaria S.</td>
-                            <td style="color: var(--primary-orange); font-weight: 700; text-align: right;">$4,500.00</td>
+                            <td style="font-weight: 800; color: var(--primary-orange);">#P-1001</td>
+                            <td style="font-weight: 700; opacity: 0.7;">24/02/26</td>
+                            <td style="font-weight: 700;">Refaccionaria Sánchez</td>
+                            <td style="color: var(--primary-orange); font-weight: 800; text-align: right; font-size: 1.1rem;">$4,500.00</td>
                         </tr>
-                        </tbody>
+                        <tr>
+                            <td style="font-weight: 800; color: var(--primary-orange);">#P-1002</td>
+                            <td style="font-weight: 700; opacity: 0.7;">25/02/26</td>
+                            <td style="font-weight: 700;">AutoPartes Express</td>
+                            <td style="color: var(--primary-orange); font-weight: 800; text-align: right; font-size: 1.1rem;">$2,850.00</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <script>
         const ctx = document.getElementById('pieChart');
-        new Chart(ctx, { 
-            type: 'pie', 
-            data: { 
-                labels: ['Entregado', 'Pendiente', 'En proceso', 'Enviado'], 
-                datasets: [{ 
-                    data: [20, 12, 38, 30], 
-                    backgroundColor: ['#e91e63', '#2196f3', '#9c27b0', '#673ab7'], 
-                    borderWidth: 0 
-                }] 
-            }, 
-            options: { 
-                responsive: true, 
-                plugins: { 
-                    legend: { 
-                        position: 'bottom', 
-                        labels: { color: '#fff', font: { family: 'Inter', size: 12 } } 
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        
+        const chartData = { 
+            labels: ['Entregado', 'Pendiente', 'En proceso', 'Enviado'], 
+            datasets: [{ 
+                data: [20, 12, 38, 30], 
+                backgroundColor: ['#10b981', '#ff7324', '#4da6ff', '#8b5cf6'], 
+                borderWidth: 0,
+                hoverOffset: 15
+            }] 
+        };
+
+        const getChartOptions = (theme) => ({ 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { 
+                    position: 'bottom', 
+                    labels: { 
+                        color: theme === 'dark' ? '#ffffff' : '#1e1e1e', 
+                        padding: 20,
+                        font: { family: 'Inter', size: 13, weight: '700' } 
                     } 
-                } 
+                },
+                tooltip: {
+                    backgroundColor: theme === 'dark' ? '#2a2a2a' : '#ffffff',
+                    titleColor: theme === 'dark' ? '#ffffff' : '#1e1e1e',
+                    bodyColor: theme === 'dark' ? '#ffffff' : '#1e1e1e',
+                    borderColor: 'rgba(255, 115, 36, 0.3)',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: true
+                }
             } 
+        });
+
+        let myChart = new Chart(ctx, { 
+            type: 'doughnut', 
+            data: chartData, 
+            options: getChartOptions(currentTheme)
+        });
+
+        // Listen for theme changes
+        window.addEventListener('themeChanged', (e) => {
+            myChart.options = getChartOptions(e.detail.theme);
+            myChart.update();
         });
     </script>
 </body>
+</html>
 </html>

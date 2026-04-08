@@ -1,53 +1,158 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actualizar Stock - MACUIN</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     <style>
-        :root { --primary-orange: #ff7324; --primary-dark: #1e1e1e; --bg-light: #f8f9fa; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--bg-light); padding: 20px; }
-        .stock-card { background: #ffffff; width: 100%; max-width: 550px; padding: 45px; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.06); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
-        .logo h1 { font-size: 1.4rem; display: flex; align-items: center; gap: 10px; font-weight: 800; }
-        .logo h1 i { color: var(--primary-orange); }
-        .btn-regresar { text-decoration: none; color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; border-bottom: 2px solid var(--primary-orange); }
-        h2 { font-size: 2rem; margin-bottom: 30px; font-weight: 800; text-align: center; color: var(--primary-dark); }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; color: #666; text-transform: uppercase; }
-        .form-group input, .form-group select { width: 100%; padding: 14px 18px; border-radius: 12px; border: 1px solid #eef0f2; background-color: #f9f9f9; outline: none; font-size: 0.95rem; transition: 0.3s; }
-        .form-group input:focus { border-color: var(--primary-orange); background-color: #fff; box-shadow: 0 0 0 4px rgba(255, 115, 36, 0.08); }
-        .readonly-field { background-color: #f1f1f1 !important; color: #888; font-weight: 600; cursor: not-allowed; }
-        .btn-actualizar { width: 100%; padding: 16px; margin-top: 20px; border-radius: 15px; border: none; background-color: var(--primary-dark); color: white; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-actualizar:hover { background-color: var(--primary-orange); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 115, 36, 0.3); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        
+        .update-box { background: var(--bg-card); width: 100%; max-width: 650px; border-radius: 32px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.08); border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .header-bar { background-color: var(--dark-grey); color: white; padding: 30px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .logo h1 { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .logo i { color: var(--primary-orange); }
+        
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .btn-regresar { text-decoration: none; color: #aaa; font-weight: 600; font-size: 0.8rem; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+        .btn-regresar:hover { color: white; }
+
+        /* Compact Theme Toggle */
+        .theme-toggle { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; padding: 8px 12px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.75rem; transition: 0.3s; }
+        .theme-toggle:hover { background: rgba(255,255,255,0.1); color: white; }
+        .theme-toggle i { color: var(--primary-orange); }
+
+        .content { padding: 40px; }
+        .product-meta { background: var(--bg-main); padding: 25px; border-radius: 20px; margin-bottom: 30px; border: 1px solid var(--border-color); }
+        .meta-info h2 { font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+        .meta-info span { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .meta-price { font-size: 1.5rem; font-weight: 800; color: var(--primary-orange); }
+
+        form { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .full-width { grid-column: span 2; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-left: 2px; }
+        
+        .input-wrapper { position: relative; display: flex; align-items: flex-start; }
+        .input-wrapper i { position: absolute; left: 18px; top: 20px; color: var(--text-muted); }
+        .input-wrapper input, .input-wrapper select, .input-wrapper textarea { width: 100%; padding: 16px 16px 16px 48px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-main); font-size: 0.95rem; font-weight: 600; outline: none; transition: 0.3s; color: var(--text-main); }
+        .input-wrapper input:focus, .input-wrapper textarea:focus { border-color: var(--primary-orange); background: var(--bg-card); box-shadow: 0 0 0 4px rgba(255, 115, 36, 0.1); }
+
+        .readonly-input { opacity: 0.6; cursor: not-allowed; }
+        .form-footer { grid-column: span 2; margin-top: 15px; display: flex; gap: 15px; }
+        .btn-submit { flex: 1; padding: 18px; border-radius: 18px; border: none; background: var(--dark-grey); color: white; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid #333; }
+        .btn-submit:hover { background: var(--primary-orange); border-color: var(--primary-orange); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255, 115, 36, 0.3); }
+
+        .alert { padding: 15px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; border: 1px solid transparent; }
+        .alert-success { background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: rgba(16, 185, 129, 0.2); }
+        .alert-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
     </style>
 </head>
+
 <body>
-    <div class="stock-card">
-        <header class="header">
-            <div class="logo"><h1>MACUIN <i class="bi bi-car-front-fill"></i></h1></div>
-            <a href="{{ url_for('main.gestion_inventario') }}" class="btn-regresar">REGRESAR</a>
-        </header>
-        <h2>Actualizar stock</h2>
-        
-        <form action="{{ url_for('main.gestion_inventario') }}" method="GET">
-            <div class="form-group"><label>Código de artículo</label><input type="text" value="ART-12345" class="readonly-field" readonly></div>
-            <div class="form-group"><label>Nombre del artículo</label><input type="text" value="Bomba de Agua G-Pro" class="readonly-field" readonly></div>
-            <div class="form-group"><label>Cantidad actual</label><input type="number" value="15" class="readonly-field" readonly></div>
-            <div class="form-group"><label style="color: var(--primary-orange);">Nueva cantidad</label><input type="number" placeholder="Ingresa el nuevo total" required></div>
-            <div class="form-group"><label>Motivo</label>
-                <select required>
-                    <option value="" disabled selected>Selecciona una opción</option>
-                    <option>Entrada por compra</option>
-                    <option>Salida por venta</option>
-                    <option>Ajuste (Daño/Pérdida)</option>
-                </select>
+    <div class="update-box">
+        <header class="header-bar">
+            <div class="logo">
+                <h1>MACUIN <i class="bi bi-tools"></i></h1>
             </div>
-            <button type="submit" class="btn-actualizar">Confirmar actualización</button>
-        </form>
+            <a href="{{ url_for('main.gestion_inventario') }}" class="btn-regresar"><i class="bi bi-x-lg"></i> CANCELAR</a>
+        </header>
+
+        <div class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="product-meta" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <div class="meta-info">
+                        <span>{{ producto.categoria }}</span>
+                        <h2>{{ producto.nombre }}</h2>
+                    </div>
+                    <div class="meta-price">${{ "{:,.2f}".format(producto.precio) }}</div>
+                </div>
+                {% if producto.descripcion %}
+                <div style="font-size: 0.85rem; color: var(--primary-orange); background: rgba(255, 115, 36, 0.05); padding: 10px 15px; border-radius: 12px; width: 100%; border: 1px dashed var(--primary-orange);">
+                    <strong>Descripción actual:</strong> {{ producto.descripcion }}
+                </div>
+                {% endif %}
+            </div>
+
+            <form action="{{ url_for('main.actualizar_stock', id=producto.id) }}" method="POST">
+                <div class="form-group">
+                    <label>ID Autoparte</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-hash"></i>
+                        <input type="text" value="REF-00{{ producto.id }}" class="readonly-input" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Existencia Actual</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-stack"></i>
+                        <input type="text" value="{{ producto.stock_actual }} unidades" class="readonly-input" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label style="color: var(--primary-orange);">Precio de Venta ($)</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-currency-dollar" style="color: var(--primary-orange);"></i>
+                        <input type="number" name="precio" step="1" required value="{{ producto.precio }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label style="color: var(--primary-orange);">Descripción del Producto</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-card-text" style="color: var(--primary-orange);"></i>
+                        <textarea name="descripcion" rows="3" placeholder="Ingresa detalles o especificaciones de la pieza...">{{ producto.descripcion or '' }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label style="color: var(--primary-orange);">Nueva Cantidad en Almacén</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-plus-circle-fill" style="color: var(--primary-orange);"></i>
+                        <input type="number" name="nueva_cantidad" placeholder="Ingresa el nuevo total..." required
+                            min="0" value="{{ producto.stock_actual }}">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Motivo de la Modificación</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-chat-left-text"></i>
+                        <select name="motivo" required>
+                            <option value="" disabled selected>Selecciona una justificación...</option>
+                            <option value="Entrada por compra"> Entrada por compra</option>
+                            <option value="Salida por venta"> Salida por venta</option>
+                            <option value="Ajuste (Daño/Pérdida)"> Ajuste (Daño/Pérdida)</option>
+                            <option value="Devolución"> Devolución de cliente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-cloud-upload-fill"></i> GUARDAR CAMBIOS
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
+
 </html>
