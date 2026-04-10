@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cliente;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PedidoController extends Controller
 {
@@ -55,11 +56,7 @@ class PedidoController extends Controller
         if (!$pedido) abort(404);
 
         $pedido->metodo_envio = 'Mensajería Express';
-        $pedido->detalles = collect([
-            (object)['autoparte' => (object)['nombre' => 'Pastilas de Freno Delanteras'], 'subtotal' => 120.00],
-            (object)['autoparte' => (object)['nombre' => 'Filtro de Aceite'],             'subtotal' =>  30.00],
-            (object)['autoparte' => (object)['nombre' => 'Neumatico Michelin Pilot Sport 4S'], 'subtotal' => 1100.00],
-        ]);
+        // Los detalles ya vienen del pedido real de getPedidos(), no se sobreescriben
 
         return view('clientes.pedidos.show', compact('pedido'));
     }
@@ -71,16 +68,23 @@ class PedidoController extends Controller
 
         $pedido->metodo_envio           = 'Mensajería Express';
         $pedido->fecha_entrega_estimada = now()->addDays(2);
-        $pedido->detalles = collect([
-            (object)['autoparte' => (object)['nombre' => 'Pastillas de Freno Delanteras'], 'cantidad' => 1],
-            (object)['autoparte' => (object)['nombre' => 'Filtro de Aceite Sintético'],    'cantidad' => 2],
-            (object)['autoparte' => (object)['nombre' => 'Llantas Deportivas Michelin'],   'cantidad' => 4],
-        ]);
+        // Los detalles ya vienen del pedido real de getPedidos(), no se sobreescriben
 
         $estados      = ['pendiente', 'confirmado', 'en_camino', 'entregado'];
         $ordenEstados = ['pendiente' => -1, 'confirmado' => 0, 'en_camino' => 1, 'entregado' => 2];
         $indiceActual = $ordenEstados[$pedido->estado] ?? -1;
 
         return view('clientes.pedidos.seguimiento', compact('pedido', 'estados', 'indiceActual'));
+    }
+
+    public function factura($id)
+    {
+        $pedido = $this->getPedidos()->firstWhere('id', (int)$id);
+        if (!$pedido) abort(404);
+
+        $pdf = Pdf::loadView('clientes.pedidos.factura_pdf', compact('pedido'))
+                  ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Factura_Pedido_' . $pedido->id . '.pdf');
     }
 }

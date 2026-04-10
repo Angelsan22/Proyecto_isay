@@ -288,9 +288,46 @@ def recuperar():
         return redirect(url_for('main.dashboard'))
     return render_template("recuperar_clave.html")
 
-@main.route("/registrar_autoparte")
+@main.route("/registrar_autoparte", methods=["GET", "POST"])
 @login_required
 def registrar_autoparte():
+    if request.method == "POST":
+        nombre = request.form.get("nombre")
+        marca = request.form.get("marca")
+        if marca == "otra":
+            marca = request.form.get("nueva_marca")
+            
+        estado = request.form.get("estado")
+        precio = request.form.get("precio")
+        stock = request.form.get("stock")
+        descripcion = request.form.get("descripcion")
+        
+        if not nombre or not precio or not stock or not marca:
+            flash("Por favor completa los campos obligatorios.", "warning")
+            return redirect(url_for('main.registrar_autoparte'))
+            
+        try:
+            payload = {
+                "nombre": f"{nombre} ({marca})", # Include marca in nombre for now if model doesn't support it directly
+                "categoria": "Autopartes",
+                "precio": float(precio),
+                "stock_actual": int(stock),
+                "stock_minimo": 10,
+                "descripcion": descripcion
+            }
+            
+            response = requests.post(f"{API_URL}/productos/", json=payload)
+            if response.status_code in [200, 201]:
+                flash(f"¡Autoparte '{nombre}' registrada exitosamente!", "success")
+                return redirect(url_for('main.gestion_inventario'))
+            else:
+                flash("Error al procesar el registro en el servidor central.", "danger")
+        except Exception as e:
+            print(f"Error registrando producto: {e}")
+            flash("No se pudo conectar con el servidor de inventario.", "danger")
+            
+        return redirect(url_for('main.registrar_autoparte'))
+        
     return render_template("registrar_autoparte.html")
 
 @main.route("/reporte_clientes")

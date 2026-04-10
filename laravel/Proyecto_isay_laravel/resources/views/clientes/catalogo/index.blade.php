@@ -213,9 +213,6 @@
                     <p class="mb-0 fw-medium" style="color: var(--text-muted);">Refacciones de alta precisión seleccionadas para ti</p>
                 </div>
                 <div class="d-flex align-items-center gap-4">
-                    <button class="theme-toggle-btn shadow-sm" onclick="toggleTheme()" title="Cambiar Tema">
-                        <i class="bi bi-moon-stars" id="themeIcon"></i>
-                    </button>
                     <div class="text-end d-none d-md-block">
                         <div class="h3 fw-black text-naranja mb-0">{{ count($autopartes) }}</div>
                         <div class="small fw-bold text-uppercase" style="color: var(--text-main); letter-spacing: 1px;">Piezas</div>
@@ -244,8 +241,8 @@
                                 </div>
                                 <div class="mt-auto d-flex flex-column pt-3 border-top" style="border-top: 1px solid var(--border-color) !important;">
                                     <div class="d-flex flex-column mb-3">
-                                        <span class="text-muted small fw-bold" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Precio Lista</span>
-                                        <span class="price-tag">${{ number_format($ap->precio, 2) }} <small class="text-muted fw-normal" style="font-size: 0.85rem">MXN</small></span>
+                                        <span class="small fw-bold" style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Precio Lista</span>
+                                        <span class="price-tag">${{ number_format($ap->precio, 2) }} <small class="fw-normal" style="color: var(--text-muted); font-size: 0.85rem">MXN</small></span>
                                     </div>
                                     <a href="{{ route('cliente.catalogo.show', $ap->id) }}" class="btn-details shadow-sm w-100">
                                         EXPLORAR <i class="bi bi-arrow-right fs-5"></i>
@@ -272,28 +269,4 @@
 </div>
 @endsection
 
-@push('scripts')
-<script>
-    function toggleTheme() {
-        const body = document.body;
-        const icon = document.getElementById('themeIcon');
-        const isDark = body.classList.toggle('dark-mode');
-        
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        
-        if (isDark) {
-            icon.classList.replace('bi-moon-stars', 'bi-sun');
-        } else {
-            icon.classList.replace('bi-sun', 'bi-moon-stars');
-        }
-    }
 
-    // Initialize icon on load
-    document.addEventListener('DOMContentLoaded', () => {
-        const icon = document.getElementById('themeIcon');
-        if (document.body.classList.contains('dark-mode')) {
-            icon.classList.replace('bi-moon-stars', 'bi-sun');
-        }
-    });
-</script>
-@endpush

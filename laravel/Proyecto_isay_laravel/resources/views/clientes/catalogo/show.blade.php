@@ -83,8 +83,8 @@
         width: 45px;
         height: 45px;
         border-radius: 14px;
-        border: none;
-        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        background: var(--bg-body);
         color: var(--text-main);
         font-weight: 900;
         transition: 0.3s;
@@ -117,7 +117,7 @@
 @section('content')
 <div class="container py-5">
     <div class="mb-5">
-        <a href="{{ route('cliente.catalogo.index') }}" class="btn btn-link text-decoration-none text-muted p-0 fw-bold fs-5">
+        <a href="{{ route('cliente.catalogo.index') }}" class="btn btn-link text-decoration-none p-0 fw-bold fs-5" style="color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='var(--naranja)'" onmouseout="this.style.color='var(--text-muted)'">
             <i class="bi bi-arrow-left text-naranja me-2"></i> VOLVER AL CATÁLOGO
         </a>
     </div>
@@ -146,7 +146,7 @@
                         <span class="badge bg-naranja-soft text-naranja fw-bold px-3 py-2 rounded-pill border border-naranja" style="background: rgba(232, 103, 27, 0.1);">
                             PIEZA OFICIAL MACUIN
                         </span>
-                        <span class="text-muted fw-bold">Marca: <span class="text-naranja">{{ $autoparte->marca->nombre ?? 'Genérica' }}</span></span>
+                        <span class="fw-bold" style="color: var(--text-muted);">Marca: <span class="text-naranja">{{ $autoparte->marca->nombre ?? 'Genérica' }}</span></span>
                     </div>
 
                     <div class="price-large">
@@ -171,15 +171,15 @@
                             <input type="number" id="cantidad" value="1" min="1" class="border-0 bg-transparent text-center fw-black fs-4" style="width: 50px; color: var(--text-main);" readonly>
                             <button class="qty-btn" type="button" onclick="cambiar(1)">+</button>
                         </div>
-                        <button class="btn-buy flex-grow-1" type="button">
+                        <a href="{{ route('cliente.pedidos.crear') }}" class="btn-buy flex-grow-1 text-center text-decoration-none">
                             <i class="bi bi-cart-plus-fill me-2"></i> Añadir al Carrito
-                        </button>
+                        </a>
                     </div>
 
                     <div class="spec-card mt-5">
                         <div class="d-flex align-items-center gap-2 mb-3 text-naranja">
                             <i class="bi bi-shield-check fs-4"></i>
-                            <h5 class="fw-bold mb-0">Garantía de Calidad</h5>
+                            <h5 class="fw-bold mb-0">Descripción del Producto</h5>
                         </div>
                         <p class="mb-0 fw-medium" style="line-height: 1.8; font-size: 1rem; color: var(--text-muted);">
                             {{ $autoparte->descripcion ?? "Esta autoparte ha sido verificada bajo los más estrictos controles de calidad automotriz, asegurando una compatibilidad total y vida útil extendida bajo condiciones de uso rudo." }}

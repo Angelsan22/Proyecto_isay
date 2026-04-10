@@ -55,6 +55,26 @@
         .text-naranja { color: var(--naranja) !important; }
         .nav-link-active { color: var(--naranja) !important; font-weight: 700; position: relative; }
         .nav-link-active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--naranja); border-radius: 2px; }
+
+        .nav-theme-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.07);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        .nav-theme-btn:hover {
+            background: var(--naranja);
+            border-color: var(--naranja);
+            transform: rotate(15deg) scale(1.1);
+        }
         
         /* Footer refinements */
         .main-footer {
@@ -103,6 +123,11 @@
                 <a class="nav-link text-white" href="{{ route('cliente.pedidos.crear') }}">
                     <i class="bi bi-cart3 fs-5"></i>
                 </a>
+            </li>
+            <li class="nav-item">
+                <button class="nav-theme-btn" id="navThemeToggle" onclick="toggleTheme()" title="Cambiar Tema">
+                    <i class="bi bi-moon-stars" id="navThemeIcon"></i>
+                </button>
             </li>
             @if(session('cliente_logueado'))
                 <li class="nav-item dropdown">
@@ -153,6 +178,34 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Global theme toggle — available on every page
+    function toggleTheme() {
+        const body = document.body;
+        const isDark = body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeIcons(isDark);
+    }
+
+    function updateThemeIcons(isDark) {
+        // Navbar icon
+        const navIcon = document.getElementById('navThemeIcon');
+        if (navIcon) {
+            navIcon.className = isDark ? 'bi bi-sun' : 'bi bi-moon-stars';
+        }
+        // Any inline page icon (catalog page, etc.)
+        const pageIcon = document.getElementById('themeIcon');
+        if (pageIcon) {
+            pageIcon.className = isDark ? 'bi bi-sun' : 'bi bi-moon-stars';
+        }
+    }
+
+    // Sync icon state on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const isDark = document.body.classList.contains('dark-mode');
+        updateThemeIcons(isDark);
+    });
+</script>
 @stack('scripts')
 </body>
 </html>

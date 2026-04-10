@@ -28,4 +28,5 @@ Route::prefix('cliente')->name('cliente.')->group(function () {
     Route::get('/pedidos',                  [PedidoController::class, 'index'])->name('pedidos.index');
     Route::get('/pedidos/{id}',             [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('/pedidos/{id}/seguimiento', [PedidoController::class, 'seguimiento'])->name('pedidos.seguimiento');
+    Route::get('/pedidos/{id}/factura',     [PedidoController::class, 'factura'])->name('pedidos.factura');
 });
