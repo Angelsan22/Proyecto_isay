@@ -5,7 +5,10 @@ WORKDIR /var/www/html
 # Extensiones necesarias para Laravel
 RUN apt-get update && apt-get install -y \
     git curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath gd
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath gd opcache
+
+# Configuración de OPcache
+COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # Habilitar mod_rewrite
 RUN a2enmod rewrite

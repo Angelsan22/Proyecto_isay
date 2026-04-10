@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,43 +9,217 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
-        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--bg-main); color: var(--text-main); position: relative; overflow: hidden; }
-        
-        /* Subtle background pattern */
-        body::before { content: ''; position: absolute; width: 100%; height: 100%; background-image: radial-gradient(var(--border-color) 0.5px, transparent 0.5px); background-size: 20px 20px; opacity: 0.3; z-index: -1; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
 
-        .login-card { background: var(--bg-card); width: 100%; max-width: 450px; padding: 50px; border-radius: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border: 1px solid var(--border-color); z-index: 1; }
-        
-        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 50px; }
-        .logo h1 { font-size: 1.6rem; letter-spacing: -1px; display: flex; align-items: center; gap: 8px; color: var(--text-main); font-weight: 800; }
-        .logo h1 i { color: var(--primary-orange); }
-        .logo p { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; margin-top: 5px; }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--border-color) 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 450px;
+            padding: 50px;
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            z-index: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 50px;
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        .logo h1 i {
+            color: var(--primary-orange);
+        }
+
+        .logo p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-top: 5px;
+        }
 
         /* Compact Theme Toggle */
-        .theme-toggle { background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.75rem; transition: 0.3s; }
-        .theme-toggle:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+        .theme-toggle {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            transition: 0.3s;
+        }
 
-        .form-section h2 { font-size: 2.2rem; margin-bottom: 35px; color: var(--text-main); font-weight: 800; letter-spacing: -1.5px; }
-        
-        .input-group { position: relative; margin-bottom: 22px; }
-        .input-group i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); transition: all 0.3s; z-index: 2; }
-        .input-group input { width: 100%; padding: 16px 16px 16px 52px; border-radius: 14px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-main); outline: none; font-size: 0.95rem; transition: all 0.3s; position: relative; }
-        .input-group input:focus { border-color: var(--primary-orange); background-color: var(--bg-card); box-shadow: 0 0 0 4px rgba(255, 115, 36, 0.1); }
-        .input-group input:focus + i { color: var(--primary-orange); transform: translateY(-50%) scale(1.1); }
-        
-        .options { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 35px; }
-        .options label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600; }
-        .options input[type="checkbox"] { accent-color: var(--primary-orange); width: 16px; height: 16px; }
-        .options a { text-decoration: none; color: var(--primary-orange); font-weight: 700; transition: 0.3s; }
-        .options a:hover { opacity: 0.7; }
-        
-        .btn-login { width: 100%; padding: 18px; border-radius: 14px; border: none; background: var(--primary-orange); color: white; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 115, 36, 0.2); transition: all 0.3s; letter-spacing: 0.5px; text-transform: uppercase; }
-        .btn-login:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255, 115, 36, 0.3); }
-        
-        .alert-error { padding: 15px; border-radius: 12px; margin-bottom: 25px; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+        .theme-toggle:hover {
+            border-color: var(--primary-orange);
+            color: var(--primary-orange);
+        }
+
+        .form-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 35px;
+            color: var(--text-main);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 22px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: all 0.3s;
+            z-index: 2;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 16px 16px 52px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-orange);
+            background-color: var(--bg-card);
+            box-shadow: 0 0 0 4px rgba(255, 115, 36, 0.1);
+        }
+
+        .input-group input:focus+i {
+            color: var(--primary-orange);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+        }
+
+        .options label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .options input[type="checkbox"] {
+            accent-color: var(--primary-orange);
+            width: 16px;
+            height: 16px;
+        }
+
+        .options a {
+            text-decoration: none;
+            color: var(--primary-orange);
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .options a:hover {
+            opacity: 0.7;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 18px;
+            border-radius: 14px;
+            border: none;
+            background: var(--primary-orange);
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 115, 36, 0.2);
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(255, 115, 36, 0.3);
+        }
+
+        .alert-error {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
 </head>
+
 <body>
     <div class="login-card">
         <div class="header">
@@ -56,14 +231,14 @@
         <div class="form-section">
             <h2>Iniciar Sesión</h2>
             {% with messages = get_flashed_messages(with_categories=true) %}
-              {% if messages %}
-                {% for category, message in messages %}
-                  <div class="alert-error">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    {{ message }}
-                  </div>
-                {% endfor %}
-              {% endif %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert-error">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
             {% endwith %}
             <form method="POST" action="{{ url_for('main.index') }}">
                 <div class="input-group">
@@ -84,5 +259,7 @@
     </div>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
+
 </html>
+
 </html>
