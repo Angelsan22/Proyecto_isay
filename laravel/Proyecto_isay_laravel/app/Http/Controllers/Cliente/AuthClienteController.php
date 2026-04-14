@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cliente;
 
 use App\Http\Controllers\Controller;
+use App\Security\SessionGuard;
 use Illuminate\Http\Request;
 
 class AuthClienteController extends Controller
@@ -21,7 +22,7 @@ class AuthClienteController extends Controller
         ]);
 
         // Guardamos usuario ficticio en sesión
-        session(['cliente_logueado' => true, 'cliente_nombre' => explode('@', $request->email)[0]]);
+        SessionGuard::login(explode('@', $request->email)[0]);
 
         return redirect()->route('cliente.catalogo.index');
     }
@@ -41,7 +42,7 @@ class AuthClienteController extends Controller
             'password' => ['required', 'min:6'],
         ]);
 
-        session(['cliente_logueado' => true, 'cliente_nombre' => $request->nombre]);
+        SessionGuard::login($request->nombre);
 
         return redirect()->route('cliente.catalogo.index');
     }
@@ -59,7 +60,7 @@ class AuthClienteController extends Controller
 
     public function logout()
     {
-        session()->forget(['cliente_logueado', 'cliente_nombre']);
+        SessionGuard::logout();
         return redirect()->route('cliente.login');
     }
 }

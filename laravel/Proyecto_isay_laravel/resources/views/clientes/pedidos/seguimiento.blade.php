@@ -1,240 +1,119 @@
 @extends('clientes.layout')
-@section('title', 'Seguimiento del Pedido #{{ $pedido->id }}')
+@section('title', 'Seguimiento del Pedido #' . $pedido->id . ' — Maccuin')
 
 @push('styles')
 <style>
     .tracking-hero {
         background: var(--bg-card);
         border: 1px solid var(--border-color);
-        border-radius: 36px;
+        border-radius: 28px;
         overflow: hidden;
-        box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+        box-shadow: var(--shadow-soft);
     }
 
-    /* Banner */
     .tracking-banner {
-        background: linear-gradient(135deg, #1a1a1a 0%, #0f1f0a 100%);
-        padding: 40px 50px;
+        background: linear-gradient(135deg, #111111 0%, #0f1f0a 100%);
+        padding: 36px 45px;
     }
-    .tracking-banner h1 {
-        color: white;
-        font-size: 1.9rem;
-        font-weight: 900;
-        letter-spacing: -1px;
-        margin: 0 0 6px;
-    }
-    .tracking-banner p {
-        margin: 0;
-        color: rgba(255,255,255,0.5);
-        font-size: 0.9rem;
-        font-weight: 600;
-    }
+    .tracking-banner h1 { color:white; font-size:1.7rem; font-weight:900; letter-spacing:-0.5px; margin:0 0 5px; }
+    .tracking-banner p { margin:0; color:rgba(255,255,255,0.45); font-size:0.88rem; font-weight:600; }
 
     .tracking-body {
-        padding: 45px 50px;
+        padding: 40px 45px;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 50px;
+        gap: 45px;
     }
     @media (max-width: 768px) {
-        .tracking-body { grid-template-columns: 1fr; gap: 30px; padding: 30px 25px; }
-        .tracking-banner { padding: 30px 25px; }
+        .tracking-body { grid-template-columns:1fr; gap:28px; padding:28px 22px; }
+        .tracking-banner { padding:28px 22px; }
     }
 
-    /* ---- Timeline ---- */
     .section-title {
-        font-size: 0.78rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: var(--naranja);
-        margin-bottom: 30px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:2px;
+        color:var(--naranja); margin-bottom:28px; display:flex; align-items:center; gap:10px;
     }
-    .section-title::after {
-        content: '';
-        flex: 1;
-        height: 2px;
-        background: rgba(232,103,27,0.15);
-        border-radius: 2px;
-    }
+    .section-title::after { content:''; flex:1; height:2px; background:rgba(232,103,27,0.12); border-radius:2px; }
 
-    .timeline { display: flex; flex-direction: column; }
+    .timeline { display:flex; flex-direction:column; }
+    .timeline-step { display:flex; gap:18px; align-items:flex-start; }
+    .timeline-connector { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
 
-    .timeline-step {
-        display: flex;
-        gap: 20px;
-        align-items: flex-start;
-    }
-    .timeline-connector {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex-shrink: 0;
-    }
     .step-dot {
-        width: 52px;
-        height: 52px;
-        border-radius: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        flex-shrink: 0;
-        transition: 0.3s;
+        width:48px; height:48px; border-radius:16px; display:flex; align-items:center;
+        justify-content:center; font-size:1.1rem; flex-shrink:0; transition:0.3s;
     }
-    .step-dot.active {
-        background: var(--naranja);
-        color: white;
-        box-shadow: 0 8px 20px rgba(232,103,27,0.35);
-    }
-    .step-dot.inactive {
-        background: var(--bg-body);
-        color: var(--text-muted);
-        border: 2px solid var(--border-color);
-    }
+    .step-dot.active { background:var(--naranja); color:white; box-shadow:0 6px 18px rgba(232,103,27,0.3); }
+    .step-dot.inactive { background:var(--bg-body); color:var(--text-muted); border:2px solid var(--border-color); }
     .step-dot.current {
-        background: var(--naranja);
-        color: white;
-        box-shadow: 0 0 0 6px rgba(232,103,27,0.2), 0 8px 20px rgba(232,103,27,0.3);
-        transform: scale(1.1);
-    }
-    .step-line {
-        width: 3px;
-        height: 40px;
-        border-radius: 3px;
-        margin: 6px 0;
-    }
-    .step-line.active   { background: var(--naranja); }
-    .step-line.inactive { background: var(--border-color); }
-
-    .step-info { padding-top: 10px; padding-bottom: 20px; }
-    .step-label {
-        font-weight: 800;
-        font-size: 1rem;
-        margin-bottom: 4px;
-    }
-    .step-label.active   { color: var(--naranja); }
-    .step-label.inactive { color: var(--text-muted); }
-    .step-label.current  { color: var(--naranja); }
-
-    .step-sublabel {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: var(--text-muted);
+        background:var(--naranja); color:white;
+        box-shadow:0 0 0 5px rgba(232,103,27,0.18), 0 6px 18px rgba(232,103,27,0.3);
+        transform:scale(1.08);
     }
 
-    /* ---- Info Side ---- */
+    .step-line { width:3px; height:36px; border-radius:3px; margin:5px 0; }
+    .step-line.active { background:var(--naranja); }
+    .step-line.inactive { background:var(--border-color); }
+
+    .step-info { padding-top:8px; padding-bottom:18px; }
+    .step-label { font-weight:800; font-size:0.95rem; margin-bottom:3px; }
+    .step-label.active { color:var(--naranja); }
+    .step-label.inactive { color:var(--text-muted); }
+    .step-label.current { color:var(--naranja); }
+    .step-sublabel { font-size:0.8rem; font-weight:600; color:var(--text-muted); }
+
     .info-tile-sm {
-        background: var(--bg-body);
-        border: 1px solid var(--border-color);
-        border-radius: 18px;
-        padding: 18px 22px;
-        margin-bottom: 14px;
+        background:var(--bg-body); border:1px solid var(--border-color);
+        border-radius:16px; padding:16px 20px; margin-bottom:12px;
     }
     .info-label-sm {
-        font-size: 0.7rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        color: var(--text-muted);
-        display: block;
-        margin-bottom: 4px;
+        font-size:0.68rem; font-weight:800; text-transform:uppercase;
+        letter-spacing:1.5px; color:var(--text-muted); display:block; margin-bottom:4px;
     }
-    .info-value-sm {
-        font-size: 0.95rem;
-        font-weight: 800;
-        color: var(--text-main);
-        margin: 0;
-    }
+    .info-value-sm { font-size:0.92rem; font-weight:800; color:var(--text-main); margin:0; }
 
     .item-chip {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        background: var(--bg-body);
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        padding: 14px 18px;
-        margin-bottom: 10px;
+        display:flex; align-items:center; gap:12px;
+        background:var(--bg-body); border:1px solid var(--border-color);
+        border-radius:14px; padding:14px 16px; margin-bottom:10px;
     }
     .item-chip-icon {
-        width: 40px; height: 40px;
-        background: rgba(232,103,27,0.1);
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        color: var(--naranja);
-        font-size: 1.1rem;
-        flex-shrink: 0;
+        width:38px; height:38px; background:var(--naranja-soft, rgba(232,103,27,0.1));
+        border-radius:12px; display:flex; align-items:center; justify-content:center;
+        color:var(--naranja); font-size:1rem; flex-shrink:0;
     }
-    .item-chip-name {
-        font-weight: 700;
-        font-size: 0.9rem;
-        color: var(--text-main);
-        flex: 1;
-    }
-    .item-chip-qty {
-        font-size: 0.78rem;
-        font-weight: 800;
-        color: var(--text-muted);
-    }
+    .item-chip-name { font-weight:700; font-size:0.88rem; color:var(--text-main); flex:1; }
+    .item-chip-qty { font-size:0.75rem; font-weight:800; color:var(--text-muted); }
 
     .btn-detail-full {
-        display: block;
-        width: 100%;
-        background: var(--naranja);
-        color: white;
-        border: none;
-        padding: 16px;
-        border-radius: 18px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-align: center;
-        text-decoration: none;
-        transition: 0.3s;
-        box-shadow: 0 10px 25px rgba(232,103,27,0.25);
-        margin-top: 25px;
+        display:block; width:100%; background:var(--naranja); color:white; border:none;
+        padding:15px; border-radius:16px; font-weight:800; text-transform:uppercase;
+        letter-spacing:1px; text-align:center; text-decoration:none; transition:0.3s;
+        box-shadow:0 10px 25px rgba(232,103,27,0.25); margin-top:22px;
     }
-    .btn-detail-full:hover {
-        background: #c95510;
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(232,103,27,0.35);
-        color: white;
-    }
-    .help-link {
-        display: block;
-        text-align: center;
-        margin-top: 15px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-muted);
-    }
-    .help-link a { color: var(--naranja); text-decoration: none; }
-    .help-link a:hover { text-decoration: underline; }
+    .btn-detail-full:hover { background:var(--naranja-hover, #c95510); transform:translateY(-3px); box-shadow:0 15px 35px rgba(232,103,27,0.35); color:white; }
+
+    .help-link { display:block; text-align:center; margin-top:14px; font-size:0.85rem; font-weight:600; color:var(--text-muted); }
+    .help-link a { color:var(--naranja); text-decoration:none; }
+    .help-link a:hover { text-decoration:underline; }
+
+    .back-link { color:var(--text-muted); font-weight:700; text-decoration:none; transition:0.3s; display:inline-flex; align-items:center; gap:8px; }
+    .back-link:hover { color:var(--naranja); }
 </style>
 @endpush
 
 @section('content')
-<div class="container py-5" style="max-width: 950px;">
+<div class="container py-5" style="max-width:930px;">
 
-    <!-- Back link -->
-    <a href="{{ route('cliente.pedidos.show', $pedido->id) }}"
-       class="d-inline-flex align-items-center gap-2 mb-4 fw-bold text-decoration-none"
-       style="color: var(--text-muted); transition: 0.2s;"
-       onmouseover="this.style.color='var(--naranja)'"
-       onmouseout="this.style.color='var(--text-muted)'">
+    <a href="{{ route('cliente.pedidos.show', $pedido->id) }}" class="back-link mb-4 d-inline-flex">
         <i class="bi bi-arrow-left fs-5"></i> Volver al Detalle
     </a>
 
     <div class="tracking-hero">
 
-        <!-- Banner -->
         <div class="tracking-banner d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h1><i class="bi bi-geo-alt-fill me-3" style="color: var(--naranja);"></i>Seguimiento del Envío</h1>
+                <h1><i class="bi bi-geo-alt-fill me-3" style="color:var(--naranja);"></i>Seguimiento del Envío</h1>
                 <p>Pedido #{{ $pedido->id }} · {{ $pedido->created_at->format('d \d\e F, Y') }}</p>
             </div>
             @php
@@ -245,20 +124,18 @@
                     default     => 'background:#64748b; color:white;',
                 };
                 $statusLabel = match($pedido->estado) {
-                    'entregado' => '✓ Entregado',
-                    'en_camino' => '⚡ En Camino',
-                    'confirmado'=> '● Confirmado',
-                    default     => '○ Pendiente',
+                    'entregado' => '✓ Entregado', 'en_camino' => '⚡ En Camino',
+                    'confirmado'=> '● Confirmado', default => '○ Pendiente',
                 };
             @endphp
-            <span class="px-5 py-3 rounded-pill fw-black" style="{{ $statusStyle }} font-size:0.9rem; letter-spacing:0.5px; align-self:center;">
+            <span class="px-5 py-3 rounded-pill fw-black" style="{{ $statusStyle }} font-size:0.85rem; letter-spacing:0.5px; align-self:center;">
                 {{ $statusLabel }}
             </span>
         </div>
 
         <div class="tracking-body">
 
-            <!-- LEFT: Timeline -->
+            {{-- LEFT: Timeline --}}
             <div>
                 <div class="section-title">
                     <i class="bi bi-arrow-up-circle-fill"></i> Estado del Envío
@@ -266,11 +143,11 @@
 
                 @php
                     $pasos = [
-                        ['key' => 'confirmado', 'label' => 'Pedido Confirmado',  'icon' => 'bi-bag-check-fill',  'sub' => 'Tu orden fue recibida y verificada'],
-                        ['key' => 'en_camino',  'label' => 'En Camino',          'icon' => 'bi-truck',           'sub' => 'Tu paquete está en ruta'],
-                        ['key' => 'entregado',  'label' => 'Entregado',          'icon' => 'bi-house-door-fill', 'sub' => 'Entrega completada exitosamente'],
+                        ['key'=>'confirmado','label'=>'Pedido Confirmado','icon'=>'bi-bag-check-fill','sub'=>'Tu orden fue recibida y verificada'],
+                        ['key'=>'en_camino','label'=>'En Camino','icon'=>'bi-truck','sub'=>'Tu paquete está en ruta'],
+                        ['key'=>'entregado','label'=>'Entregado','icon'=>'bi-house-door-fill','sub'=>'Entrega completada exitosamente'],
                     ];
-                    $orden  = ['pendiente' => -1, 'confirmado' => 0, 'en_camino' => 1, 'entregado' => 2];
+                    $orden  = ['pendiente'=>-1,'confirmado'=>0,'en_camino'=>1,'entregado'=>2];
                     $actual = $orden[$pedido->estado] ?? -1;
                 @endphp
 
@@ -306,7 +183,7 @@
                 </div>
             </div>
 
-            <!-- RIGHT: Pedido Info + Items -->
+            {{-- RIGHT: Info + Items --}}
             <div>
                 <div class="section-title">
                     <i class="bi bi-info-circle-fill"></i> Información del Pedido

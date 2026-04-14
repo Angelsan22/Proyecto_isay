@@ -1,187 +1,208 @@
 @extends('clientes.layout')
-@section('title', $autoparte->nombre)
+@section('title', $autoparte->nombre . ' — Maccuin')
 
 @push('styles')
 <style>
     .product-detail-container {
         background: var(--bg-card);
-        border-radius: 40px;
+        border-radius: 32px;
         overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-soft);
         border: 1px solid var(--border-color);
     }
     .img-container {
-        background: rgba(232, 103, 27, 0.05);
+        background: var(--bg-body);
         padding: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 100%;
-        min-height: 500px;
+        min-height: 480px;
         border-right: 1px solid var(--border-color);
     }
-    .product-info-panel {
-        padding: 60px;
-    }
+    .product-info-panel { padding: 50px; }
+
     .breadcrumb-custom {
-        font-size: 0.85rem;
+        font-size: 0.78rem;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 2px;
         color: var(--naranja);
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         display: block;
     }
     .product-title {
-        font-size: 3rem;
+        font-size: 2.5rem;
         font-weight: 900;
         color: var(--text-main);
-        line-height: 1;
-        margin-bottom: 30px;
-        letter-spacing: -2px;
+        line-height: 1.05;
+        margin-bottom: 25px;
+        letter-spacing: -1.5px;
     }
     .sku-badge {
         background: var(--nav-bg);
-        padding: 10px 20px;
+        padding: 8px 18px;
         border-radius: 12px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: white;
         font-weight: 700;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     .price-large {
-        font-size: 4rem;
+        font-size: 3.2rem;
         font-weight: 950;
         color: var(--naranja);
-        margin: 35px 0;
+        margin: 30px 0;
         line-height: 1;
     }
     .price-currency {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         font-weight: 700;
         vertical-align: super;
-        margin-left: 10px;
-        opacity: 0.6;
+        margin-left: 8px;
+        opacity: 0.5;
     }
     .spec-card {
-        background: rgba(0,0,0,0.02);
+        background: var(--bg-body);
         border-radius: 20px;
-        padding: 30px;
-        margin-top: 40px;
+        padding: 28px;
+        margin-top: 30px;
         border: 1px solid var(--border-color);
     }
+
+    /* Quantity Selector */
     .qty-selector {
         background: var(--bg-body);
-        border-radius: 18px;
-        padding: 8px;
+        border-radius: 16px;
+        padding: 6px;
         display: inline-flex;
         align-items: center;
-        gap: 15px;
+        gap: 12px;
         border: 2px solid var(--border-color);
     }
     .qty-btn {
-        width: 45px;
-        height: 45px;
-        border-radius: 14px;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
         border: 1px solid var(--border-color);
-        background: var(--bg-body);
+        background: var(--bg-card);
         color: var(--text-main);
         font-weight: 900;
         transition: 0.3s;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        cursor: pointer;
     }
-    .qty-btn:hover { background: var(--naranja); color: white; transform: scale(1.1); }
-    
+    .qty-btn:hover { background: var(--naranja); color: white; transform: scale(1.08); border-color: var(--naranja); }
+
     .btn-buy {
         background: var(--naranja);
         color: white;
         border: none;
-        padding: 20px 50px;
-        border-radius: 20px;
+        padding: 18px 40px;
+        border-radius: 18px;
         font-weight: 900;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 1.5px;
         transition: 0.3s;
-        box-shadow: 0 15px 30px rgba(232, 103, 27, 0.3);
-        font-size: 1.1rem;
+        box-shadow: 0 12px 30px rgba(232, 103, 27, 0.3);
+        font-size: 1rem;
+        text-decoration: none;
     }
     .btn-buy:hover {
         background: var(--oscuro);
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        transform: translateY(-4px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+        color: white;
+    }
+
+    .back-link {
+        color: var(--text-muted);
+        font-weight: 700;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .back-link:hover { color: var(--naranja); }
+
+    @media (max-width: 992px) {
+        .img-container { min-height: 300px; border-right: none; border-bottom: 1px solid var(--border-color); }
+        .product-info-panel { padding: 30px; }
+        .product-title { font-size: 2rem; }
+        .price-large { font-size: 2.5rem; }
     }
 </style>
 @endpush
 
 @section('content')
 <div class="container py-5">
-    <div class="mb-5">
-        <a href="{{ route('cliente.catalogo.index') }}" class="btn btn-link text-decoration-none p-0 fw-bold fs-5" style="color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='var(--naranja)'" onmouseout="this.style.color='var(--text-muted)'">
-            <i class="bi bi-arrow-left text-naranja me-2"></i> VOLVER AL CATÁLOGO
+    <div class="mb-4">
+        <a href="{{ route('cliente.catalogo.index') }}" class="back-link">
+            <i class="bi bi-arrow-left text-naranja"></i> VOLVER AL CATÁLOGO
         </a>
     </div>
 
-    <div class="product-detail-container pb-0">
+    <div class="product-detail-container">
         <div class="row g-0">
-            <!-- Columna Imagen -->
+            {{-- Columna Imagen --}}
             <div class="col-lg-6">
                 <div class="img-container">
                     <img src="{{ $autoparte->imagen_url ?? 'https://placehold.co/500x500?text=Sin+imagen' }}"
-                         class="img-fluid" style="max-height: 550px; object-fit: contain;" alt="{{ $autoparte->nombre }}">
+                         class="img-fluid" style="max-height:450px; object-fit:contain;" alt="{{ $autoparte->nombre }}">
                 </div>
             </div>
 
-            <!-- Columna Info -->
+            {{-- Columna Info --}}
             <div class="col-lg-6">
                 <div class="product-info-panel">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
                         <span class="breadcrumb-custom">{{ $autoparte->categoria->nombre ?? 'Refacción General' }}</span>
                         <span class="sku-badge">SKU: {{ $autoparte->sku }}</span>
                     </div>
-                    
+
                     <h1 class="product-title">{{ $autoparte->nombre }}</h1>
-                    
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <span class="badge bg-naranja-soft text-naranja fw-bold px-3 py-2 rounded-pill border border-naranja" style="background: rgba(232, 103, 27, 0.1);">
-                            PIEZA OFICIAL MACUIN
+
+                    <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+                        <span class="badge fw-bold px-3 py-2 rounded-pill" style="background:var(--naranja-soft, rgba(232,103,27,0.1)); color:var(--naranja); border:1px solid rgba(232,103,27,0.2);">
+                            PIEZA OFICIAL MACCUIN
                         </span>
-                        <span class="fw-bold" style="color: var(--text-muted);">Marca: <span class="text-naranja">{{ $autoparte->marca->nombre ?? 'Genérica' }}</span></span>
+                        <span class="fw-bold" style="color:var(--text-muted);">Marca: <span class="text-naranja">{{ $autoparte->marca->nombre ?? 'Genérica' }}</span></span>
                     </div>
 
                     <div class="price-large">
                         ${{ number_format($autoparte->precio, 2) }}<span class="price-currency">MXN</span>
                     </div>
 
-                    <div class="mb-5">
+                    <div class="mb-4">
                         @if(($autoparte->stock ?? 0) > 0)
-                            <div class="d-inline-flex align-items-center bg-success bg-opacity-10 text-success fw-black small px-4 py-2 rounded-pill border border-success">
+                            <div class="d-inline-flex align-items-center bg-success bg-opacity-10 text-success fw-black small px-4 py-2 rounded-pill border border-success" style="font-size:0.8rem;">
                                 <i class="bi bi-check2-circle me-2 fs-5"></i> EN STOCK: {{ $autoparte->stock }} UNIDADES
                             </div>
                         @else
-                            <div class="d-inline-flex align-items-center bg-danger bg-opacity-10 text-danger fw-black small px-4 py-2 rounded-pill border border-danger">
+                            <div class="d-inline-flex align-items-center bg-danger bg-opacity-10 text-danger fw-black small px-4 py-2 rounded-pill border border-danger" style="font-size:0.8rem;">
                                 <i class="bi bi-x-circle me-2 fs-5"></i> PRODUCTO AGOTADO
                             </div>
                         @endif
                     </div>
 
-                    <div class="d-flex flex-wrap align-items-center gap-4 mt-5">
+                    <div class="d-flex flex-wrap align-items-center gap-4 mt-4">
                         <div class="qty-selector shadow-sm">
                             <button class="qty-btn" type="button" onclick="cambiar(-1)">−</button>
-                            <input type="number" id="cantidad" value="1" min="1" class="border-0 bg-transparent text-center fw-black fs-4" style="width: 50px; color: var(--text-main);" readonly>
+                            <input type="number" id="cantidad" value="1" min="1" class="border-0 bg-transparent text-center fw-black fs-5" style="width:45px; color:var(--text-main);" readonly>
                             <button class="qty-btn" type="button" onclick="cambiar(1)">+</button>
                         </div>
-                        <a href="{{ route('cliente.pedidos.crear') }}" class="btn-buy flex-grow-1 text-center text-decoration-none">
+                        <a href="{{ route('cliente.pedidos.crear') }}" class="btn-buy flex-grow-1 text-center">
                             <i class="bi bi-cart-plus-fill me-2"></i> Añadir al Carrito
                         </a>
                     </div>
 
-                    <div class="spec-card mt-5">
+                    <div class="spec-card">
                         <div class="d-flex align-items-center gap-2 mb-3 text-naranja">
                             <i class="bi bi-shield-check fs-4"></i>
                             <h5 class="fw-bold mb-0">Descripción del Producto</h5>
                         </div>
-                        <p class="mb-0 fw-medium" style="line-height: 1.8; font-size: 1rem; color: var(--text-muted);">
+                        <p class="mb-0 fw-medium" style="line-height:1.8; font-size:0.95rem; color:var(--text-muted);">
                             {{ $autoparte->descripcion ?? "Esta autoparte ha sido verificada bajo los más estrictos controles de calidad automotriz, asegurando una compatibilidad total y vida útil extendida bajo condiciones de uso rudo." }}
                         </p>
                     </div>
