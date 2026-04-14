@@ -1,10 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.database import Base, SQLALCHEMY_DATABASE_URL
-from app.models import Usuario, Pedido
+from app.data.database import Base
+from app.core.config import settings
+from app.models.usuario import Usuario
+from app.models.pedido import Pedido
 from datetime import datetime
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(settings.DATABASE_URL)
 Base.metadata.create_all(bind=engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 db = SessionLocal()
@@ -39,7 +41,7 @@ def seed():
         for p_data in pedidos_data:
             pedido = Pedido(**p_data)
             db.add(pedido)
-            print(f"Pedido creado para {all_users[0].nombre}") # Simplificado para log
+            print(f"Pedido creado para {all_users[0].nombre}")  # Simplificado para log
             
         db.commit()
         print("Seeding de pedidos completado.")
