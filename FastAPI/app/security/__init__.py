@@ -1,1 +1,1 @@
-# Modulo de seguridad
+# Security module - Autenticación, hashing y JWT

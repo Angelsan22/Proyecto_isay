@@ -1,7 +1,11 @@
+"""
+Modelo ORM para la tabla de administradores.
+"""
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from app.data.database import Base
 from datetime import datetime
+
 
 class Admin(Base):
     __tablename__ = "admins"

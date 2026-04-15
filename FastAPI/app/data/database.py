@@ -1,17 +1,23 @@
+"""
+Configuración de la conexión a la base de datos con SQLAlchemy.
+Provee el engine, la sesión y la Base declarativa para los modelos ORM.
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./api.db"
+from app.core.config import settings
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    settings.DATABASE_URL, connect_args={"check_same_thread": False}
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+
 def get_db():
+    """Dependency que provee una sesión de BD por request."""
     db = SessionLocal()
     try:
         yield db

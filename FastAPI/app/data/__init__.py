@@ -1,1 +1,1 @@
-# Configuración de base de datos centralizada
+# Data module - Conexión y sesión de base de datos
