@@ -75,6 +75,8 @@
             box-shadow: 0 4px 25px rgba(0, 0, 0, 0.35);
             padding: 1rem 0 !important;
             backdrop-filter: blur(12px);
+            position: relative;
+            z-index: 1050;
         }
 
         .navbar-macuin .navbar-brand {
@@ -145,6 +147,28 @@
             box-shadow: 0 5px 20px var(--naranja-glow);
         }
 
+        /* ── Dropdown ────────────────────────────── */
+        .dropdown-menu-macuin {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color) !important;
+            box-shadow: var(--shadow-hover) !important;
+            border-radius: 16px;
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .dropdown-menu-macuin .dropdown-item {
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+        .dropdown-menu-macuin .dropdown-item:hover {
+            background-color: var(--bg-body);
+            color: var(--naranja);
+        }
+        .dropdown-menu-macuin .dropdown-divider {
+            border-top-color: var(--border-color);
+            opacity: 1;
+        }
+
         /* ── Buttons ─────────────────────────────── */
         .btn-naranja {
             background: var(--naranja);
@@ -173,6 +197,7 @@
             border: 1px solid var(--border-color);
             border-radius: 24px;
             box-shadow: var(--shadow-soft);
+            color: var(--text-main);
             transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
         .card-macuin:hover {
@@ -276,8 +301,13 @@
             </ul>
             <ul class="navbar-nav ms-auto align-items-center gap-2">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('cliente.pedidos.crear') }}" title="Carrito">
+                    <a class="nav-link position-relative d-inline-block" href="{{ route('cliente.pedidos.crear') }}" title="Carrito" style="padding: 0.5rem !important;">
                         <i class="bi bi-cart3 fs-5"></i>
+                        @if(session()->has('carrito') && count(session('carrito')) > 0)
+                            <span class="position-absolute badge rounded-pill bg-danger" style="font-size: 0.6rem; padding: 0.3em 0.5em; top: 2px; right: -2px;">
+                                {{ array_sum(session('carrito')) }}
+                            </span>
+                        @endif
                     </a>
                 </li>
                 <li class="nav-item">
@@ -285,15 +315,21 @@
                         <i class="bi bi-moon-stars" id="navThemeIcon"></i>
                     </button>
                 </li>
-                @if(session('cliente_logueado'))
+                @if(\App\Security\SessionGuard::logueado())
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown" style="color:rgba(255,255,255,0.8) !important;">
                             <div style="width:32px; height:32px; background:var(--naranja); border-radius:10px; display:flex; align-items:center; justify-content:center;">
                                 <i class="bi bi-person-fill text-white" style="font-size:0.9rem;"></i>
                             </div>
-                            {{ session('cliente_nombre', 'Usuario') }}
+                            {{ \App\Security\SessionGuard::nombre() }}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0" style="border-radius:16px; overflow:hidden;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 dropdown-menu-macuin">
+                            <li>
+                                <a class="dropdown-item py-2 fw-bold" href="{{ route('cliente.perfil') }}">
+                                    <i class="bi bi-person me-2"></i> Mi Perfil
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item py-2 text-danger fw-bold" href="{{ route('cliente.logout') }}">
                                     <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión

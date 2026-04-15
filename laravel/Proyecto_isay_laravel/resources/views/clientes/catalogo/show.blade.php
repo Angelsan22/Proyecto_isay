@@ -175,27 +175,39 @@
                     </div>
 
                     <div class="mb-4">
-                        @if(($autoparte->stock ?? 0) > 0)
-                            <div class="d-inline-flex align-items-center bg-success bg-opacity-10 text-success fw-black small px-4 py-2 rounded-pill border border-success" style="font-size:0.8rem;">
-                                <i class="bi bi-check2-circle me-2 fs-5"></i> EN STOCK: {{ $autoparte->stock }} UNIDADES
-                            </div>
-                        @else
+                        @if(($autoparte->stock ?? 0) <= 0)
                             <div class="d-inline-flex align-items-center bg-danger bg-opacity-10 text-danger fw-black small px-4 py-2 rounded-pill border border-danger" style="font-size:0.8rem;">
                                 <i class="bi bi-x-circle me-2 fs-5"></i> PRODUCTO AGOTADO
+                            </div>
+                        @elseif(($autoparte->stock ?? 0) <= ($autoparte->stock_minimo ?? 5))
+                            <div class="d-inline-flex align-items-center bg-warning bg-opacity-10 text-warning fw-black small px-4 py-2 rounded-pill border border-warning" style="font-size:0.8rem; color:#d97706 !important; border-color:#d97706 !important;">
+                                <i class="bi bi-exclamation-triangle me-2 fs-5"></i> ÚLTIMAS {{ $autoparte->stock }} PIEZAS DISPONIBLES
+                            </div>
+                        @else
+                            <div class="d-inline-flex align-items-center bg-success bg-opacity-10 text-success fw-black small px-4 py-2 rounded-pill border border-success" style="font-size:0.8rem;">
+                                <i class="bi bi-check2-circle me-2 fs-5"></i> EN STOCK: {{ $autoparte->stock }} UNIDADES
                             </div>
                         @endif
                     </div>
 
-                    <div class="d-flex flex-wrap align-items-center gap-4 mt-4">
-                        <div class="qty-selector shadow-sm">
+                    <form action="{{ route('cliente.carrito.agregar') }}" method="POST" class="d-flex flex-wrap align-items-center gap-4 mt-4">
+                        @csrf
+                        <input type="hidden" name="autoparte_id" value="{{ $autoparte->id }}">
+                        
+                        <div class="qty-selector shadow-sm {{ ($autoparte->stock ?? 0) <= 0 ? 'opacity-50' : '' }}" style="{{ ($autoparte->stock ?? 0) <= 0 ? 'pointer-events:none;' : '' }}">
                             <button class="qty-btn" type="button" onclick="cambiar(-1)">−</button>
-                            <input type="number" id="cantidad" value="1" min="1" class="border-0 bg-transparent text-center fw-black fs-5" style="width:45px; color:var(--text-main);" readonly>
+                            <input type="number" id="cantidad" name="cantidad" value="1" min="1" max="{{ $autoparte->stock ?? 99 }}" class="border-0 bg-transparent text-center fw-black fs-5" style="width:45px; color:var(--text-main);" readonly>
                             <button class="qty-btn" type="button" onclick="cambiar(1)">+</button>
                         </div>
-                        <a href="{{ route('cliente.pedidos.crear') }}" class="btn-buy flex-grow-1 text-center">
-                            <i class="bi bi-cart-plus-fill me-2"></i> Añadir al Carrito
-                        </a>
-                    </div>
+                        
+                        <button type="submit" class="btn-buy flex-grow-1 text-center {{ ($autoparte->stock ?? 0) <= 0 ? 'opacity-50' : '' }}" {{ ($autoparte->stock ?? 0) <= 0 ? 'disabled' : '' }}>
+                            @if(($autoparte->stock ?? 0) <= 0)
+                                <i class="bi bi-slash-circle me-2"></i> No Disponible
+                            @else
+                                <i class="bi bi-cart-plus-fill me-2"></i> Añadir al Carrito
+                            @endif
+                        </button>
+                    </form>
 
                     <div class="spec-card">
                         <div class="d-flex align-items-center gap-2 mb-3 text-naranja">

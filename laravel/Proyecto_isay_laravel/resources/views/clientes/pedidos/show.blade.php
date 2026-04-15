@@ -66,7 +66,38 @@
     .status-entregado { background:#10b981; color:white; }
     .status-en_camino  { background:#f59e0b; color:#1a1a1a; }
     .status-confirmado { background:#3b82f6; color:white; }
+    .status-cancelado  { background:#ef4444; color:white; }
     .status-pendiente  { background:#64748b; color:white; }
+
+    .btn-cancel {
+        background: transparent;
+        color: #ef4444;
+        border: 2px solid #ef4444;
+        padding: 15px 28px;
+        border-radius: 16px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .btn-cancel:hover { background: rgba(239,68,68,0.1); }
+
+    /* Cancel Modal */
+    .cancel-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .cancel-overlay.active { display: flex; }
+    .cancel-modal { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 36px; max-width: 420px; width: 90%; text-align: center; }
+    .cancel-modal h3 { font-weight: 900; font-size: 1.3rem; margin-bottom: 10px; }
+    .cancel-modal p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; line-height: 1.6; }
+    .cancel-modal-btns { display: flex; gap: 12px; }
+    .cancel-modal-btns button { flex: 1; padding: 14px; border-radius: 12px; font-weight: 800; cursor: pointer; border: none; font-size: 0.9rem; transition: 0.3s; }
+    .btn-confirm-cancel { background: #ef4444; color: white; }
+    .btn-confirm-cancel:hover { background: #dc2626; }
+    .btn-abort { background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color) !important; }
+    .btn-abort:hover { border-color: var(--naranja) !important; color: var(--naranja); }
 
     .items-section-title {
         font-size: 0.78rem;
@@ -129,6 +160,13 @@
     }
     .btn-invoice:hover { border-color:var(--naranja); color:var(--naranja); background:rgba(232,103,27,0.03); }
 
+    .btn-disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        filter: grayscale(1);
+        cursor: not-allowed !important;
+    }
+
     .back-link { color:var(--text-muted); font-weight:700; text-decoration:none; transition:0.3s; display:inline-flex; align-items:center; gap:8px; }
     .back-link:hover { color:var(--naranja); }
 </style>
@@ -144,6 +182,7 @@
     <div class="detail-hero">
 
         <div class="detail-banner">
+            {{-- DEBUG: Estado detectado: [{{ $pedido->estado }}] --}}
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
                 <div>
                     <h1>Detalle del Pedido</h1>
@@ -152,11 +191,13 @@
                 @php
                     $statusClass = match($pedido->estado) {
                         'entregado' => 'status-entregado', 'en_camino' => 'status-en_camino',
-                        'confirmado'=> 'status-confirmado', default => 'status-pendiente',
+                        'confirmado'=> 'status-confirmado', 'cancelado' => 'status-cancelado',
+                        default => 'status-pendiente',
                     };
                     $statusLabel = match($pedido->estado) {
                         'entregado' => '✓ Entregado', 'en_camino' => '⚡ En Camino',
-                        'confirmado'=> '● Confirmado', default => '○ Pendiente',
+                        'confirmado'=> '● Confirmado', 'cancelado' => '✗ Cancelado',
+                        default => '○ Pendiente',
                     };
                 @endphp
                 <span class="px-5 py-3 rounded-pill fw-black {{ $statusClass }}" style="font-size:0.85rem; letter-spacing:0.5px; align-self:center;">
@@ -195,7 +236,7 @@
                         <p class="item-name">{{ $detalle->autoparte->nombre ?? 'Autoparte' }}</p>
                         <div class="item-meta-row">
                             <span class="item-qty">× {{ $detalle->cantidad ?? 1 }} unidades</span>
-                            <span class="item-sub">Código: <span>{{ $detalle->autoparte->sku ?? 'N/A' }}</span></span>
+                            <span class="item-sub">Pedido: <span>#{{ $pedido->id }}</span></span>
                             @if(isset($detalle->autoparte->marca) && $detalle->autoparte->marca)
                                 <span class="item-sub">Marca: <span>{{ is_object($detalle->autoparte->marca) ? $detalle->autoparte->marca->nombre : $detalle->autoparte->marca }}</span></span>
                             @endif
@@ -223,14 +264,52 @@
             </div>
 
             <div class="action-row">
-                <a href="{{ route('cliente.pedidos.seguimiento', $pedido->id) }}" class="btn-tracking">
-                    <i class="bi bi-geo-alt-fill fs-5"></i> Seguimiento del Envío
-                </a>
-                <a href="{{ route('cliente.pedidos.factura', $pedido->id) }}" class="btn-invoice">
+                @if(!in_array($pedido->estado, ['entregado', 'cancelado']))
+                    <a href="{{ route('cliente.pedidos.seguimiento', $pedido->id) }}" class="btn-tracking">
+                        <i class="bi bi-geo-alt-fill fs-5"></i> Seguimiento del Envío
+                    </a>
+                @else
+                    <button class="btn-tracking btn-disabled">
+                        <i class="bi bi-geo-alt-fill fs-5"></i> Seguimiento Deshabilitado
+                    </button>
+                @endif
+
+                <a href="{{ route('cliente.pedidos.factura', $pedido->id) }}" class="btn-invoice {{ $pedido->estado === 'cancelado' ? 'btn-disabled' : '' }}">
                     <i class="bi bi-file-earmark-pdf fs-5"></i> Descargar Factura
                 </a>
+
+                <button type="button" class="btn-cancel {{ in_array($pedido->estado, ['entregado', 'cancelado']) ? 'btn-disabled' : '' }}" 
+                        onclick="document.getElementById('cancelModal').classList.add('active')">
+                    <i class="bi bi-x-circle-fill"></i> Cancelar Pedido
+                </button>
             </div>
+
+            @if($pedido->estado === 'cancelado')
+            <div class="mt-4 p-4 rounded-4" style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); text-align:center;">
+                <i class="bi bi-x-octagon-fill" style="color:#ef4444; font-size:1.5rem;"></i>
+                <p class="fw-bold mt-2 mb-0" style="color:#ef4444;">Este pedido fue cancelado.</p>
+                <p class="text-muted small mt-1 mb-0">Si tienes dudas, contacta a soporte.</p>
+            </div>
+            @endif
         </div>
     </div>
 </div>
+
+@if(!in_array($pedido->estado, ['entregado', 'cancelado']))
+<div class="cancel-overlay" id="cancelModal">
+    <div class="cancel-modal">
+        <div style="font-size:3rem; margin-bottom:12px;">⚠️</div>
+        <h3>¿Cancelar este pedido?</h3>
+        <p>Esta acción no se puede deshacer. El pedido quedará marcado como <strong>Cancelado</strong> y el administrador será notificado.</p>
+        <div class="cancel-modal-btns">
+            <button class="btn-abort" onclick="document.getElementById('cancelModal').classList.remove('active')">Volver</button>
+            <form action="{{ route('cliente.pedidos.cancelar', $pedido->id) }}" method="POST" style="flex:1;">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="btn-confirm-cancel" style="width:100%;">Sí, cancelar</button>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 @endsection

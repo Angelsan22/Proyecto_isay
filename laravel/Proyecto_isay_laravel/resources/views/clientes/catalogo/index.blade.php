@@ -172,6 +172,59 @@
     }
 
     .cursor-pointer { cursor: pointer; }
+
+    /* ── Stock Ribbons ──────────────────────── */
+    .catalog-card-container { position: relative; }
+
+    .ribbon-stock {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        z-index: 10;
+        padding: 7px 16px 7px 12px;
+        font-size: 0.68rem;
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: white;
+        border-radius: 0 50px 50px 0;
+        box-shadow: 5px 5px 15px rgba(0,0,0,0.12);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+    }
+
+    .ribbon-low-stock {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border-left: 4px solid #b45309;
+    }
+
+    .ribbon-out-of-stock {
+        background: linear-gradient(135deg, #374151 0%, #111827 100%);
+        border-left: 4px solid #000;
+    }
+
+    .stock-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: white;
+        display: inline-block;
+        box-shadow: 0 0 8px rgba(255,255,255,1);
+        animation: pulse-stock 2s infinite;
+    }
+
+    @keyframes pulse-stock {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.4); opacity: 0.5; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .card-out-of-stock {
+        filter: grayscale(0.8) opacity(0.7);
+    }
+
 </style>
 @endpush
 
@@ -251,9 +304,20 @@
 
             <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
                 @forelse($autopartes as $ap)
-                    <div class="col">
-                        <div class="card catalog-card h-100 border-0">
+                    <div class="col catalog-card-container">
+                        @if($ap->stock_actual <= 0)
+                            <div class="ribbon-stock ribbon-out-of-stock">
+                                <span class="stock-dot" style="background:#ef4444; box-shadow:0 0 8px #ef4444;"></span> Reabasteciendo
+                            </div>
+                        @elseif($ap->stock_actual <= $ap->stock_minimo)
+                            <div class="ribbon-stock ribbon-low-stock">
+                                <span class="stock-dot"></span> Últimas {{ $ap->stock_actual }} piezas
+                            </div>
+                        @endif
+
+                        <div class="card catalog-card h-100 border-0 {{ $ap->stock_actual <= 0 ? 'card-out-of-stock' : '' }}">
                             <div class="product-img-wrapper text-center position-relative">
+
                                 <div class="position-absolute top-0 end-0 p-3">
                                     <span class="badge-category">{{ $ap->categoria->nombre ?? 'Refacción' }}</span>
                                 </div>

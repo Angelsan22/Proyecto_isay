@@ -146,12 +146,14 @@
                                 'entregado' => 'background:#10b981; color:white;',
                                 'en_camino' => 'background:#f59e0b; color:#1a1a1a;',
                                 'confirmado' => 'background:#3b82f6; color:white;',
+                                'cancelado'  => 'background:#ef4444; color:white;',
                                 default      => 'background:#64748b; color:white;',
                             };
                             $statusLabel = match($pedido->estado) {
                                 'entregado' => '✓ ENTREGADO',
                                 'en_camino' => '⚡ EN CAMINO',
                                 'confirmado'=> '● CONFIRMADO',
+                                'cancelado' => '❌ CANCELADO',
                                 default     => '○ PENDIENTE',
                             };
                         @endphp

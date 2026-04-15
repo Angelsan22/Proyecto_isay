@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -17,204 +17,271 @@
             --naranja: #E8671B;
             --naranja-hover: #c95510;
             --naranja-glow: rgba(232, 103, 27, 0.25);
+            --dark-bg: #0f172a;
         }
 
         * { box-sizing: border-box; }
 
         body {
-            background: #f4f6fa;
+            min-height: 100vh;
+            display: flex;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #f8fafc;
+        }
+
+        /* ── Panel Imagen (izquierda) ──────────── */
+        .panel-imagen {
+            flex: 1.2;
+            background: linear-gradient(160deg, rgba(15, 23, 42, 0.95), rgba(232, 103, 27, 0.4)),
+                        url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .panel-imagen::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(232, 103, 27, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .panel-imagen > * { position: relative; z-index: 2; }
+
+        .brand-top {
+            position: absolute;
+            top: 3rem;
+            left: 3rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-top i { 
+            background: var(--naranja);
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            padding: 2rem;
-        }
-
-        /* ── Top Nav ───────────────────────────── */
-        .top-nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-            z-index: 10;
-        }
-        .top-nav .brand {
-            font-weight: 900;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #111;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .top-nav .brand i { color: var(--naranja); font-size: 1.3rem; }
-        .top-nav a.nav-action {
-            font-weight: 700;
-            color: #111;
-            text-decoration: none;
-            font-size: 0.9rem;
-            padding: 0.5rem 1.2rem;
-            border: 2px solid #e2e8f0;
             border-radius: 12px;
-            transition: 0.3s;
-        }
-        .top-nav a.nav-action:hover {
-            border-color: var(--naranja);
-            color: var(--naranja);
-            background: rgba(232, 103, 27, 0.05);
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px var(--naranja-glow);
         }
 
-        /* ── Card Form ─────────────────────────── */
-        .card-form {
+        .panel-imagen h2 {
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -2px;
+            max-width: 500px;
+        }
+        .panel-imagen h2 span { color: var(--naranja); }
+
+        /* ── Panel Formulario (derecha) ─────────── */
+        .panel-form {
+            flex: 0.8;
+            min-width: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 4rem;
+        }
+
+        .panel-form .inner {
             width: 100%;
-            max-width: 520px;
-            background: #fff;
-            border-radius: 28px;
-            padding: 2.5rem 2.5rem;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            margin-top: 4rem;
+            max-width: 440px;
         }
 
-        .card-form h2 {
-            font-weight: 900;
-            font-size: 1.8rem;
-            color: #111;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.3rem;
+        .welcome-text { margin-bottom: 2rem; }
+        .welcome-text h3 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            color: #0f172a;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
         }
-        .card-form .subtitle {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-bottom: 2rem;
-        }
-
-        /* ── Form Controls ─────────────────────── */
-        .form-label {
-            font-size: 0.8rem;
-            font-weight: 700;
+        .welcome-text p {
             color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 1rem;
+            font-weight: 500;
         }
 
-        .form-control {
-            border-radius: 14px;
-            padding: 0.8rem 1.1rem;
-            border: 2px solid #e2e8f0;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: 0.3s;
+        /* ── Form Controls ── */
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
         }
-        .form-control:focus {
+
+        .form-control-custom {
+            width: 100%;
+            background: #f1f5f9;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 0.85rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1e293b;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-custom:focus {
+            background: white;
             border-color: var(--naranja);
-            box-shadow: 0 0 0 4px rgba(232, 103, 27, 0.1);
+            box-shadow: 0 0 0 4px var(--naranja-glow);
             outline: none;
         }
-        .form-control::placeholder { color: #94a3b8; }
 
-        .btn-naranja {
+        /* ── Buttons ── */
+        .btn-submit {
             background: var(--naranja);
-            color: #fff;
+            color: white;
             border: none;
-            padding: 0.9rem;
-            font-weight: 800;
-            border-radius: 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px var(--naranja-glow);
+            width: 100%;
+            padding: 1.1rem;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px var(--naranja-glow);
+            margin-top: 1rem;
         }
-        .btn-naranja:hover {
+
+        .btn-submit:hover {
             background: var(--naranja-hover);
-            color: #fff;
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px var(--naranja-glow);
+            box-shadow: 0 15px 35px var(--naranja-glow);
         }
 
-        a { color: var(--naranja); text-decoration: none; font-weight: 600; }
-        a:hover { text-decoration: underline; }
+        .auth-footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
 
-        .alert {
-            border-radius: 14px;
-            font-weight: 600;
+        .auth-footer a {
+            color: var(--naranja);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 2rem;
             font-size: 0.9rem;
-            border: none;
+            font-weight: 600;
+            border: 1px solid #fee2e2;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to   { opacity: 1; transform: translateY(0); }
+        @media (max-width: 1100px) {
+            .panel-imagen { display: none; }
+            .panel-form { flex: 1; min-width: auto; padding: 2.5rem; }
         }
-        .card-form { animation: slideUp 0.5s ease forwards; }
     </style>
 </head>
 <body>
 
-<nav class="top-nav">
-    <span class="brand"><i class="bi bi-car-front-fill"></i> Maccuin</span>
-    <a href="{{ route('cliente.login') }}" class="nav-action">
-        <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
-    </a>
-</nav>
+<div class="panel-imagen">
+    <div class="brand-top">
+        <i class="bi bi-car-front-fill"></i>
+        Maccuin
+    </div>
+    <h2>Únete a la <span>Pasión.</span><br>Calidad en cada Km.</h2>
+</div>
 
-<div class="card-form">
-    <h2>Crear Cuenta</h2>
-    <p class="subtitle">Regístrate para explorar nuestro catálogo de autopartes</p>
+<div class="panel-form">
+    <div class="inner">
+        <div class="welcome-text">
+            <h3>Crear Cuenta</h3>
+            <p>Regístrate para gestionar tus piezas y pedidos.</p>
+        </div>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
-        </div>
-    @endif
+        @if($errors->any())
+            <div class="alert-error">
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    <form action="{{ route('cliente.registro.post') }}" method="POST">
-        @csrf
-        <div class="row g-3 mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Nombre</label>
-                <input type="text" name="nombre" class="form-control" placeholder="Tu nombre"
-                       value="{{ old('nombre') }}" required>
+        <form action="{{ route('cliente.registro.post') }}" method="POST">
+            @csrf
+            <div class="row g-3">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" class="form-control-custom" 
+                           placeholder="Tu nombre" value="{{ old('nombre') }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Apellidos</label>
+                    <input type="text" name="apellidos" class="form-control-custom" 
+                           placeholder="Tus apellidos" value="{{ old('apellidos') }}" required>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="form-label">Apellidos</label>
-                <input type="text" name="apellidos" class="form-control" placeholder="Tus apellidos"
-                       value="{{ old('apellidos') }}" required>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Correo Electrónico</label>
-            <input type="email" name="email" class="form-control" placeholder="tu@correo.com"
-                   value="{{ old('email') }}" required>
-        </div>
-        <div class="row g-3 mb-4">
-            <div class="col-md-6">
-                <label class="form-label">Contraseña</label>
-                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Confirmar</label>
-                <input type="password" name="password_confirmation" class="form-control" placeholder="••••••••">
-            </div>
-        </div>
-        <button type="submit" class="btn btn-naranja w-100">
-            <i class="bi bi-person-plus me-2"></i> Crear cuenta
-        </button>
-    </form>
 
-    <p class="text-center mt-3 text-muted" style="font-size:0.9rem;">
-        ¿Ya tienes cuenta? <a href="{{ route('cliente.login') }}">Iniciar Sesión</a>
-    </p>
+            <div class="mb-3">
+                <label class="form-label">Correo Electrónico</label>
+                <input type="email" name="email" class="form-control-custom" 
+                       placeholder="tu@correo.com" value="{{ old('email') }}" required>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" name="password" class="form-control-custom" 
+                           placeholder="••••••••" required>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">Confirmar</label>
+                    <input type="password" name="password_confirmation" class="form-control-custom" 
+                           placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-submit">
+                Registrarme Ahora
+                <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            ¿Ya tienes cuenta? <a href="{{ route('cliente.login') }}">Inicia Sesión</a>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

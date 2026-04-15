@@ -65,34 +65,38 @@
     }
 
     /* ── Search Bar ───────────────────────────── */
-    .search-products {
-        border-radius: 16px;
-        padding: 12px 18px;
+    .search-wrap {
         border: 2px solid var(--border-color);
+        border-radius: 18px;
         background: var(--bg-body);
-        color: var(--text-main);
+        transition: 0.3s;
+        overflow: hidden;
+    }
+    .search-wrap:focus-within {
+        border-color: var(--naranja);
+        box-shadow: 0 0 0 4px rgba(232, 103, 27, 0.15);
+        background: #111 !important; /* Force dark background on focus */
+    }
+    .search-wrap .input-group-text {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        padding-left: 18px;
+    }
+    .search-products {
+        border: none !important;
+        background: transparent !important;
+        color: #ffffff !important;
+        padding: 12px 15px;
         font-family: 'Inter', sans-serif;
         font-weight: 500;
-        transition: 0.3s;
+        box-shadow: none !important;
     }
     .search-products:focus {
-        border-color: var(--naranja);
-        background: var(--bg-card);
-        box-shadow: 0 0 0 4px rgba(232, 103, 27, 0.1);
-        outline: none;
+        background: transparent !important;
+        color: #ffffff !important;
     }
-    .search-products::placeholder { color: var(--text-muted); }
-    .search-wrap .input-group-text {
-        background: var(--bg-body);
-        border: 2px solid var(--border-color);
-        border-right: none;
-        border-radius: 16px 0 0 16px;
-        color: var(--text-muted);
-    }
-    .search-wrap .search-products {
-        border-left: none;
-        border-radius: 0 16px 16px 0;
-    }
+    .search-products::placeholder { color: var(--text-muted); opacity: 0.7; }
 
     /* ── Product Cards ───────────────────────── */
     .product-pick {
@@ -158,19 +162,86 @@
     }
     .cart-list .cart-item {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
+        gap: 15px;
+        padding: 15px 0;
         border-bottom: 1px solid var(--border-color);
     }
     .cart-list .cart-item:last-child { border-bottom: none; }
+    
+    .cart-item-img {
+        width: 85px;
+        height: 85px;
+        border-radius: 16px;
+        object-fit: contain;
+        background: var(--bg-body);
+        padding: 8px;
+        border: 1px solid var(--border-color);
+        flex-shrink: 0;
+    }
+    
+    .cart-item-info { flex: 1; min-width: 0; }
+    
     .cart-list .cart-item .item-name {
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 0.85rem;
         color: var(--text-main);
+        display: block;
+        margin-bottom: 5px;
     }
     .cart-list .cart-item .item-price {
         font-weight: 800;
+        font-size: 0.9rem;
         color: var(--naranja);
+        display: block;
+    }
+
+    /* Small Quantity Selector in Cart */
+    .cart-qty-ctrl {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        padding: 2px 4px;
+        border-radius: 8px;
+    }
+    .cart-qty-btn {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        border: none;
+        background: var(--bg-body);
+        color: var(--text-main);
+        font-size: 0.8rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+    }
+    .cart-qty-btn:hover {
+        background: var(--naranja);
+        color: white;
+    }
+    .cart-qty-val {
+        font-weight: 800;
+        font-size: 0.85rem;
+        min-width: 18px;
+        text-align: center;
+    }
+    .btn-trash {
+        color: #ef4444;
+        opacity: 0.6;
+        transition: 0.3s;
+        border: none;
+        background: none;
+        padding: 4px;
+    }
+    .btn-trash:hover {
+        opacity: 1;
+        transform: scale(1.1);
+        color: #dc2626;
     }
 
     /* ── Summary Table ───────────────────────── */
@@ -245,6 +316,58 @@
         font-weight: 500;
         font-size: 0.9rem;
     }
+
+    /* ── Stock Ribbons ──────────────────────── */
+    .catalog-card-container { position: relative; }
+
+    .ribbon-stock {
+        position: absolute;
+        top: 15px;
+        left: 10px;
+        z-index: 10;
+        padding: 5px 12px;
+        font-size: 0.60rem;
+        font-weight: 850;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: white;
+        border-radius: 0 50px 50px 0;
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.12);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        pointer-events: none;
+    }
+
+    .ribbon-low-stock {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border-left: 3px solid #b45309;
+    }
+
+    .ribbon-out-of-stock {
+        background: linear-gradient(135deg, #374151 0%, #111827 100%);
+        border-left: 3px solid #000;
+    }
+
+    .stock-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: white;
+        display: inline-block;
+        box-shadow: 0 0 6px rgba(255,255,255,1);
+        animation: pulse-stock 2s infinite;
+    }
+
+    @keyframes pulse-stock {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.4); opacity: 0.5; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .card-out-of-stock {
+        filter: grayscale(0.8) opacity(0.7);
+    }
 </style>
 @endpush
 
@@ -279,13 +402,22 @@
 
                 <div class="row row-cols-2 row-cols-md-2 g-3" id="productGrid">
                     @foreach($autopartes as $ap)
-                        <div class="col product-col" data-name="{{ strtolower($ap->nombre) }}">
-                            <div class="product-pick">
+                        <div class="col product-col catalog-card-container" data-name="{{ strtolower($ap->nombre) }}">
+                            @if($ap->stock_actual <= 0)
+                                <div class="ribbon-stock ribbon-out-of-stock">
+                                    <span class="stock-dot" style="background:#ef4444; box-shadow:0 0 8px #ef4444;"></span> Agotado
+                                </div>
+                            @elseif($ap->stock_actual <= ($ap->stock_minimo ?? 5))
+                                <div class="ribbon-stock ribbon-low-stock">
+                                    <span class="stock-dot"></span> Últimas {{ $ap->stock_actual }}
+                                </div>
+                            @endif
+
+                            <div class="product-pick {{ $ap->stock_actual <= 0 ? 'card-out-of-stock' : '' }}">
                                 <img src="{{ $ap->imagen_url }}" alt="{{ $ap->nombre }}">
                                 <div class="name">{{ $ap->nombre }}</div>
                                 <div class="price">${{ number_format($ap->precio, 2) }}</div>
-                                <button class="btn-add"
-                                        onclick="agregarItem('{{ $ap->nombre }}', {{ $ap->precio }})">
+                                <button type="button" class="btn-add w-100" onclick="agregarItemDirecto({{ $ap->id }}, '{{ addslashes($ap->nombre) }}', {{ $ap->precio }}, '{{ $ap->imagen_url }}', {{ $ap->stock_actual ?? 0 }})">
                                     <i class="bi bi-plus-lg me-1"></i> Agregar
                                 </button>
                             </div>
@@ -317,6 +449,10 @@
                         <td id="txt-subtotal">$0.00</td>
                     </tr>
                     <tr>
+                        <td>IVA (16%)</td>
+                        <td id="txt-iva">$0.00</td>
+                    </tr>
+                    <tr>
                         <td>Envío Estimado</td>
                         <td>$25.00</td>
                     </tr>
@@ -328,20 +464,28 @@
 
                 <hr class="divider">
 
-                <button type="button" class="btn btn-pay w-100" id="btn-confirmar"
-                        onclick="alert('Funcionalidad próximamente')">
-                    <i class="bi bi-credit-card me-2"></i> Confirmar y Pagar
-                </button>
+                <form action="{{ route('cliente.pedidos.checkout') }}" method="GET">
+                    @csrf
+                    <button type="submit" class="btn btn-pay w-100" id="btn-confirmar"
+                        @if(!session()->has('carrito') || count(session('carrito')) == 0) disabled @endif>
+                        <i class="bi bi-credit-card me-2"></i> Confirmar y Pagar
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
 </div>
+
+{{-- Hidden Form for Cart Actions --}}
+{{-- Hidden token for Javascript --}}
+<input type="hidden" name="_token" value="{{ csrf_token() }}">
+
 @endsection
 
 @push('scripts')
 <script>
-    let carrito = [];
+    let carrito = @json($itemsCarrito);
     const ENVIO = 25;
 
     function agregarItem(nombre, precio) {
@@ -351,36 +495,120 @@
         renderCarrito();
     }
 
-    function eliminarItem(nombre) {
-        carrito = carrito.filter(i => i.nombre !== nombre);
+    function updateQty(id, newQty) {
+        if (newQty < 1) return;
+        
+        // Update local object
+        const item = carrito.find(i => i.id === id);
+        if (item) {
+            if (newQty > item.stock) {
+                alert("¡Has alcanzado el límite de existencias para este producto!");
+                return;
+            }
+            item.cantidad = newQty;
+            renderCarrito();
+        }
+
+        // Push to server in background
+        const formData = new FormData();
+        formData.append('_token', document.querySelector('input[name="_token"]').value);
+        formData.append('autoparte_id', id);
+        formData.append('cantidad', newQty);
+
+        fetch("{{ route('cliente.carrito.actualizar') }}", {
+            method: "POST",
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+    }
+
+    function removeItem(id) {
+        carrito = carrito.filter(i => i.id !== id);
         renderCarrito();
+
+        const formData = new FormData();
+        formData.append('_token', document.querySelector('input[name="_token"]').value);
+        formData.append('autoparte_id', id);
+
+        fetch("{{ route('cliente.carrito.eliminar') }}", {
+            method: "POST",
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+    }
+
+    function agregarItemDirecto(id, nombre, precio, imagen_url, stock_actual) {
+        if (stock_actual < 1) {
+            alert("Producto agotado.");
+            return;
+        }
+
+        const item = carrito.find(i => i.id === id);
+        if (item) {
+            if (item.cantidad >= item.stock) {
+                alert("No hay más unidades en existencia.");
+                return;
+            }
+            item.cantidad++;
+        } else {
+            carrito.push({ id, nombre, precio, cantidad: 1, imagen: imagen_url, stock: stock_actual });
+        }
+        renderCarrito();
+
+        const formData = new FormData();
+        formData.append('_token', document.querySelector('input[name="_token"]').value);
+        formData.append('autoparte_id', id);
+        formData.append('cantidad', 1);
+
+        fetch("{{ route('cliente.carrito.agregar') }}", {
+            method: "POST",
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
     }
 
     function renderCarrito() {
         const lista    = document.getElementById('lista-carrito');
         const subtotal = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+        const iva      = subtotal * 0.16;
+        const total    = subtotal + iva + ENVIO;
 
         if (carrito.length === 0) {
             lista.innerHTML = `<div class="empty-cart"><i class="bi bi-cart-x"></i><span>Sin productos aún</span></div>`;
         } else {
             lista.innerHTML = carrito.map(i =>
-                `<div class="cart-item">
-                    <div>
-                        <span class="item-name">${i.cantidad}× ${i.nombre}</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="item-price">$${(i.precio * i.cantidad).toFixed(2)}</span>
-                        <button onclick="eliminarItem('${i.nombre}')" class="btn btn-sm border-0 text-danger" style="padding:2px 6px; font-size:0.8rem;">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
+                `<div class="cart-item d-flex align-items-center gap-3">
+                    <img src="${i.imagen}" class="cart-item-img" alt="${i.nombre}">
+                    
+                    <div class="cart-item-info flex-1 d-flex flex-column" style="height: 85px; justify-content: space-between;">
+                        <div>
+                            <span class="item-name m-0" style="white-space:normal; line-height:1.1; font-size:0.9rem; font-weight:800;">${i.nombre}</span>
+                            <div class="item-price" style="font-size:0.95rem; font-weight:800; margin-top:4px;">$${(i.precio * i.cantidad).toFixed(2)}</div>
+                        </div>
+                        
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="cart-qty-ctrl">
+                                <button type="button" class="cart-qty-btn" onclick="updateQty(${i.id}, ${i.cantidad - 1})">−</button>
+                                <span class="cart-qty-val">${i.cantidad}</span>
+                                <button type="button" class="cart-qty-btn" onclick="updateQty(${i.id}, ${i.cantidad + 1})">+</button>
+                            </div>
+                            <button onclick="removeItem(${i.id})" class="btn-trash p-0" title="Eliminar">
+                                <i class="bi bi-trash3-fill" style="font-size:1.1rem;"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>`
             ).join('');
         }
 
         document.getElementById('txt-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-        document.getElementById('txt-total').textContent    = `$${(subtotal + ENVIO).toFixed(2)}`;
+        document.getElementById('txt-iva').textContent      = `$${iva.toFixed(2)}`;
+        document.getElementById('txt-total').textContent    = `$${total.toFixed(2)}`;
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderCarrito();
+    });
 
     function filtrarProductos(query) {
         const cols = document.querySelectorAll('.product-col');
