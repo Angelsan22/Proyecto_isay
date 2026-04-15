@@ -1,16 +1,16 @@
-from app.data.database import SessionLocal, engine, Base
-from app.models.admin import Admin
-from app.security.hashing import get_password_hash
+from app.database import SessionLocal, engine
+from app import models
+from app.main import get_password_hash
 
-Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 db = SessionLocal()
 
 admin_email = "admin@macuin.com"
-existing_admin = db.query(Admin).filter(Admin.email == admin_email).first()
+existing_admin = db.query(models.Admin).filter(models.Admin.email == admin_email).first()
 
 if not existing_admin:
     print("Seeding inicial en la API de FastAPI...")
-    new_admin = Admin(
+    new_admin = models.Admin(
         nombre="Administrador Principal",
         email=admin_email,
         password_hash=get_password_hash("admin123")
