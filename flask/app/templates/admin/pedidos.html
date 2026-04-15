@@ -111,7 +111,7 @@
                 </div>
 
                 <!-- Horizontal Filter Bar -->
-                <form action="{{ url_for('main.pedidos') }}" method="GET" class="filter-header">
+                <form action="{{ url_for('pedidos.pedidos') }}" method="GET" class="filter-header">
                     <div class="horizontal-filters">
                         <div class="filter-item">
                             <label><i class="bi bi-search"></i> Buscar Cliente</label>
@@ -146,7 +146,7 @@
                     </thead>
                     <tbody>
                         {% for p in pedidos %}
-                        <tr onclick="window.location.href='{{ url_for('main.detalle_pedido', id=p.id) }}';">
+                        <tr onclick="window.location.href='{{ url_for('pedidos.detalle_pedido', id=p.id) }}';">
                             <td>#P-{{ p.id }}</td>
                             <td style="font-weight: 600;">{{ p.cliente_nombre }}</td>
                             <td>{{ p.fecha[:10] if p.fecha is string else p.fecha }}</td>

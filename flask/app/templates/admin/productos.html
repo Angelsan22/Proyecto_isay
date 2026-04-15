@@ -97,13 +97,13 @@
                         Catálogo de Autopartes
                     </h2>
                 </div>
-                <a href="{{ url_for('main.registrar_autoparte') }}" class="btn-back" style="color: var(--primary-orange); border-color: var(--primary-orange);">
+                <a href="{{ url_for('inventario.registrar_autoparte') }}" class="btn-back" style="color: var(--primary-orange); border-color: var(--primary-orange);">
                     <i class="bi bi-plus-circle-fill"></i> REGISTRAR NUEVA PIEZA
                 </a>
             </div>
 
             <!-- Rest of the content remains same -->
-            <form action="{{ url_for('main.productos') }}" method="GET" class="filter-header">
+            <form action="{{ url_for('inventario.productos') }}" method="GET" class="filter-header">
                 <div class="horizontal-filters">
                     <div class="filter-item">
                         <label><i class="bi bi-search"></i> Buscar Producto</label>
@@ -140,7 +140,7 @@
                     </thead>
                     <tbody>
                         {% for prod in productos %}
-                        <tr onclick="window.location.href='{{ url_for('main.actualizar_stock', id=prod.id) }}';">
+                        <tr onclick="window.location.href='{{ url_for('inventario.actualizar_stock', id=prod.id) }}';">
                             <td>
                                 <div class="product-img-box" style="overflow: hidden;">
                                     {% if prod.get('imagen') %}

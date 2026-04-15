@@ -37,7 +37,7 @@ def gestion_inventario():
         "categorias": len(set([p.get("categoria", "Sin Categoría") for p in productos_data if p.get("categoria")]))
     }
 
-    return render_template("gestion_inventario.html", productos=productos_data,
+    return render_template("admin/gestion_inventario.html", productos=productos_data,
                            filtro_nombre=nombre, filtro_categoria=categoria,
                            stats=stats)
 
@@ -69,7 +69,7 @@ def productos():
         "agotados": len([p for p in productos_data if p.get("stock_actual", 0) <= 0])
     }
 
-    return render_template("productos.html", productos=productos_data,
+    return render_template("admin/productos.html", productos=productos_data,
                            filtro_nombre=nombre, filtro_categoria=categoria,
                            stats=stats)
 
@@ -114,13 +114,13 @@ def registrar_autoparte():
 
         return redirect(url_for('inventario.registrar_autoparte'))
 
-    return render_template("registrar_autoparte.html")
+    return render_template("admin/registrar_autoparte.html")
 
 
 @inventario.route("/editar_autoparte")
 @login_required
 def editar_autoparte():
-    return render_template("editar_autoparte.html")
+    return render_template("admin/editar_autoparte.html")
 
 
 @inventario.route("/actualizar_stock/<int:id>", methods=["GET", "POST"])
@@ -165,4 +165,4 @@ def actualizar_stock(id):
             except Exception as e:
                 flash(f"Error al procesar actualización: {e}", "danger")
 
-    return render_template("actualizar_stock.html", producto=producto)
+    return render_template("admin/actualizar_stock.html", producto=producto)

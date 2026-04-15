@@ -45,7 +45,7 @@ def pedidos():
         "monto_total": sum([p["total"] for p in pedidos_data])
     }
 
-    return render_template("pedidos.html", pedidos=pedidos_data,
+    return render_template("admin/pedidos.html", pedidos=pedidos_data,
                            filtro_cliente=cliente, filtro_estatus=estatus,
                            stats=stats)
 
@@ -53,13 +53,13 @@ def pedidos():
 @pedidos_bp.route("/datalle_pedido")
 @login_required
 def detalle_pedido():
-    return render_template("datalle_pedido.html")
+    return render_template("admin/datalle_pedido.html")
 
 
 @pedidos_bp.route("/reportes_pedidos")
 @login_required
 def reportes_pedidos():
-    return render_template("reportes_pedidos.html")
+    return render_template("admin/reportes_pedidos.html")
 
 
 @pedidos_bp.route("/reporte_clientes")
@@ -104,4 +104,18 @@ def reporte_clientes():
         print(f"Error cargando reportes: {e}")
         flash("Error al conectar con la base de datos para los reportes", "warning")
 
-    return render_template("reporte_clientes.html", stats=stats)
+    return render_template("admin/reporte_clientes.html", stats=stats)
+ 
+@pedidos_bp.route("/pedido/<int:id>/estatus", methods=["POST"])
+@login_required
+def actualizar_estatus_pedido(id):
+    nuevo_estatus = request.form.get("estatus")
+    try:
+        response = ApiClient.update_pedido_estatus(id, nuevo_estatus)
+        if response.status_code == 200:
+            flash(f"Estatus actualizado a '{nuevo_estatus}'.", "success")
+        else:
+            flash("No se pudo actualizar el estatus.", "warning")
+    except Exception as e:
+        flash("Error de conexion con la API.", "danger")
+    return redirect(url_for('pedidos.detalle_pedido', id=id))

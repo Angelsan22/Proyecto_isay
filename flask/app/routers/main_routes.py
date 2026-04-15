@@ -45,7 +45,7 @@ def dashboard():
         print(f"Error cargando dashboard real: {e}")
         flash("La conexión con el servidor de datos ha fallado. Usando datos de respaldo.", "warning")
 
-    return render_template("dashboard.html", stats=stats)
+    return render_template("admin/dashboard.html", stats=stats)
 
 
 @main.route("/crear_admin", methods=["GET", "POST"])
@@ -107,7 +107,7 @@ def crear_admin():
         flash("Hubo un problema recuperando los registros.", "danger")
         print(e)
 
-    return render_template("crear_admin.html", admins=admins_creados, usuarios=usuarios_creados)
+    return render_template("admin/crear_admin.html", admins=admins_creados, usuarios=usuarios_creados)
 
 
 @main.route("/perfil")
@@ -135,4 +135,4 @@ def perfil():
     except Exception as e:
         print(f"Error cargando estadísticas de perfil: {e}")
 
-    return render_template("perfil.html", stats=stats)
+    return render_template("admin/perfil.html", stats=stats)

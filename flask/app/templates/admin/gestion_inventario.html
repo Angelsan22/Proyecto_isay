@@ -103,7 +103,7 @@
             </div>
             
             <!-- Rest of the content remains same -->
-            <form action="{{ url_for('main.gestion_inventario') }}" method="GET" class="filter-header">
+            <form action="{{ url_for('inventario.gestion_inventario') }}" method="GET" class="filter-header">
                 <div class="horizontal-filters">
                     <div class="filter-item">
                         <label><i class="bi bi-search"></i> Buscar Producto</label>
@@ -140,7 +140,7 @@
                     </thead>
                     <tbody>
                         {% for prod in productos %}
-                        <tr onclick="window.location.href='{{ url_for('main.actualizar_stock', id=prod.id) }}';">
+                        <tr onclick="window.location.href='{{ url_for('inventario.actualizar_stock', id=prod.id) }}';">
                             <td style="font-weight: 600; display: flex; align-items: center; gap: 15px;">
                                 <div style="width: 40px; height: 40px; background: rgba(255, 115, 36, 0.1); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: var(--primary-orange); overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-color);">
                                     {% if prod.get('imagen') %}
