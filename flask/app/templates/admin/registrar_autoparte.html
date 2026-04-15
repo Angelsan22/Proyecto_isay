@@ -159,7 +159,7 @@
               {% endif %}
             {% endwith %}
 
-            <form action="{{ url_for('main.registrar_autoparte') }}" method="POST">
+            <form action="{{ url_for('main.registrar_autoparte') }}" method="POST" enctype="multipart/form-data">
                 <div class="grid-inputs">
                     <div class="input-group full-width">
                         <label>Nombre de la pieza</label>
@@ -230,14 +230,32 @@
         </div>
         
         <div class="image-side">
-            <div class="upload-area">
-                <i class="bi bi-image-fill"></i>
-                <p class="upload-text">Arrastra la foto aquí</p>
-                <div class="small fw-bold text-naranja mt-2 opacity-75">o haz click para buscar</div>
-            </div>
-            <button class="btn-subir">
+            <label for="imagen-input" class="upload-area" id="upload-preview-area" style="cursor: pointer; position: relative;">
+                <div class="placeholder-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; pointer-events: none;">
+                    <i class="bi bi-image-fill"></i>
+                    <p class="upload-text">Arrastra la foto aquí</p>
+                    <div class="small fw-bold text-naranja mt-2 opacity-75" style="color: var(--primary-orange);">o haz click para buscar</div>
+                </div>
+                <img id="image-preview" style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0;" />
+                <input type="file" name="imagen" id="imagen-input" accept="image/*" style="opacity: 0; position: absolute; top:0; left: 0; width: 100%; height: 100%; cursor: pointer;" onchange="previewImage(event)">
+            </label>
+            <button type="button" class="btn-subir" onclick="document.getElementById('imagen-input').click()">
                 <i class="bi bi-search me-2"></i> Examinar archivos
             </button>
+            <script>
+                function previewImage(event) {
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        var output = document.getElementById('image-preview');
+                        output.src = reader.result;
+                        output.style.display = 'block';
+                        document.querySelector('.placeholder-content').style.display = 'none';
+                    };
+                    if(event.target.files[0]) {
+                        reader.readAsDataURL(event.target.files[0]);
+                    }
+                }
+            </script>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>

@@ -13,7 +13,15 @@ class SessionGuard
      */
     public static function check(): bool
     {
-        return (bool) session('cliente_logueado', false);
+        return \Illuminate\Support\Facades\Auth::check();
+    }
+
+    /**
+     * Alias para check() usado en las vistas.
+     */
+    public static function logueado(): bool
+    {
+        return self::check();
     }
 
     /**
@@ -21,15 +29,16 @@ class SessionGuard
      */
     public static function nombre(): string
     {
-        return session('cliente_nombre', 'Usuario');
+        $user = \Illuminate\Support\Facades\Auth::user();
+        return $user ? $user->name : 'Usuario';
     }
 
     /**
-     * Iniciar sesión (guardar en session).
+     * Iniciar sesión (para compatibilidad si se requiere login manual).
      */
-    public static function login(string $nombre): void
+    public static function login($user): void
     {
-        session(['cliente_logueado' => true, 'cliente_nombre' => $nombre]);
+        \Illuminate\Support\Facades\Auth::login($user);
     }
 
     /**
@@ -37,6 +46,8 @@ class SessionGuard
      */
     public static function logout(): void
     {
-        session()->forget(['cliente_logueado', 'cliente_nombre']);
+        \Illuminate\Support\Facades\Auth::logout();
+        session()->invalidate();
+        session()->regenerateToken();
     }
 }

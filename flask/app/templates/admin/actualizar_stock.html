@@ -88,7 +88,7 @@
                 {% endif %}
             </div>
 
-            <form action="{{ url_for('main.actualizar_stock', id=producto.id) }}" method="POST">
+            <form action="{{ url_for('main.actualizar_stock', id=producto.id) }}" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>ID Autoparte</label>
                     <div class="input-wrapper">
@@ -141,6 +141,20 @@
                             <option value="Ajuste (Daño/Pérdida)"> Ajuste (Daño/Pérdida)</option>
                             <option value="Devolución"> Devolución de cliente</option>
                         </select>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Imagen del Producto (Opcional)</label>
+                    <div class="input-wrapper" style="align-items: center; gap: 15px; padding: 10px; border-radius: 16px; border: 1px dashed var(--border-color); background: rgba(0,0,0,0.02);">
+                        {% if producto.imagen %}
+                        <img src="{{ url_for('static', filename=producto.imagen) }}" alt="{{ producto.nombre }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border-color);">
+                        {% else %}
+                        <div style="width: 60px; height: 60px; border-radius: 10px; background: var(--bg-card); display: flex; align-items: center; justify-content: center; color: var(--text-muted); border: 1px solid var(--border-color);">
+                           <i class="bi bi-image" style="position: static; margin: 0; padding: 0;"></i>
+                        </div>
+                        {% endif %}
+                        <input type="file" name="imagen" accept="image/*" style="padding: 10px; border: none; background: transparent; box-shadow: none;">
                     </div>
                 </div>
 

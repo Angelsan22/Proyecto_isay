@@ -141,7 +141,15 @@
                     <tbody>
                         {% for prod in productos %}
                         <tr onclick="window.location.href='{{ url_for('main.actualizar_stock', id=prod.id) }}';">
-                            <td><div class="product-img-box"><i class="bi bi-box-seam"></i></div></td>
+                            <td>
+                                <div class="product-img-box" style="overflow: hidden;">
+                                    {% if prod.get('imagen') %}
+                                    <img src="{{ url_for('static', filename=prod.get('imagen')) }}" alt="{{ prod.get('nombre') }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% else %}
+                                    <i class="bi bi-box-seam"></i>
+                                    {% endif %}
+                                </div>
+                            </td>
                             <td style="font-weight: 600;">{{ prod.get('nombre', 'Sin Nombre') }}</td>
                             <td><span style="color: var(--text-muted); font-size: 0.8rem;">#</span> {{ prod.get('categoria', 'General') }}</td>
                             <td>{{ prod.get('stock_actual', 0)|int }} un.</td>

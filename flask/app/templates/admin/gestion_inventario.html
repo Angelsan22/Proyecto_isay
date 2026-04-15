@@ -141,7 +141,16 @@
                     <tbody>
                         {% for prod in productos %}
                         <tr onclick="window.location.href='{{ url_for('main.actualizar_stock', id=prod.id) }}';">
-                            <td style="font-weight: 600;">{{ prod.get('nombre', 'Sin Nombre') }}</td>
+                            <td style="font-weight: 600; display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 40px; height: 40px; background: rgba(255, 115, 36, 0.1); border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: var(--primary-orange); overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-color);">
+                                    {% if prod.get('imagen') %}
+                                    <img src="{{ url_for('static', filename=prod.get('imagen')) }}" alt="{{ prod.get('nombre') }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% else %}
+                                    <i class="bi bi-box-seam"></i>
+                                    {% endif %}
+                                </div>
+                                {{ prod.get('nombre', 'Sin Nombre') }}
+                            </td>
                             <td><span style="color: var(--text-muted); font-size: 0.8rem;">#</span> {{ prod.get('categoria', 'N/A') }}</td>
                             <td class="stock-val {% if (prod.get('stock_actual', 0)|int) <= (prod.get('stock_minimo', 0)|int) %}text-critical{% else %}text-ok{% endif %}">
                                 {{ prod.get('stock_actual', 0)|int }} un.

@@ -105,14 +105,18 @@ class ApiProductoService
             $marcaNombre = $this->extraerMarca($nombre, $p);
             $nombre      = $this->limpiarNombre($nombre);
 
+            $imagen = !empty($p['imagen']) ? 'http://localhost:5000/static/' . ltrim($p['imagen'], '/') : 'https://placehold.co/200x200?text=' . urlencode($nombre);
+
             return (object)[
                 'id'         => $p['id'] ?? uniqid(),
                 'nombre'     => $nombre,
                 'sku'        => $p['sku'] ?? ('SKU-' . str_pad($p['id'] ?? mt_rand(100, 999), 3, '0', STR_PAD_LEFT)),
-                'precio'     => $p['precio'] ?? 0,
-                'imagen_url' => 'https://placehold.co/200x200?text=' . urlencode($nombre),
-                'categoria'  => (object)['id' => strtolower($p['categoria'] ?? 'N/A'), 'nombre' => $p['categoria'] ?? 'N/A'],
-                'marca'      => (object)['id' => strtolower($marcaNombre), 'nombre' => $marcaNombre],
+                'precio'       => $p['precio'] ?? 0,
+                'stock_actual' => $p['stock_actual'] ?? 0,
+                'stock_minimo' => $p['stock_minimo'] ?? 5,
+                'imagen_url'   => $imagen,
+                'categoria'    => (object)['id' => strtolower($p['categoria'] ?? 'N/A'), 'nombre' => $p['categoria'] ?? 'N/A'],
+                'marca'        => (object)['id' => strtolower($marcaNombre), 'nombre' => $marcaNombre],
             ];
         });
     }
@@ -126,6 +130,8 @@ class ApiProductoService
         $marcaNombre = $this->extraerMarca($nombre, $producto);
         $nombre      = $this->limpiarNombre($nombre);
 
+        $imagen = !empty($producto['imagen']) ? 'http://localhost:5000/static/' . ltrim($producto['imagen'], '/') : 'https://placehold.co/300x300?text=' . urlencode($nombre);
+
         return (object)[
             'id'               => $producto['id'] ?? uniqid(),
             'nombre'           => $nombre,
@@ -133,7 +139,8 @@ class ApiProductoService
             'numero_parte'     => $producto['sku'] ?? ('SKU-' . ($producto['id'] ?? '...')),
             'precio'           => $producto['precio'] ?? 0,
             'stock'            => $producto['stock_actual'] ?? 0,
-            'imagen_url'       => 'https://placehold.co/300x300?text=' . urlencode($nombre),
+            'stock_minimo'     => $producto['stock_minimo'] ?? 5,
+            'imagen_url'       => $imagen,
             'descripcion'      => $producto['descripcion'] ?? 'Producto obtenido desde la API',
             'especificaciones' => 'Categoría: ' . ($producto['categoria'] ?? 'N/A'),
             'imagenes'         => collect([]),

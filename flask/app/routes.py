@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_user, logout_user, login_required, current_user
 import requests
 from app.models import AdminSession
 from datetime import datetime
-
+from werkzeug.utils import secure_filename
+import uuid
 import os
 
 main = Blueprint('main', __name__)
@@ -100,7 +101,7 @@ def crear_admin():
         flash("Hubo un problema recuperando los registros.", "danger")
         print(e)
 
-    return render_template("crear_admin.html", admins=admins_creados, usuarios=usuarios_creados)
+    return render_template("admin/crear_admin.html", admins=admins_creados, usuarios=usuarios_creados)
 
 # --- RUTAS EXISTENTES PROTEGIDAS ---
 
@@ -139,12 +140,12 @@ def dashboard():
         print(f"Error cargando dashboard real: {e}")
         flash("La conexión con el servidor de datos ha fallado. Usando datos de respaldo.", "warning")
 
-    return render_template("dashboard.html", stats=stats)
+    return render_template("admin/dashboard.html", stats=stats)
 
 @main.route("/editar_autoparte")
 @login_required
 def editar_autoparte():
-    return render_template("editar_autoparte.html")
+    return render_template("admin/editar_autoparte.html")
 
 @main.route("/gestion_inventario")
 @login_required
@@ -174,7 +175,7 @@ def gestion_inventario():
         "categorias": len(set([p.get("categoria", "Sin Categoría") for p in productos_data if p.get("categoria")]))
     }
 
-    return render_template("gestion_inventario.html", productos=productos_data,
+    return render_template("admin/gestion_inventario.html", productos=productos_data,
                            filtro_nombre=nombre, filtro_categoria=categoria,
                            stats=stats)
 
@@ -212,17 +213,66 @@ def pedidos():
         "proceso": len([p for p in pedidos_data if p["estatus"] == "En Proceso"]),
         "enviado": len([p for p in pedidos_data if p["estatus"] == "Enviado"]),
         "entregado": len([p for p in pedidos_data if p["estatus"] == "Entregado"]),
+        "cancelado": len([p for p in pedidos_data if p["estatus"] == "Cancelado"]),
         "monto_total": sum([p["total"] for p in pedidos_data])
     }
 
-    return render_template("pedidos.html", pedidos=pedidos_data, 
+    return render_template("admin/pedidos.html", pedidos=pedidos_data, 
                            filtro_cliente=cliente, filtro_estatus=estatus,
                            stats=stats)
 
-@main.route("/datalle_pedido")
+@main.route("/pedido/<int:id>")
 @login_required
-def detalle_pedido():
-    return render_template("datalle_pedido.html")
+def detalle_pedido(id):
+    try:
+        response = requests.get(f"{API_URL}/pedidos/")
+        if response.status_code == 200:
+            pedidos = response.json()
+            # Encontrar el pedido específico
+            pedido = next((p for p in pedidos if p["id"] == id), None)
+            
+            if not pedido:
+                flash("Pedido no encontrado.", "danger")
+                return redirect(url_for('main.pedidos'))
+
+            # Obtener info del cliente
+            user_res = requests.get(f"{API_URL}/usuarios/")
+            if user_res.status_code == 200:
+                users = user_res.json()
+                user = next((u for u in users if u["id"] == pedido["cliente_id"]), None)
+                pedido["cliente"] = user
+            
+            # Obtener nombres de productos para los items
+            r_prods = requests.get(f"{API_URL}/productos/")
+            if r_prods.status_code == 200:
+                productos_map = {p["id"]: p for p in r_prods.json()}
+                for item in pedido.get("detalles", []):
+                    prod_info = productos_map.get(item["producto_id"])
+                    item["nombre_producto"] = prod_info["nombre"] if prod_info else "Producto #"+str(item["producto_id"])
+
+            return render_template("admin/datalle_pedido.html", pedido=pedido)
+    except Exception as e:
+        print(f"Error fetching order detail: {e}")
+        flash("Error de conexión con la API.", "danger")
+    
+    return redirect(url_for('main.pedidos'))
+
+@main.route("/pedido/<int:id>/estatus", methods=["POST"])
+@login_required
+def actualizar_estatus_pedido(id):
+    nuevo_estatus = request.form.get("estatus")
+    try:
+        response = requests.patch(
+            f"{API_URL}/pedidos/{id}/estatus",
+            json={"estatus": nuevo_estatus}
+        )
+        if response.status_code == 200:
+            flash(f"Estatus actualizado a '{nuevo_estatus}'.", "success")
+        else:
+            flash("No se pudo actualizar el estatus.", "warning")
+    except Exception as e:
+        flash("Error de conexion con la API.", "danger")
+    return redirect(url_for('main.detalle_pedido', id=id))
 
 @main.route("/perfil")
 @login_required
@@ -249,7 +299,7 @@ def perfil():
     except Exception as e:
         print(f"Error cargando estadísticas de perfil: {e}")
 
-    return render_template("perfil.html", stats=stats)
+    return render_template("admin/perfil.html", stats=stats)
 
 @main.route("/productos")
 @login_required
@@ -278,7 +328,7 @@ def productos():
         "agotados": len([p for p in productos_data if p.get("stock_actual", 0) <= 0])
     }
 
-    return render_template("productos.html", productos=productos_data,
+    return render_template("admin/productos.html", productos=productos_data,
                            filtro_nombre=nombre, filtro_categoria=categoria,
                            stats=stats)
 
@@ -301,19 +351,31 @@ def registrar_autoparte():
         precio = request.form.get("precio")
         stock = request.form.get("stock")
         descripcion = request.form.get("descripcion")
+        imagen_file = request.files.get("imagen")
         
         if not nombre or not precio or not stock or not marca:
             flash("Por favor completa los campos obligatorios.", "warning")
             return redirect(url_for('main.registrar_autoparte'))
             
         try:
+            imagen_path = None
+            if imagen_file and imagen_file.filename:
+                filename = secure_filename(imagen_file.filename)
+                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+                os.makedirs(upload_folder, exist_ok=True)
+                file_path = os.path.join(upload_folder, unique_filename)
+                imagen_file.save(file_path)
+                imagen_path = f"uploads/{unique_filename}"
+
             payload = {
                 "nombre": f"{nombre} ({marca})", # Include marca in nombre for now if model doesn't support it directly
                 "categoria": "Autopartes",
                 "precio": float(precio),
                 "stock_actual": int(stock),
                 "stock_minimo": 10,
-                "descripcion": descripcion
+                "descripcion": descripcion,
+                "imagen": imagen_path
             }
             
             response = requests.post(f"{API_URL}/productos/", json=payload)
@@ -328,7 +390,7 @@ def registrar_autoparte():
             
         return redirect(url_for('main.registrar_autoparte'))
         
-    return render_template("registrar_autoparte.html")
+    return render_template("admin/registrar_autoparte.html")
 
 @main.route("/reporte_clientes")
 @login_required
@@ -372,12 +434,12 @@ def reporte_clientes():
         print(f"Error cargando reportes: {e}")
         flash("Error al conectar con la base de datos para los reportes", "warning")
 
-    return render_template("reporte_clientes.html", stats=stats)
+    return render_template("admin/reporte_clientes.html", stats=stats)
 
 @main.route("/reportes_pedidos")
 @login_required
 def reportes_pedidos():
-    return render_template("reportes_pedidos.html")
+    return render_template("admin/reportes_pedidos.html")
 
 @main.route("/actualizar_stock/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -400,6 +462,7 @@ def actualizar_stock(id):
         nuevo_precio = request.form.get("precio")
         nueva_descripcion = request.form.get("descripcion")
         motivo = request.form.get("motivo")
+        imagen_file = request.files.get("imagen")
         
         if not nueva_cantidad or not nuevo_precio:
             flash("Debes completar todos los campos obligatorios", "warning")
@@ -410,6 +473,15 @@ def actualizar_stock(id):
                 payload["stock_actual"] = int(nueva_cantidad)
                 payload["precio"] = float(nuevo_precio)
                 payload["descripcion"] = nueva_descripcion
+                
+                if imagen_file and imagen_file.filename:
+                    filename = secure_filename(imagen_file.filename)
+                    unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+                    os.makedirs(upload_folder, exist_ok=True)
+                    file_path = os.path.join(upload_folder, unique_filename)
+                    imagen_file.save(file_path)
+                    payload["imagen"] = f"uploads/{unique_filename}"
                 
                 # Quitar campos que la API no espera en el body si es necesario (id, etc)
                 # En FastAPI models.ProductoCreate no tiene ID
@@ -423,4 +495,4 @@ def actualizar_stock(id):
             except Exception as e:
                 flash(f"Error al procesar actualización: {e}", "danger")
 
-    return render_template("actualizar_stock.html", producto=producto)
+    return render_template("admin/actualizar_stock.html", producto=producto)

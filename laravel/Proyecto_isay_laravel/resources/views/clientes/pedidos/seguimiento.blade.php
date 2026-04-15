@@ -121,11 +121,13 @@
                     'entregado' => 'background:#10b981; color:white;',
                     'en_camino' => 'background:#f59e0b; color:#1a1a1a;',
                     'confirmado'=> 'background:#3b82f6; color:white;',
+                    'cancelado' => 'background:#ef4444; color:white;',
                     default     => 'background:#64748b; color:white;',
                 };
                 $statusLabel = match($pedido->estado) {
                     'entregado' => '✓ Entregado', 'en_camino' => '⚡ En Camino',
-                    'confirmado'=> '● Confirmado', default => '○ Pendiente',
+                    'confirmado'=> '● Confirmado', 'cancelado' => '❌ Cancelado',
+                    default => '○ Pendiente',
                 };
             @endphp
             <span class="px-5 py-3 rounded-pill fw-black" style="{{ $statusStyle }} font-size:0.85rem; letter-spacing:0.5px; align-self:center;">
@@ -135,52 +137,65 @@
 
         <div class="tracking-body">
 
-            {{-- LEFT: Timeline --}}
+            {{-- LEFT: Timeline or Cancelled Message --}}
             <div>
                 <div class="section-title">
                     <i class="bi bi-arrow-up-circle-fill"></i> Estado del Envío
                 </div>
 
-                @php
-                    $pasos = [
-                        ['key'=>'confirmado','label'=>'Pedido Confirmado','icon'=>'bi-bag-check-fill','sub'=>'Tu orden fue recibida y verificada'],
-                        ['key'=>'en_camino','label'=>'En Camino','icon'=>'bi-truck','sub'=>'Tu paquete está en ruta'],
-                        ['key'=>'entregado','label'=>'Entregado','icon'=>'bi-house-door-fill','sub'=>'Entrega completada exitosamente'],
-                    ];
-                    $orden  = ['pendiente'=>-1,'confirmado'=>0,'en_camino'=>1,'entregado'=>2];
-                    $actual = $orden[$pedido->estado] ?? -1;
-                @endphp
-
-                <div class="timeline">
-                    @foreach($pasos as $paso)
-                        @php
-                            $pasoIndice = $orden[$paso['key']] ?? -1;
-                            $isActive   = $pasoIndice <= $actual;
-                            $isCurrent  = $paso['key'] === $pedido->estado;
-                            $dotClass   = $isCurrent ? 'current' : ($isActive ? 'active' : 'inactive');
-                            $lineClass  = $isActive ? 'active' : 'inactive';
-                        @endphp
-                        <div class="timeline-step">
-                            <div class="timeline-connector">
-                                <div class="step-dot {{ $dotClass }}">
-                                    <i class="bi {{ $paso['icon'] }}"></i>
-                                </div>
-                                @if(!$loop->last)
-                                    <div class="step-line {{ $lineClass }}"></div>
-                                @endif
-                            </div>
-                            <div class="step-info">
-                                <p class="step-label {{ $dotClass }}">{{ $paso['label'] }}</p>
-                                <p class="step-sublabel">
-                                    {{ $paso['sub'] }}
-                                    @if($isCurrent && isset($pedido->fecha_entrega_estimada))
-                                        <br><span class="text-naranja fw-bold">Entrega estimada: {{ \Carbon\Carbon::parse($pedido->fecha_entrega_estimada)->format('d M, Y') }}</span>
-                                    @endif
-                                </p>
-                            </div>
+                @if($pedido->estado === 'cancelado')
+                    <div class="p-5 text-center rounded-4 h-100 d-flex flex-column align-items-center justify-content-center" style="background: rgba(239, 68, 68, 0.05); border: 1px dashed rgba(239, 68, 68, 0.3);">
+                        <div class="mb-4" style="width: 80px; height: 80px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 2.5rem;">
+                            <i class="bi bi-x-octagon-fill"></i>
                         </div>
-                    @endforeach
-                </div>
+                        <h3 class="fw-black text-danger mb-3" style="letter-spacing: -0.5px;">Seguimiento Suspendido</h3>
+                        <p class="text-muted fw-bold mb-0 px-4">Este pedido ha sido cancelado. El seguimiento del envío ya no se encuentra activo.</p>
+                        <div class="mt-4 p-3 rounded-3" style="background: white; border: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-muted); width: 100%; max-width: 320px;">
+                            <i class="bi bi-info-circle me-1 text-danger"></i> Si esto fue un error, por favor contáctanos de inmediato.
+                        </div>
+                    </div>
+                @else
+                    @php
+                        $pasos = [
+                            ['key'=>'confirmado','label'=>'Pedido Confirmado','icon'=>'bi-bag-check-fill','sub'=>'Tu orden fue recibida y verificada'],
+                            ['key'=>'en_camino','label'=>'En Camino','icon'=>'bi-truck','sub'=>'Tu paquete está en ruta'],
+                            ['key'=>'entregado','label'=>'Entregado','icon'=>'bi-house-door-fill','sub'=>'Entrega completada exitosamente'],
+                        ];
+                        $orden  = ['pendiente'=>-1,'confirmado'=>0,'en_camino'=>1,'entregado'=>2];
+                        $actual = $orden[$pedido->estado] ?? -1;
+                    @endphp
+
+                    <div class="timeline">
+                        @foreach($pasos as $paso)
+                            @php
+                                $pasoIndice = $orden[$paso['key']] ?? -1;
+                                $isActive   = $pasoIndice <= $actual;
+                                $isCurrent  = $paso['key'] === $pedido->estado;
+                                $dotClass   = $isCurrent ? 'current' : ($isActive ? 'active' : 'inactive');
+                                $lineClass  = $isActive ? 'active' : 'inactive';
+                            @endphp
+                            <div class="timeline-step">
+                                <div class="timeline-connector">
+                                    <div class="step-dot {{ $dotClass }}">
+                                        <i class="bi {{ $paso['icon'] }}"></i>
+                                    </div>
+                                    @if(!$loop->last)
+                                        <div class="step-line {{ $lineClass }}"></div>
+                                    @endif
+                                </div>
+                                <div class="step-info">
+                                    <p class="step-label {{ $dotClass }}">{{ $paso['label'] }}</p>
+                                    <p class="step-sublabel">
+                                        {{ $paso['sub'] }}
+                                        @if($isCurrent && isset($pedido->fecha_entrega_estimada))
+                                            <br><span class="text-naranja fw-bold">Entrega estimada: {{ \Carbon\Carbon::parse($pedido->fecha_entrega_estimada)->format('d M, Y') }}</span>
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
             {{-- RIGHT: Info + Items --}}
