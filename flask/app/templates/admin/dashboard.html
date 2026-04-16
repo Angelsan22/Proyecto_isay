@@ -79,14 +79,14 @@
         <div class="nav-section">OPERACIÓN</div>
         <ul class="nav-menu">
             <li><a href="{{ url_for('main.dashboard') }}" class="nav-link active"><i class="bi bi-grid-fill"></i> Dashboard</a></li>
-            <li class><a href="{{ url_for('inventario.productos') }}" class="nav-link"><i class="bi bi-tools"></i> Autopartes</a></li>
-            <li><a href="{{ url_for('inventario.gestion_inventario') }}" class="nav-link"><i class="bi bi-box-seam"></i> Inventario</a></li>
-            <li><a href="{{ url_for('pedidos.pedidos') }}" class="nav-link"><i class="bi bi-cart-check"></i> Pedidos</a></li>
+            <li class><a href="{{ url_for('main.productos') }}" class="nav-link"><i class="bi bi-tools"></i> Autopartes</a></li>
+            <li><a href="{{ url_for('main.gestion_inventario') }}" class="nav-link"><i class="bi bi-box-seam"></i> Inventario</a></li>
+            <li><a href="{{ url_for('main.pedidos') }}" class="nav-link"><i class="bi bi-cart-check"></i> Pedidos</a></li>
         </ul>
         <div class="nav-section">EQUIPO Y DATA</div>
         <ul class="nav-menu">
             <li><a href="{{ url_for('main.crear_admin') }}" class="nav-link" style="color: #60a5fa;"><i class="bi bi-people"></i> Gestión Usuarios</a></li>
-            <li><a href="{{ url_for('pedidos.reporte_clientes') }}" class="nav-link" style="color: #c084fc;"><i class="bi bi-bar-chart-line"></i> Reportes Clientes</a></li>
+            <li><a href="{{ url_for('main.reporte_clientes') }}" class="nav-link" style="color: #c084fc;"><i class="bi bi-bar-chart-line"></i> Reportes Clientes</a></li>
         </ul>
         <div class="sidebar-footer">
             <button class="theme-toggle" id="themeToggle">
@@ -94,7 +94,7 @@
                 <span id="themeText">Modo Obscuro</span>
             </button>
             <a href="{{ url_for('main.perfil') }}" class="nav-link"><i class="bi bi-person-circle"></i> Mi Perfil</a>
-            <a href="{{ url_for('auth.logout') }}" class="nav-link" style="color: #ff6b6b;"><i class="bi bi-power"></i> Salir</a>
+            <a href="{{ url_for('main.logout') }}" class="nav-link" style="color: #ff6b6b;"><i class="bi bi-power"></i> Salir</a>
         </div>
     </nav>
     <main class="main-content">
@@ -143,7 +143,7 @@
             <div class="chart-panel">
                 <div class="panel-header">
                     <h3><i class="bi bi-stars"></i> Top Autopartes</h3>
-                    <a href="{{ url_for('inventario.productos') }}" style="font-size: 0.75rem; color: var(--primary-orange); text-decoration: none;">Ver todo</a>
+                    <a href="{{ url_for('main.productos') }}" style="font-size: 0.75rem; color: var(--primary-orange); text-decoration: none;">Ver todo</a>
                 </div>
                 <div class="top-parts-list">
                     {% if stats.top_productos %}
@@ -175,7 +175,7 @@
                                 <h4 style="color: #991b1b;">{{ critico.nombre }}</h4>
                                 <p style="color: #ef4444; font-weight: 700;">Solo {{ critico.stock_actual }} unidades</p>
                             </div>
-                            <a href="{{ url_for('inventario.actualizar_stock', id=critico.id) }}" style="color: #991b1b;"><i class="bi bi-plus-circle-fill"></i></a>
+                            <a href="{{ url_for('main.actualizar_stock', id=critico.id) }}" style="color: #991b1b;"><i class="bi bi-plus-circle-fill"></i></a>
                         </div>
                         {% endfor %}
                     {% else %}

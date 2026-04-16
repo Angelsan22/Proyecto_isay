@@ -57,11 +57,11 @@
                 <h1>MACUIN <i class="bi bi-car-front-fill"></i></h1>
                 <p>Personal Interno</p>
             </div>
-            <a href="{{ url_for('auth.index') }}" class="nav-link">INICIAR SESIÓN</a>
+            <a href="{{ url_for('main.index') }}" class="nav-link">INICIAR SESIÓN</a>
         </div>
         <h2>Recuperar Contraseña</h2>
         
-        <form action="{{ url_for('auth.index') }}" method="GET">
+        <form action="{{ url_for('main.index') }}" method="GET">
             <div class="grid-inputs">
                 <div class="input-group">
                     <div class="input-wrapper">
@@ -92,7 +92,7 @@
             <button type="submit" class="btn-recovery">Cambiar contraseña</button>
         </form>
         
-        <a href="{{ url_for('auth.index') }}" class="back-link">o Regresar a inicio</a>
+        <a href="{{ url_for('main.index') }}" class="back-link">o Regresar a inicio</a>
     </div>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>

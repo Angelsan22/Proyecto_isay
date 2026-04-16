@@ -85,7 +85,7 @@
         
         <div class="top-header">
             <div class="logo">MACUIN <i class="bi bi-box-seam-fill"></i></div>
-            <a href="{{ url_for('pedidos.pedidos') }}" class="btn-back">
+            <a href="{{ url_for('main.pedidos') }}" class="btn-back">
                 <i class="bi bi-arrow-left"></i> REGRESAR
             </a>
         </div>
@@ -199,7 +199,7 @@
                     <i class="bi bi-lock-fill"></i> Este pedido ha sido cancelado por el cliente y no puede ser modificado.
                 </div>
             {% endif %}
-            <form action="{{ url_for('pedidos.actualizar_estatus_pedido', id=pedido.id) }}" method="POST" class="status-form">
+            <form action="{{ url_for('main.actualizar_estatus_pedido', id=pedido.id) }}" method="POST" class="status-form">
                 <select name="estatus" class="status-select" {% if pedido.estatus == 'Cancelado' %}disabled{% endif %}>
                     <option value="En Proceso" {% if pedido.estatus == 'En Proceso' %}selected{% endif %}> En Proceso</option>
                     <option value="Enviado"    {% if pedido.estatus == 'Enviado' %}selected{% endif %}> Enviado</option>

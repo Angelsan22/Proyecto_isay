@@ -59,7 +59,7 @@
             <div class="logo">
                 <h1>MACUIN <i class="bi bi-tools"></i></h1>
             </div>
-            <a href="{{ url_for('inventario.gestion_inventario') }}" class="btn-regresar"><i class="bi bi-x-lg"></i> CANCELAR</a>
+            <a href="{{ url_for('main.gestion_inventario') }}" class="btn-regresar"><i class="bi bi-x-lg"></i> CANCELAR</a>
         </header>
 
         <div class="content">
@@ -88,7 +88,7 @@
                 {% endif %}
             </div>
 
-            <form action="{{ url_for('inventario.actualizar_stock', id=producto.id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url_for('main.actualizar_stock', id=producto.id) }}" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>ID Autoparte</label>
                     <div class="input-wrapper">
@@ -146,16 +146,70 @@
 
                 <div class="form-group full-width">
                     <label>Imagen del Producto (Opcional)</label>
-                    <div class="input-wrapper" style="align-items: center; gap: 15px; padding: 10px; border-radius: 16px; border: 1px dashed var(--border-color); background: rgba(0,0,0,0.02);">
+                    <div class="input-wrapper" id="div-smart-picker" style="align-items: center; gap: 15px; padding: 10px; border-radius: 16px; border: 1px dashed var(--border-color); background: rgba(0,0,0,0.02); cursor: pointer;">
                         {% if producto.imagen %}
-                        <img src="{{ url_for('static', filename=producto.imagen) }}" alt="{{ producto.nombre }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border-color);">
+                        <img id="prev-img" src="{{ url_for('static', filename=producto.imagen) }}" alt="{{ producto.nombre }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border-color);">
                         {% else %}
-                        <div style="width: 60px; height: 60px; border-radius: 10px; background: var(--bg-card); display: flex; align-items: center; justify-content: center; color: var(--text-muted); border: 1px solid var(--border-color);">
+                        <div id="prev-icon" style="width: 60px; height: 60px; border-radius: 10px; background: var(--bg-card); display: flex; align-items: center; justify-content: center; color: var(--text-muted); border: 1px solid var(--border-color);">
                            <i class="bi bi-image" style="position: static; margin: 0; padding: 0;"></i>
                         </div>
+                        <img id="prev-img" style="display: none; width: 60px; height: 60px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border-color);">
                         {% endif %}
-                        <input type="file" name="imagen" accept="image/*" style="padding: 10px; border: none; background: transparent; box-shadow: none;">
+                        <span id="file-name-hint" style="font-size: 0.8rem; color: var(--text-muted);">Haz click para seleccionar una imagen (sugerencia: Descargas)</span>
+                        <input type="file" name="imagen" id="actualizar-imagen-input" accept="image/*" style="display: none;" onchange="event.stopPropagation()">
                     </div>
+                    <script>
+                        const pickerArea = document.getElementById('div-smart-picker');
+                        const fileInput = document.getElementById('actualizar-imagen-input');
+                        const imgPrev = document.getElementById('prev-img');
+                        const iconPrev = document.getElementById('prev-icon');
+                        const hintText = document.getElementById('file-name-hint');
+
+                        async function selectSmartFile() {
+                            const options = {
+                                types: [{
+                                    description: 'Imágenes',
+                                    accept: { 'image/*': ['.png', '.gif', '.jpeg', '.jpg', '.webp'] }
+                                }],
+                                excludeAcceptAllOption: true,
+                                multiple: false,
+                                startIn: 'downloads'
+                            };
+
+                            try {
+                                if ('showOpenFilePicker' in window) {
+                                    const [handle] = await window.showOpenFilePicker(options);
+                                    const file = await handle.getFile();
+                                    
+                                    const dt = new DataTransfer();
+                                    dt.items.add(file);
+                                    fileInput.files = dt.files;
+                                    
+                                    updateUI(file);
+                                } else {
+                                    fileInput.click();
+                                }
+                            } catch (e) {
+                                if (e.name !== 'AbortError') fileInput.click();
+                            }
+                        }
+
+                        function updateUI(file) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                imgPrev.src = e.target.result;
+                                imgPrev.style.display = 'block';
+                                if(iconPrev) iconPrev.style.display = 'none';
+                                hintText.innerText = `Imagen seleccionada: ${file.name}`;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+
+                        pickerArea.onclick = selectSmartFile;
+                        fileInput.onchange = (e) => {
+                            if(e.target.files[0]) updateUI(e.target.files[0]);
+                        };
+                    </script>
                 </div>
 
                 <div class="form-footer">

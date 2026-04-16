@@ -240,7 +240,7 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
-            <form method="POST" action="{{ url_for('auth.index') }}">
+            <form method="POST" action="{{ url_for('main.index') }}">
                 <div class="input-group">
                     <i class="bi bi-person"></i>
                     <input type="email" name="email" placeholder="Correo de Administrador" required>
@@ -251,7 +251,7 @@
                 </div>
                 <div class="options">
                     <label><input type="checkbox"> Recordarme</label>
-                    <a href="{{ url_for('auth.recuperar') }}">¿Olvidaste tu clave?</a>
+                    <a href="{{ url_for('main.recuperar') }}">¿Olvidaste tu clave?</a>
                 </div>
                 <button type="submit" class="btn-login">Ingresar al Sistema</button>
             </form>

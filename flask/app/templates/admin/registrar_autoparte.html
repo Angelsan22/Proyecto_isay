@@ -230,31 +230,78 @@
         </div>
         
         <div class="image-side">
-            <label for="imagen-input" class="upload-area" id="upload-preview-area" style="cursor: pointer; position: relative;">
+            <div class="upload-area" id="upload-preview-area" style="cursor: pointer; position: relative;">
                 <div class="placeholder-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; pointer-events: none;">
                     <i class="bi bi-image-fill"></i>
                     <p class="upload-text">Arrastra la foto aquí</p>
                     <div class="small fw-bold text-naranja mt-2 opacity-75" style="color: var(--primary-orange);">o haz click para buscar</div>
                 </div>
                 <img id="image-preview" style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0;" />
-                <input type="file" name="imagen" id="imagen-input" accept="image/*" style="opacity: 0; position: absolute; top:0; left: 0; width: 100%; height: 100%; cursor: pointer;" onchange="previewImage(event)">
-            </label>
-            <button type="button" class="btn-subir" onclick="document.getElementById('imagen-input').click()">
+                <input type="file" name="imagen" id="imagen-input" accept="image/*" style="opacity: 0; position: absolute; top:0; left: 0; width: 100%; height: 100%; cursor: pointer; display: none;" onchange="previewImage(event)">
+            </div>
+            <button type="button" class="btn-subir" id="btn-smart-picker">
                 <i class="bi bi-search me-2"></i> Examinar archivos
             </button>
             <script>
-                function previewImage(event) {
-                    var reader = new FileReader();
+                const imgInput = document.getElementById('imagen-input');
+                const btnPicker = document.getElementById('btn-smart-picker');
+                const dropArea = document.getElementById('upload-preview-area');
+
+                async function pickSmartFile() {
+                    const pickerOptions = {
+                        types: [{
+                            description: 'Imágenes',
+                            accept: { 'image/*': ['.png', '.gif', '.jpeg', '.jpg', '.webp'] }
+                        }],
+                        excludeAcceptAllOption: true,
+                        multiple: false,
+                        startIn: 'downloads'
+                    };
+
+                    try {
+                        if ('showOpenFilePicker' in window) {
+                            const [fileHandle] = await window.showOpenFilePicker(pickerOptions);
+                            const file = await fileHandle.getFile();
+                            
+                            // Update hidden input to ensure form submission works
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(file);
+                            imgInput.files = dataTransfer.files;
+                            
+                            displayPreview(file);
+                        } else {
+                            imgInput.click();
+                        }
+                    } catch (err) {
+                        if (err.name !== 'AbortError') {
+                            imgInput.click();
+                        }
+                    }
+                }
+
+                function displayPreview(file) {
+                    const reader = new FileReader();
                     reader.onload = function() {
-                        var output = document.getElementById('image-preview');
+                        const output = document.getElementById('image-preview');
                         output.src = reader.result;
                         output.style.display = 'block';
                         document.querySelector('.placeholder-content').style.display = 'none';
                     };
+                    reader.readAsDataURL(file);
+                }
+
+                function previewImage(event) {
                     if(event.target.files[0]) {
-                        reader.readAsDataURL(event.target.files[0]);
+                        displayPreview(event.target.files[0]);
                     }
                 }
+
+                btnPicker.onclick = pickSmartFile;
+                dropArea.onclick = (e) => {
+                    if(e.target === dropArea || dropArea.contains(e.target)) {
+                        pickSmartFile();
+                    }
+                };
             </script>
         </div>
     </div>

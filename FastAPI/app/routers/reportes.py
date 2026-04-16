@@ -113,8 +113,8 @@ def descargar_reporte(
     db: Session = Depends(get_db)
 ):
     data, columns, title = get_report_data(tipo, db)
-    if not data:
-        raise HTTPException(status_code=404, detail="Tipo de reporte no válido")
+    if title is None:
+        raise HTTPException(status_code=404, detail="Tipo de reporte no válido o vacío")
 
     filename = f"reporte_{tipo}_{datetime.now().strftime('%Y%m%d')}.{formato}"
 

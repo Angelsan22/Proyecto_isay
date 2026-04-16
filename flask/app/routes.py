@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, Response
 from flask_login import login_user, logout_user, login_required, current_user
 import requests
 from app.models import AdminSession
@@ -221,7 +221,7 @@ def detalle_pedido(id):
                 productos_map = {p["id"]: p for p in r_prods.json()}
                 for item in pedido.get("detalles", []):
                     prod_info = productos_map.get(item["producto_id"])
-                    item["nombre_producto"] = prod_info["nombre"] if prod_info else "Producto
+                    item["nombre_producto"] = prod_info["nombre"] if prod_info else "Producto Desconocido"
 
             return render_template("admin/datalle_pedido.html", pedido=pedido)
     except Exception as e:
@@ -454,3 +454,67 @@ def actualizar_stock(id):
                 flash(f"Error al procesar actualización: {e}", "danger")
 
     return render_template("admin/actualizar_stock.html", producto=producto)
+
+@main.route("/descargar_reporte_autopartes")
+@login_required
+def descargar_reporte_autopartes():
+    try:
+        response = requests.get(f"{API_URL}/reportes/descargar/inventario?formato=pdf")
+        if response.status_code == 200:
+            return Response(
+                response.content,
+                mimetype="application/pdf",
+                headers={"Content-Disposition": "attachment;filename=reporte_autopartes.pdf"}
+            )
+        flash("Error al generar reporte de autopartes", "danger")
+    except Exception as e:
+        flash(f"Error de conexión: {e}", "danger")
+    return redirect(url_for('main.productos'))
+
+@main.route("/descargar_reporte_inventario")
+@login_required
+def descargar_reporte_inventario():
+    try:
+        response = requests.get(f"{API_URL}/reportes/descargar/inventario?formato=pdf")
+        if response.status_code == 200:
+            return Response(
+                response.content,
+                mimetype="application/pdf",
+                headers={"Content-Disposition": "attachment;filename=reporte_inventario.pdf"}
+            )
+        flash("Error al generar reporte de inventario", "danger")
+    except Exception as e:
+        flash(f"Error de conexión: {e}", "danger")
+    return redirect(url_for('main.gestion_inventario'))
+
+@main.route("/descargar_reporte_pedidos")
+@login_required
+def descargar_reporte_pedidos():
+    try:
+        response = requests.get(f"{API_URL}/reportes/descargar/ventas?formato=pdf")
+        if response.status_code == 200:
+            return Response(
+                response.content,
+                mimetype="application/pdf",
+                headers={"Content-Disposition": "attachment;filename=reporte_ventas.pdf"}
+            )
+        flash("Error al generar reporte de pedidos", "danger")
+    except Exception as e:
+        flash(f"Error de conexión: {e}", "danger")
+    return redirect(url_for('main.reportes_pedidos'))
+
+@main.route("/descargar_reporte_clientes")
+@login_required
+def descargar_reporte_clientes():
+    try:
+        response = requests.get(f"{API_URL}/reportes/descargar/clientes?formato=pdf")
+        if response.status_code == 200:
+            return Response(
+                response.content,
+                mimetype="application/pdf",
+                headers={"Content-Disposition": "attachment;filename=reporte_clientes.pdf"}
+            )
+        flash("Error al generar reporte de clientes", "danger")
+    except Exception as e:
+        flash(f"Error de conexión: {e}", "danger")
+    return redirect(url_for('main.reporte_clientes'))
