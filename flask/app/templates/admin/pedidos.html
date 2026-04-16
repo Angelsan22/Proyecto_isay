@@ -128,9 +128,14 @@
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="btn-apply">
-                        <i class="bi bi-check-lg"></i> FILTRAR RESULTADOS
-                    </button>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit" class="btn-apply">
+                            <i class="bi bi-check-lg"></i> FILTRAR RESULTADOS
+                        </button>
+                        <a href="{{ url_for('pedidos.descargar_reporte_pedidos', usuario=filtro_cliente, estatus=filtro_estatus) }}" class="btn-apply" style="background: #333; text-decoration: none;">
+                            <i class="bi bi-file-earmark-pdf"></i> PDF
+                        </a>
+                    </div>
                 </form>
 
             <div class="table-responsive">

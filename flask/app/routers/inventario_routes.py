@@ -1,10 +1,11 @@
 """
 Rutas de gestión de inventario y productos.
 """
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, make_response
 from flask_login import login_required
 
 from app.services.api_client import ApiClient
+from app.services.pdf_service import generate_report
 
 inventario = Blueprint('inventario', __name__)
 
@@ -165,4 +166,74 @@ def actualizar_stock(id):
             except Exception as e:
                 flash(f"Error al procesar actualización: {e}", "danger")
 
-    return render_template("admin/actualizar_stock.html", producto=producto)
+
+@inventario.route("/descargar_reporte_autopartes")
+@login_required
+def descargar_reporte_autopartes():
+    nombre = request.args.get("nombre", "")
+    categoria = request.args.get("categoria", "Todas las categorías")
+
+    productos_data = []
+    try:
+        params = {"nombre": nombre, "categoria": categoria}
+        response = ApiClient.get_productos(params)
+        if response.status_code == 200:
+            productos_data = response.json()
+    except Exception as e:
+        print(f"Error PDF Autopartes: {e}")
+
+    headers = ["Nombre de Pieza", "Categoría", "Stock", "Precio"]
+    # Adjust widths for 190mm total (A4 is 210mm, 10mm margins)
+    widths = [80, 40, 30, 40]
+    data = []
+    for p in productos_data:
+        data.append([
+            p.get("nombre", "N/A"),
+            p.get("categoria", "N/A"),
+            f"{p.get('stock_actual', 0)} un.",
+            f"${p.get('precio', 0):,.2f}"
+        ])
+
+    pdf_output = generate_report("Catálogo de Autopartes", headers, data, widths)
+    
+    response = make_response(pdf_output)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=reporte_autopartes.pdf'
+    return response
+
+
+@inventario.route("/descargar_reporte_inventario")
+@login_required
+def descargar_reporte_inventario():
+    nombre = request.args.get("nombre", "")
+    categoria = request.args.get("categoria", "Todas las categorías")
+
+    productos_data = []
+    try:
+        params = {"nombre": nombre, "categoria": categoria}
+        response = ApiClient.get_productos(params)
+        if response.status_code == 200:
+            productos_data = response.json()
+    except Exception as e:
+        print(f"Error PDF Inventario: {e}")
+
+    headers = ["Nombre del Artículo", "Categoría", "Stock Actual", "S. Mínimo", "Valoración"]
+    widths = [65, 35, 30, 30, 30]
+    data = []
+    for p in productos_data:
+        stock = p.get('stock_actual', 0)
+        precio = p.get('precio', 0)
+        data.append([
+            p.get("nombre", "N/A"),
+            p.get("categoria", "N/A"),
+            f"{stock} un.",
+            f"{p.get('stock_minimo', 0)} un.",
+            f"${(stock * precio):,.2f}"
+        ])
+
+    pdf_output = generate_report("Gestión de Inventario y Stock", headers, data, widths)
+    
+    response = make_response(pdf_output)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=reporte_inventario.pdf'
+    return response

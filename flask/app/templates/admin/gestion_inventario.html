@@ -121,9 +121,14 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn-apply">
-                    <i class="bi bi-funnel"></i> APLICAR FILTROS
-                </button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-apply">
+                        <i class="bi bi-funnel"></i> APLICAR FILTROS
+                    </button>
+                    <a href="{{ url_for('inventario.descargar_reporte_inventario', nombre=filtro_nombre, categoria=filtro_categoria) }}" class="btn-apply" style="background: #333; text-decoration: none;">
+                        <i class="bi bi-file-earmark-pdf"></i> PDF
+                    </a>
+                </div>
             </form>
 
             <div class="table-wrapper">
