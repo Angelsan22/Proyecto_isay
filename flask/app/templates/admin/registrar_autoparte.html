@@ -139,7 +139,7 @@
     </style>
 </head>
 <body>
-    <div class="main-container">
+    <form class="main-container" action="{{ url_for('main.registrar_autoparte') }}" method="POST" enctype="multipart/form-data">
         <div class="form-side">
             <div class="header">
                 <div class="logo"><h1>MACUIN <i class="bi bi-car-front-fill"></i></h1></div>
@@ -159,7 +159,7 @@
               {% endif %}
             {% endwith %}
 
-            <form action="{{ url_for('main.registrar_autoparte') }}" method="POST" enctype="multipart/form-data">
+
                 <div class="grid-inputs">
                     <div class="input-group full-width">
                         <label>Nombre de la pieza</label>
@@ -226,7 +226,6 @@
                 <button type="submit" class="btn-registrar">
                     <i class="bi bi-floppy-fill me-2"></i> Guardar Pieza
                 </button>
-            </form>
         </div>
         
         <div class="image-side">
@@ -304,7 +303,7 @@
                 };
             </script>
         </div>
-    </div>
+    </form>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>
