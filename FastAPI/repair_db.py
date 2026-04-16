@@ -1,11 +1,10 @@
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
-from app.data.database import Base
-from app.core.config import settings
-from app.models.producto import Producto
+from app.database import Base, SQLALCHEMY_DATABASE_URL
+from app.models import Producto
 from datetime import datetime
 
-engine = create_engine(settings.DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 metadata = MetaData()
 
 def repair_and_seed():
