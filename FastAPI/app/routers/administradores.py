@@ -2,9 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
-from app import models, schemas
-from app.data import database
-from app.data.database import get_db
+from app import models, schemas, database
+from app.database import get_db
 from app.security.helpers import get_password_hash, verify_password
 
 router = APIRouter(
@@ -35,7 +34,7 @@ def create_admin(admin: schemas.AdminCreate, db: Session = Depends(database.get_
     db.refresh(db_admin)
     return db_admin
 
-@router.post("/login", tags=["Autenticación"])
+@router.post("/login", tags=["Autentificación"])
 def login_admin(admin: schemas.AdminLogin, db: Session = Depends(database.get_db)):
     db_admin = db.query(models.Admin).filter(models.Admin.email == admin.email).first()
     if not db_admin or not verify_password(admin.password, db_admin.password_hash):
@@ -48,8 +47,6 @@ def update_admin(admin_id: int, admin_data: schemas.AdminCreate, db: Session = D
     db_admin = db.query(models.Admin).filter(models.Admin.id == admin_id).first()
     if not db_admin:
         raise HTTPException(status_code=404, detail="Administrador no encontrado")
-    
-    # Si cambió el email, verificar unicidad
     if admin_data.email != db_admin.email:
         exist = db.query(models.Admin).filter(models.Admin.email == admin_data.email).first()
         if exist:

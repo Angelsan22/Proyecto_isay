@@ -11,7 +11,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         body { background-color: var(--bg-main); color: var(--text-main); padding: 40px; }
         
-        /* Header */
+        
         .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
         .page-title { display: flex; align-items: center; gap: 15px; }
         .page-title h1 { font-size: 2rem; color: var(--text-main); font-weight: 800; letter-spacing: -1px; }
@@ -22,17 +22,17 @@
         .btn-back { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 0.85rem; transition: all 0.3s; }
         .btn-back:hover { border-color: var(--primary-orange); color: var(--primary-orange); transform: translateY(-2px); }
 
-        /* Theme Toggle */
+        
         .theme-toggle { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 20px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.85rem; transition: 0.3s; }
         .theme-toggle:hover { border-color: var(--primary-orange); }
 
-        /* Cards */
+        
         .card { background-color: var(--bg-card); border-radius: 20px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-color); }
         .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
         .card-title { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: 800; color: var(--text-main); }
         .card-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-top: 5px; margin-bottom: 20px; display: block; }
         
-        /* Form Inline */
+        
         .form-inline { display: grid; grid-template-columns: 2fr 2fr 2fr auto; gap: 20px; align-items: end; }
         .input-group { display: flex; flex-direction: column; gap: 8px; }
         .input-group label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -41,7 +41,7 @@
         .btn-submit { padding: 12px 25px; background-color: var(--primary-orange); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; height: 43px;}
         .btn-submit:hover { background-color: #e66015; transform: translateY(-2px); }
 
-        /* Tabs */
+        
         .tabs { display: flex; gap: 30px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
         .tab { padding: 10px 5px; cursor: pointer; color: var(--text-muted); font-weight: 700; font-size: 0.95rem; position: relative; transition: 0.3s; }
         .tab.active { color: var(--primary-orange); }
@@ -49,7 +49,7 @@
         
         .badge-count { background-color: var(--primary-orange); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;}
 
-        /* Table */
+        
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 15px; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); }
         td { padding: 15px; vertical-align: middle; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
@@ -78,12 +78,12 @@
         .btn-danger:hover { background-color: #ef4444; color: white; }
         .btn-disabled { background-color: transparent; color: var(--text-muted); cursor: default; font-weight: 700; }
 
-        /* Alerts */
+        
         .alert { padding: 15px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; font-size: 0.95rem; border: 1px solid transparent;}
         .alert-success { background-color: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
         .alert-danger { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
 
-        /* Rows handling via JS */
+        
         .row-admin[data-type="client"], .row-client[data-type="admin"] { display: none; }
     </style>
 </head>
@@ -110,7 +110,7 @@
       {% endif %}
     {% endwith %}
 
-    <!-- Create Admin Card -->
+    
     <div class="card">
         <div class="card-title"><i class="bi bi-person-plus-fill" style="color: #4da6ff;"></i> Crear Nuevo Administrador</div>
         <span class="card-subtitle">Genera credenciales para un nuevo usuario administrador del sistema</span>
@@ -134,7 +134,7 @@
         </form>
     </div>
 
-    <!-- User List Card -->
+    
     <div class="card" style="padding-bottom: 10px;">
         <div class="card-header" style="margin-bottom: 5px;">
             <div class="card-title"><i class="bi bi-list-ul"></i> Todos los Usuarios</div>
@@ -158,7 +158,7 @@
                 </tr>
             </thead>
             <tbody id="usersTableBody">
-                <!-- Administradores -->
+                
                 {% for admin in admins %}
                 <tr class="user-row" data-role="admin">
                     <td>
@@ -187,7 +187,7 @@
                 </tr>
                 {% endfor %}
 
-                <!-- Clientes / Usuarios Regulares -->
+                
                 {% for usuario in usuarios %}
                 <tr class="user-row" data-role="client">
                     <td>
@@ -215,7 +215,7 @@
         </table>
     </div>
 
-    <!-- Historial de Creación -->
+    
     <div style="margin-top: 40px;">
         <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
             <i class="bi bi-clock-history"></i> Historial de Administración
@@ -246,11 +246,8 @@
 
     <script>
         function filterTable(role, element) {
-            // Update active tab styling
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
-
-            // Filter rows
             const rows = document.querySelectorAll('.user-row');
             rows.forEach(row => {
                 if (role === 'all' || row.dataset.role === role) {

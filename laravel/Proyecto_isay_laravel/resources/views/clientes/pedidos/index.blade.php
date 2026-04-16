@@ -130,7 +130,7 @@
             @foreach($pedido->detalles as $detalle)
                 <div class="order-item-row">
                     <div class="product-img-box">
-                        <img src="{{ $detalle->autoparte->imagen_url ?? 'https://placehold.co/80x80/e8671b/ffffff?text=⚙' }}"
+                        <img src="{{ $detalle->autoparte->imagen_url ?? 'https://placehold.co/80x80/e8671b/ffffff?text=' }}"
                              alt="{{ $detalle->autoparte->nombre ?? 'Pieza' }}">
                     </div>
                     <div class="item-info">
@@ -150,10 +150,10 @@
                                 default      => 'background:#64748b; color:white;',
                             };
                             $statusLabel = match($pedido->estado) {
-                                'entregado' => '✓ ENTREGADO',
-                                'en_camino' => '⚡ EN CAMINO',
+                                'entregado' => ' ENTREGADO',
+                                'en_camino' => ' EN CAMINO',
                                 'confirmado'=> '● CONFIRMADO',
-                                'cancelado' => '❌ CANCELADO',
+                                'cancelado' => ' CANCELADO',
                                 default     => '○ PENDIENTE',
                             };
                         @endphp

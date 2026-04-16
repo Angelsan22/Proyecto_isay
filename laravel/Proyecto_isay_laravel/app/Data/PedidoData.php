@@ -4,15 +4,10 @@ namespace App\Data;
 
 use Carbon\Carbon;
 
-/**
- *  Proveedor estático de pedidos de demostración.
- *  Cuando se conecte a la base de datos real, se sustituirá por queries Eloquent.
- */
+
 class PedidoData
 {
-    /**
-     * Devuelve la colección de pedidos ficticios.
-     */
+    
     public static function all(): \Illuminate\Support\Collection
     {
         return collect([
@@ -51,17 +46,13 @@ class PedidoData
         ]);
     }
 
-    /**
-     * Busca un pedido por su ID.
-     */
+    
     public static function find(int $id): ?object
     {
         return static::all()->firstWhere('id', $id);
     }
 
-    /**
-     * Productos disponibles para "Crear Pedido".
-     */
+    
     public static function productosDisponibles(): \Illuminate\Support\Collection
     {
         return collect([

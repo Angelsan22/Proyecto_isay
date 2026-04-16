@@ -5,9 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-/**
- *  Servicio encargado de sincronizar usuarios con la API (FastAPI).
- */
+
 class ApiUsuarioService
 {
     private string $apiUrl;
@@ -17,14 +15,7 @@ class ApiUsuarioService
         $this->apiUrl = rtrim(config('services.fastapi.url', 'http://127.0.0.1:8000'), '/');
     }
 
-    /**
-     * Sincronizar un nuevo usuario con FastAPI.
-     * 
-     * @param string $nombre
-     * @param string $correo
-     * @param string $password
-     * @return int|null El ID del usuario en FastAPI o null si falla.
-     */
+    
     public function registrarEnApi(string $nombre, string $correo, string $password): ?int
     {
         try {
@@ -56,13 +47,7 @@ class ApiUsuarioService
         }
     }
 
-    /**
-     * Validar credenciales contra FastAPI.
-     *
-     * @param string $correo
-     * @param string $password
-     * @return array|null Datos del usuario si es exitoso, null si falla.
-     */
+    
     public function loginEnApi(string $correo, string $password): ?array
     {
         try {
@@ -83,9 +68,7 @@ class ApiUsuarioService
         }
     }
 
-    /**
-     * Actualizar la contraseña en la API.
-     */
+    
     public function actualizarPasswordEnApi(int $fastapiId, string $currentPassword, string $newPassword): bool
     {
         try {
@@ -102,9 +85,7 @@ class ApiUsuarioService
         }
     }
 
-    /**
-     * Actualizar datos básicos en la API.
-     */
+    
     public function actualizarDatosEnApi(int $fastapiId, string $nombreCompleto, string $correo): bool
     {
         try {

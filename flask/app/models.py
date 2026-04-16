@@ -14,9 +14,6 @@ class AdminSession(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    # In a real app we might fetch user details from API again
-    # For now, since we only need the session, we could store info in flask session 
-    # But since user_loader only receives user_id, let's fetch from API to get name/email
     try:
         response = requests.get(f"{API_URL}/admins/")
         if response.status_code == 200:

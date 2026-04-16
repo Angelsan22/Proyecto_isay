@@ -1,8 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional, List
-
-# --- Admins ---
 class AdminBase(BaseModel):
     nombre: str
     email: EmailStr
@@ -22,8 +20,6 @@ class AdminResponse(AdminBase):
 class AdminLogin(BaseModel):
     email: EmailStr
     password: str
-
-# --- Productos / Inventario ---
 class ProductoBase(BaseModel):
     nombre: str
     categoria: Optional[str] = "Autopartes"
@@ -42,8 +38,6 @@ class ProductoResponse(ProductoBase):
     
     class Config:
         from_attributes = True
-
-# --- Usuarios ---
 class UsuarioBase(BaseModel):
     nombre: str
     correo: EmailStr
@@ -65,8 +59,6 @@ class UsuarioResponse(UsuarioBase):
     
     class Config:
         from_attributes = True
-
-# --- Detalles de Pedido ---
 class DetallePedidoBase(BaseModel):
     producto_id: int
     cantidad: int
@@ -82,8 +74,6 @@ class DetallePedidoResponse(DetallePedidoBase):
     
     class Config:
         from_attributes = True
-
-# --- Pedidos ---
 class PedidoBase(BaseModel):
     cliente_id: int
     total: int
@@ -105,7 +95,5 @@ class PedidoResponse(PedidoBase):
     
     class Config:
         from_attributes = True
-
-# Para respuestas anidadas opcionales
 class UsuarioConPedidos(UsuarioResponse):
     pedidos: List[PedidoResponse] = []

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cliente;
 
 use App\Http\Controllers\Controller;
-// PedidoData removed - now using ApiPedidoService for live data
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -18,8 +17,6 @@ class PedidoController extends Controller
 
         $id  = $request->autoparte_id;
         $qty = (int) $request->cantidad;
-
-        // Validar Stock Real vía API antes de añadir
         $producto = $productoService->obtenerPorId((int)$id);
         if (!$producto || $producto->stock <= 0) {
             return back()->with('error', 'Lo sentimos, este producto ya no cuenta con existencias.');
@@ -95,7 +92,7 @@ class PedidoController extends Controller
         }
 
         $iva = $subtotal * 0.16;
-        $total = $subtotal + $iva + 25; // 25 de envío fijo
+        $total = $subtotal + $iva + 25;
 
         return view('clientes.pedidos.checkout', compact('items', 'subtotal', 'iva', 'total'));
     }
@@ -105,14 +102,11 @@ class PedidoController extends Controller
         \App\Services\ApiPedidoService $pedidoService, 
         \App\Services\ApiProductoService $productoService
     ) {
-        // Limpiar espacios de la tarjeta antes de validar
         if ($request->has('num_tarjeta')) {
             $request->merge([
                 'num_tarjeta' => str_replace(' ', '', $request->num_tarjeta)
             ]);
         }
-
-        // 1. Validar datos de envío y pago (simulación)
         $request->validate([
             'nombre_completo' => 'required|string|max:100',
             'direccion'       => 'required|string|max:255',
@@ -128,8 +122,6 @@ class PedidoController extends Controller
         if (empty($carrito)) {
             return redirect()->route('cliente.catalogo.index')->with('error', 'El carrito está vacío.');
         }
-
-        // 2. Calcular total e items para la API
         $autopartes = $productoService->obtenerTodos();
         $itemsApi = [];
         $subtotal = 0;
@@ -148,8 +140,6 @@ class PedidoController extends Controller
 
         $iva = $subtotal * 0.16;
         $totalFinal = $subtotal + $iva + 25;
-
-        // 3. Preparar Payload completo para FastAPI
         $user = auth()->user();
         $payload = [
             'cliente_id'      => $user->fastapi_id,
@@ -162,16 +152,11 @@ class PedidoController extends Controller
             'metodo_pago'     => 'Tarjeta',
             'items'           => $itemsApi
         ];
-
-        // 4. Crear pedido y descontar stock en FastAPI
         try {
             $exito = $pedidoService->crearPedido($payload);
 
             if ($exito) {
-                // LIMPIAR CACHÉ de productos para que el stock se actualice visualmente de inmediato
                 \Illuminate\Support\Facades\Cache::forget('api_productos_todos');
-                
-                // Limpiar carrito
                 session()->forget('carrito');
 
                 return redirect()->route('cliente.pedidos.index')
@@ -203,10 +188,7 @@ class PedidoController extends Controller
 
     public function crear(\App\Services\ApiProductoService $apiService)
     {
-        // 1. Obtener productos reales de la API
         $autopartes = $apiService->obtenerTodos();
-        
-        // 2. Procesar carrito de la sesión
         $carritoSesion = session()->get('carrito', []);
         $itemsCarrito = [];
         
@@ -231,8 +213,6 @@ class PedidoController extends Controller
     {
         $user = auth()->user();
         $rawPedidos = $pedidoService->obtenerMisPedidos($user->fastapi_id);
-
-        // Transformar para compatibilidad con la vista
         $pedidos = collect($rawPedidos)->map(function($p) {
             $apiStatus = strtolower(trim($p['estatus'] ?? 'en proceso'));
             $viewStatus = match($apiStatus) {
@@ -254,7 +234,7 @@ class PedidoController extends Controller
                         'subtotal'  => $d['cantidad'] * $d['precio_unitario'],
                         'autoparte' => (object)[
                             'nombre'     => $d['producto']['nombre'] ?? 'Producto',
-                            'imagen_url' => !empty($d['producto']['imagen']) ? 'http://localhost:5000/static/' . ltrim($d['producto']['imagen'], '/') : 'https://placehold.co/80x80/e8671b/ffffff?text=' . urlencode($d['producto']['nombre'] ?? '⚙')
+                            'imagen_url' => !empty($d['producto']['imagen']) ? 'http://localhost:5000/static/' . ltrim($d['producto']['imagen'], '/') : 'https://placehold.co/80x80/e8671b/ffffff?text=' . urlencode($d['producto']['nombre'] ?? '')
                         ]
                     ];
                 })
@@ -277,8 +257,6 @@ class PedidoController extends Controller
             'cancelado'   => 'cancelado',
             default       => 'pendiente',
         };
-
-        // Transformar para la vista de detalle
         $pedido = (object)[
             'id'              => $rawPedido['id'],
             'created_at'      => \Carbon\Carbon::parse($rawPedido['fecha'] ?? now()),
@@ -297,7 +275,7 @@ class PedidoController extends Controller
                     'subtotal'        => $d['cantidad'] * $d['precio_unitario'],
                     'autoparte'      => (object)[
                         'nombre'     => $d['producto']['nombre'] ?? 'Producto',
-                        'imagen_url' => !empty($d['producto']['imagen']) ? 'http://localhost:5000/static/' . ltrim($d['producto']['imagen'], '/') : 'https://placehold.co/100x100/e8671b/ffffff?text=' . urlencode($d['producto']['nombre'] ?? '⚙')
+                        'imagen_url' => !empty($d['producto']['imagen']) ? 'http://localhost:5000/static/' . ltrim($d['producto']['imagen'], '/') : 'https://placehold.co/100x100/e8671b/ffffff?text=' . urlencode($d['producto']['nombre'] ?? '')
                     ]
                 ];
             })

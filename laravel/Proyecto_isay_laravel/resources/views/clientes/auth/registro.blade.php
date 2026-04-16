@@ -31,7 +31,7 @@
             background-color: #f8fafc;
         }
 
-        /* ── Panel Imagen (izquierda) ──────────── */
+        
         .panel-imagen {
             flex: 1.2;
             background: linear-gradient(160deg, rgba(15, 23, 42, 0.95), rgba(232, 103, 27, 0.4)),
@@ -98,7 +98,7 @@
         }
         .panel-imagen h2 span { color: var(--naranja); }
 
-        /* ── Panel Formulario (derecha) ─────────── */
+        
         .panel-form {
             flex: 0.8;
             min-width: 500px;
@@ -129,7 +129,7 @@
             font-weight: 500;
         }
 
-        /* ── Form Controls ── */
+        
         .form-label {
             font-size: 0.85rem;
             font-weight: 700;
@@ -157,7 +157,7 @@
             outline: none;
         }
 
-        /* ── Buttons ── */
+        
         .btn-submit {
             background: var(--naranja);
             color: white;

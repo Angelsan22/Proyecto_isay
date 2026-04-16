@@ -69,7 +69,7 @@
         border: 1px solid var(--border-color);
     }
 
-    /* Quantity Selector */
+    
     .qty-selector {
         background: var(--bg-body);
         border-radius: 16px;
@@ -145,7 +145,7 @@
 
     <div class="product-detail-container">
         <div class="row g-0">
-            {{-- Columna Imagen --}}
+            
             <div class="col-lg-6">
                 <div class="img-container">
                     <img src="{{ $autoparte->imagen_url ?? 'https://placehold.co/500x500?text=Sin+imagen' }}"
@@ -153,7 +153,7 @@
                 </div>
             </div>
 
-            {{-- Columna Info --}}
+            
             <div class="col-lg-6">
                 <div class="product-info-panel">
                     <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">

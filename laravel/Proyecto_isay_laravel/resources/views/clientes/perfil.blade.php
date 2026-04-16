@@ -101,7 +101,7 @@
     </div>
 
     <div class="row g-4 fade-in-up" style="animation-delay: 0.1s;">
-        <!-- Información de Cuenta -->
+        
         <div class="col-md-6">
             <div class="card card-macuin h-100 border-0 p-4">
                 <h4 class="fw-black mb-4 d-flex align-items-center gap-2">
@@ -147,7 +147,7 @@
             </div>
         </div>
 
-        <!-- Cambio de Contraseña -->
+        
         <div class="col-md-6">
             <div class="card card-macuin h-100 border-0 p-4">
                 <h4 class="fw-black mb-4 d-flex align-items-center gap-2">

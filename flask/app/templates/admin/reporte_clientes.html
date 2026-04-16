@@ -14,7 +14,7 @@
         
         .main-wrapper { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
 
-        /* Left Side: Summary Stats */
+        
         .summary-side { background: var(--bg-card); padding: 35px; border-radius: 32px; box-shadow: 0 15px 40px rgba(0,0,0,0.04); border: 1px solid var(--border-color); height: fit-content; position: sticky; top: 40px; }
         .back-nav { margin-bottom: 30px; }
         .btn-back { text-decoration: none; color: var(--text-muted); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
@@ -28,11 +28,11 @@
         .kpi-card .value { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
         .kpi-card .trend { font-size: 0.75rem; font-weight: 700; color: #10b981; margin-top: 5px; display: flex; align-items: center; gap: 4px; }
 
-        /* Theme Toggle Button */
+        
         .theme-toggle { width: 100%; padding: 15px; border-radius: 18px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 0.9rem; margin-top: 20px; transition: 0.3s; }
         .theme-toggle:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
 
-        /* Right Side: Charts & Table */
+        
         .analytics-content { display: flex; flex-direction: column; gap: 25px; }
         .chart-container-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .panel-card { background: var(--bg-card); padding: 30px; border-radius: 32px; border: 1px solid var(--border-color); box-shadow: 0 5px 20px rgba(0,0,0,0.02); }
@@ -42,14 +42,14 @@
 
         .canvas-box { position: relative; height: 250px; }
 
-        /* Metric Tiles */
+        
         .metric-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .tile { background: var(--bg-card); padding: 25px; border-radius: 25px; border: 1px solid var(--border-color); }
         .tile i { font-size: 1.5rem; color: var(--primary-orange); margin-bottom: 15px; display: block; }
         .tile h4 { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
         .tile p { font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
 
-        /* Detailed Table */
+        
         .table-panel { padding: 25px 30px; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 15px; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; border-bottom: 2px solid var(--border-color); }
@@ -84,7 +84,8 @@
                 <div class="value">${{ "{:,.2f}".format(stats.valor_inventario) }}</div>
                 <p style="font-size: 0.7rem; color: #aaa;">Estimación en stock</p>
             </div>
-            <div class="kpi-card" style="border-left: 4px solid var(--primary-orange);">
+
+            <div class="kpi-card" style="border-left: 4px solid var(--primary-orange);">
                 <label>Catálogo de Productos</label>
                 <div class="value" style="font-size: 1.1rem;">{{ stats.productos_stock }} Items</div>
                 <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">Piezas disponibles</p>
@@ -96,7 +97,7 @@
         </aside>
 
         <main class="analytics-content">
-            <!-- Content remains same -->
+            
             <div class="chart-container-grid">
                 <div class="panel-card">
                     <div class="panel-header"><h3><i class="bi bi-pie-chart-fill"></i> Cuota de Mercado</h3></div>
@@ -159,11 +160,8 @@
 
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <script>
-        // Data Shared
         const labelsTrend = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
         const dataTrend = [65, 59, 80, 81, 56, 95];
-
-        // Market Share Chart
         const ctxPie = document.getElementById('marketShareChart').getContext('2d');
         const marketChart = new Chart(ctxPie, {
             type: 'doughnut',
@@ -182,8 +180,6 @@
                 plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: { weight: '800', size: 10 } } } }
             }
         });
-
-        // Trend Chart
         const ctxLine = document.getElementById('trendChart').getContext('2d');
         const trendChart = new Chart(ctxLine, {
             type: 'line',
@@ -213,13 +209,9 @@
 
         function updateChartsTheme(isDark) {
             const textColor = isDark ? '#94a3b8' : '#666';
-            
-            // Update Pie
             marketChart.options.plugins.legend.labels.color = textColor;
             marketChart.data.datasets[0].backgroundColor[3] = isDark ? '#334155' : '#e2e8f0';
             marketChart.update();
-
-            // Update Line
             trendChart.options.scales.x.ticks.color = textColor;
             trendChart.update();
         }

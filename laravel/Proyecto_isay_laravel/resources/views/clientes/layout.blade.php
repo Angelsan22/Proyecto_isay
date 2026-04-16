@@ -6,20 +6,17 @@
     <title>@yield('title', 'Venta & Refacciones Maccuin')</title>
     <meta name="description" content="Plataforma de autopartes y refacciones automotrices de alta calidad — Maccuin">
 
-    {{-- Google Fonts — Inter para toda la app --}}
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    {{-- Bootstrap 5.3 --}}
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        /* ═══════════════════════════════════════════
-           DESIGN SYSTEM - MACCUIN AUTOPARTES
-           Paleta unificada, tipografía Inter
-        ═══════════════════════════════════════════ */
+        
         :root {
             --naranja: #E8671B;
             --naranja-hover: #c95510;
@@ -27,7 +24,7 @@
             --naranja-glow: rgba(232, 103, 27, 0.30);
             --oscuro: #111111;
 
-            /* Light mode (default) */
+            
             --bg-body: #f4f6fa;
             --bg-card: #ffffff;
             --bg-card-hover: #fafbfd;
@@ -51,7 +48,7 @@
             --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.4);
         }
 
-        /* ── Global ──────────────────────────────── */
+        
         * { box-sizing: border-box; }
 
         body {
@@ -68,7 +65,7 @@
             color: white;
         }
 
-        /* ── Navbar ──────────────────────────────── */
+        
         .navbar-macuin {
             background: var(--nav-bg) !important;
             border-bottom: 2px solid var(--naranja);
@@ -125,7 +122,7 @@
             border-radius: 3px;
         }
 
-        /* ── Theme Toggle ────────────────────────── */
+        
         .theme-btn {
             width: 40px;
             height: 40px;
@@ -147,7 +144,7 @@
             box-shadow: 0 5px 20px var(--naranja-glow);
         }
 
-        /* ── Dropdown ────────────────────────────── */
+        
         .dropdown-menu-macuin {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color) !important;
@@ -169,7 +166,7 @@
             opacity: 1;
         }
 
-        /* ── Buttons ─────────────────────────────── */
+        
         .btn-naranja {
             background: var(--naranja);
             color: #fff;
@@ -187,11 +184,11 @@
             box-shadow: 0 8px 25px var(--naranja-glow);
         }
 
-        /* ── Utilities ───────────────────────────── */
+        
         .text-naranja { color: var(--naranja) !important; }
         .bg-naranja-soft { background: var(--naranja-soft) !important; }
 
-        /* ── Cards ────────────────────────────────── */
+        
         .card-macuin {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -204,14 +201,14 @@
             box-shadow: var(--shadow-hover);
         }
 
-        /* ── Alerts ───────────────────────────────── */
+        
         .alert {
             border-radius: 16px;
             font-weight: 600;
             border: none;
         }
 
-        /* ── Footer ──────────────────────────────── */
+        
         .footer-macuin {
             background: var(--nav-bg);
             border-top: 1px solid var(--border-color);
@@ -239,7 +236,7 @@
             font-size: 0.8rem;
         }
 
-        /* ── Scrollbar ───────────────────────────── */
+        
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-body); }
         ::-webkit-scrollbar-thumb {
@@ -247,7 +244,7 @@
             border-radius: 10px;
         }
 
-        /* ── Animations ──────────────────────────── */
+        
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -256,14 +253,13 @@
             animation: fadeInUp 0.5s ease forwards;
         }
 
-        /* ── Responsive ──────────────────────────── */
+        
         @media (max-width: 768px) {
             .navbar-macuin .navbar-brand { font-size: 1.2rem !important; }
         }
     </style>
 
     <script>
-        // Apply theme immediately to prevent flash
         (function() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'dark') {

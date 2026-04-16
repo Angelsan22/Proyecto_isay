@@ -3,7 +3,7 @@
 
 @push('styles')
 <style>
-    /* ── Sidebar ──────────────────────────────── */
+    
     .catalog-sidebar {
         background: var(--bg-card);
         border-radius: 24px;
@@ -40,7 +40,7 @@
         padding-bottom: 6px;
     }
 
-    /* ── Search ───────────────────────────────── */
+    
     .search-bar-modern {
         border-radius: 14px;
         padding: 12px 18px;
@@ -59,7 +59,7 @@
     }
     .search-bar-modern::placeholder { color: var(--text-muted); opacity: 0.8; }
 
-    /* ── Filter Items ────────────────────────── */
+    
     .filter-item {
         display: flex;
         align-items: center;
@@ -82,7 +82,7 @@
         font-weight: 800;
     }
 
-    /* ── Product Cards ───────────────────────── */
+    
     .catalog-card {
         background: var(--bg-card);
         border-radius: 24px;
@@ -118,7 +118,7 @@
         color: var(--naranja);
     }
 
-    /* ── Explore Button ──────────────────────── */
+    
     .btn-details {
         background: var(--naranja);
         color: white;
@@ -144,7 +144,7 @@
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
     }
 
-    /* ── Header Bar ──────────────────────────── */
+    
     .catalog-header {
         background: var(--bg-card);
         border: 1px solid var(--border-color);
@@ -173,7 +173,7 @@
 
     .cursor-pointer { cursor: pointer; }
 
-    /* ── Stock Ribbons ──────────────────────── */
+    
     .catalog-card-container { position: relative; }
 
     .ribbon-stock {
@@ -232,7 +232,7 @@
 <div class="container py-5">
     <div class="row g-4">
 
-        {{-- Sidebar de Filtros --}}
+        
         <aside class="col-lg-3">
             <div class="catalog-sidebar">
                 <div class="sidebar-header">
@@ -289,7 +289,7 @@
             </div>
         </aside>
 
-        {{-- Listado de Productos --}}
+        
         <div class="col-lg-9">
             <div class="catalog-header d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <div>

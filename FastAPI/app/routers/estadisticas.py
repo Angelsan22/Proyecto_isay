@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app import models
-from app.data import database
-from app.data.database import get_db
+from app import models, database
+from app.database import get_db
 
 router = APIRouter(
-    tags=["Consultas y Estadísticas"]
+    tags=["Inventario"]
 )
 
 @router.get("/categorias/")
@@ -28,14 +27,11 @@ def read_marcas(db: Session = Depends(database.get_db)):
 
 @router.get("/dashboard/estadisticas")
 def get_dashboard_stats(db: Session = Depends(database.get_db)):
-    # 1. Pedidos
     pedidos = db.query(models.Pedido).all()
     pendientes = sum(1 for p in pedidos if p.estatus == "En Proceso")
     enviados = sum(1 for p in pedidos if p.estatus == "Enviado")
     entregados = sum(1 for p in pedidos if p.estatus == "Entregado")
     cancelados = sum(1 for p in pedidos if p.estatus == "Cancelado")
-    
-    # 2. Productos y Stock
     productos = db.query(models.Producto).all()
     stock_bajo = [
         {"id": p.id, "nombre": p.nombre, "stock_actual": p.stock_actual, "stock_minimo": p.stock_minimo} 

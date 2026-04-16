@@ -6,15 +6,7 @@ use App\Http\Controllers\Cliente\PedidoController;
 use App\Http\Controllers\Cliente\PerfilController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Rutas de Cliente
-|--------------------------------------------------------------------------
-| Autenticación, catálogo y pedidos del módulo cliente.
-|
-*/
 
-// ── Autenticación (públicas) ─────────────────────────────────────────────
 Route::get('/login',     [AuthClienteController::class, 'showLogin'])->name('login');
 Route::post('/login',    [AuthClienteController::class, 'login'])->name('login.post');
 Route::get('/registro',  [AuthClienteController::class, 'showRegistro'])->name('registro');
@@ -22,12 +14,8 @@ Route::post('/registro', [AuthClienteController::class, 'registro'])->name('regi
 Route::get('/recuperar', [AuthClienteController::class, 'showRecuperar'])->name('recuperar');
 Route::post('/recuperar',[AuthClienteController::class, 'recuperar'])->name('recuperar.post');
 Route::get('/logout',    [AuthClienteController::class, 'logout'])->name('logout');
-
-// ── Catálogo (público) ──────────────────────────────────────────────────
 Route::get('/catalogo',      [CatalogoController::class, 'index'])->name('catalogo.index');
 Route::get('/catalogo/{id}', [CatalogoController::class, 'show'])->name('catalogo.show');
-
-// ── Pedidos y Carrito ──────────────────────────────────────────────────
 Route::post('/carrito/agregar',         [PedidoController::class, 'agregarAlCarrito'])->name('carrito.agregar');
 Route::post('/carrito/actualizar',      [PedidoController::class, 'actualizarCantidad'])->name('carrito.actualizar');
 Route::post('/carrito/eliminar',        [PedidoController::class, 'eliminarDelCarrito'])->name('carrito.eliminar');

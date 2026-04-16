@@ -5,7 +5,7 @@
     --accent-green: #10b981; 
     --dark-grey: #121212; 
     
-    /* Theme Variables (Light Mode Default) */
+    
     --bg-main: #f0f2f5; 
     --bg-card: #ffffff;
     --text-main: #333333;
@@ -25,7 +25,7 @@ body.dark-theme {
     --item-hover: #334155;
 }
 
-/* Global Transitions */
+
 * { 
     transition: background-color 0.3s, color 0.3s, border-color 0.3s; 
 }

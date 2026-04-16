@@ -14,7 +14,7 @@
             background: #fff;
         }
 
-        /* ---- Header ---- */
+        
         .header {
             background: #1a1a1a;
             color: white;
@@ -46,16 +46,16 @@
             margin-top: 2px;
         }
 
-        /* ---- Orange stripe ---- */
+        
         .stripe {
             height: 5px;
             background: #E8671B;
         }
 
-        /* ---- Body ---- */
+        
         .body { padding: 35px 40px; }
 
-        /* Info grid */
+        
         .info-grid {
             display: table;
             width: 100%;
@@ -82,7 +82,7 @@
             color: #1e293b;
         }
 
-        /* Status badge */
+        
         .status-badge {
             display: inline-block;
             padding: 4px 14px;
@@ -97,14 +97,14 @@
         .status-confirmado { background: #dbeafe; color: #1e40af; }
         .status-pendiente  { background: #f1f5f9; color: #475569; }
 
-        /* Divider */
+        
         .divider {
             border: none;
             border-top: 1px solid #e2e8f0;
             margin: 25px 0;
         }
 
-        /* Items table */
+        
         .items-title {
             font-size: 10px;
             font-weight: 800;
@@ -142,7 +142,7 @@
         table.items tbody td:last-child { text-align: right; font-weight: 800; }
         table.items tbody tr:last-child td { border-bottom: none; }
 
-        /* Total row */
+        
         .total-section {
             margin-top: 20px;
             display: table;
@@ -179,7 +179,7 @@
             margin-top: 4px;
         }
 
-        /* Footer */
+        
         .footer {
             background: #f8fafc;
             border-top: 1px solid #e2e8f0;
@@ -195,7 +195,7 @@
 </head>
 <body>
 
-    <!-- Header -->
+    
     <div class="header">
         <div>
             <div class="brand-name">Venta &amp; Refacciones <span>Maccuin</span></div>
@@ -210,7 +210,7 @@
 
     <div class="body">
 
-        <!-- Info Row -->
+        
         <div class="info-grid">
             <div class="info-col">
                 <span class="info-label">Número de Pedido</span>
@@ -242,7 +242,7 @@
 
         <hr class="divider">
 
-        <!-- Items -->
+        
         <div class="items-title">Artículos del Pedido</div>
 
         <table class="items">
@@ -273,7 +273,7 @@
             </tbody>
         </table>
 
-        <!-- Totals -->
+        
         <div class="total-section">
             <div class="total-spacer"></div>
             <div class="total-box">
@@ -295,7 +295,7 @@
 
     </div>
 
-    <!-- Footer -->
+    
     <div class="footer">
         <div class="footer-left">
             Este documento es un comprobante de compra generado electrónicamente.<br>

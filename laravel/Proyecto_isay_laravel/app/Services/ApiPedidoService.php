@@ -5,9 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-/**
- *  Servicio encargado de enviar pedidos a la API (FastAPI).
- */
+
 class ApiPedidoService
 {
     private string $apiUrl;
@@ -17,12 +15,7 @@ class ApiPedidoService
         $this->apiUrl = rtrim(config('services.fastapi.url', 'http://127.0.0.1:8000'), '/');
     }
 
-    /**
-     * Crear un nuevo pedido completo en FastAPI.
-     * 
-     * @param array $data (cliente_id, total, items, direccion_envio, etc.)
-     * @return bool
-     */
+    
     public function crearPedido(array $data): bool
     {
         try {
@@ -51,12 +44,7 @@ class ApiPedidoService
         }
     }
 
-    /**
-     * Obtener el historial de pedidos de un cliente específico.
-     * 
-     * @param int $clienteId
-     * @return array
-     */
+    
     public function obtenerMisPedidos(int $clienteId): array
     {
         try {
@@ -72,9 +60,7 @@ class ApiPedidoService
         }
     }
 
-    /**
-     * Obtener un pedido individual por su ID.
-     */
+    
     public function obtenerDetalle(int $id): ?array
     {
         try {
@@ -86,9 +72,7 @@ class ApiPedidoService
         }
     }
 
-    /**
-     * Cancelar un pedido (cambiar estatus a Cancelado).
-     */
+    
     public function cancelarPedido(int $id): bool
     {
         try {

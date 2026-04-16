@@ -32,7 +32,7 @@
             background-color: #f8fafc;
         }
 
-        /* ── Panel Imagen (izquierda) ──────────── */
+        
         .panel-imagen {
             flex: 1.2;
             background: linear-gradient(160deg, rgba(15, 23, 42, 0.95), rgba(232, 103, 27, 0.4)),
@@ -115,7 +115,7 @@
             gap: 10px;
         }
 
-        /* ── Panel Formulario (derecha) ─────────── */
+        
         .panel-form {
             flex: 0.8;
             min-width: 450px;
@@ -147,7 +147,7 @@
             font-weight: 500;
         }
 
-        /* ── Form Controls ─────────────────────── */
+        
         .form-label {
             font-size: 0.85rem;
             font-weight: 600;
@@ -194,7 +194,7 @@
             color: var(--naranja);
         }
 
-        /* ── Buttons ───────────────────────────── */
+        
         .btn-submit {
             background: var(--naranja);
             color: white;
@@ -240,7 +240,7 @@
             text-decoration: underline;
         }
 
-        /* ── Alerts ─────────────────────────────── */
+        
         .alert-custom {
             padding: 1rem 1.25rem;
             border-radius: 16px;
@@ -272,7 +272,7 @@
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
 
-        /* ── Responsive ────────────────────────── */
+        
         @media (max-width: 1024px) {
             .panel-imagen { display: none; }
             .panel-form { flex: 1; min-width: auto; padding: 2.5rem; }

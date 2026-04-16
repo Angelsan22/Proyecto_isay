@@ -69,8 +69,6 @@ def crear_admin():
             print(e)
             
         return redirect(url_for('main.crear_admin'))
-        
-    # Obtener listas combinadas
     admins_creados = []
     usuarios_creados = []
     
@@ -78,11 +76,8 @@ def crear_admin():
         r_admins = requests.get(f"{API_URL}/admins/")
         if r_admins.status_code == 200:
             admins_creados = r_admins.json()
-            # Convert string dates to datetime objects for jinja
             for a in admins_creados:
                 a['fecha_creacion'] = datetime.fromisoformat(a['fecha_creacion'])
-            
-            # Map creador_id to creador dict for the template
             admin_dict = {a['id']: a for a in admins_creados}
             for a in admins_creados:
                 if a.get('creador_id'):
@@ -103,8 +98,6 @@ def crear_admin():
 
     return render_template("admin/crear_admin.html", admins=admins_creados, usuarios=usuarios_creados)
 
-# --- RUTAS EXISTENTES PROTEGIDAS ---
-
 @main.route("/dashboard")
 @login_required
 def dashboard():
@@ -117,23 +110,17 @@ def dashboard():
     }
     
     try:
-        # 1. Obtener Pedidos y clasificar por estatus
         r_pedidos = requests.get(f"{API_URL}/pedidos/")
         if r_pedidos.status_code == 200:
             pedidos = r_pedidos.json()
             stats["pendientes"] = len([p for p in pedidos if p["estatus"] == "En Proceso"])
             stats["en_proceso"] = len([p for p in pedidos if p["estatus"] == "Enviado"])
             stats["completados"] = len([p for p in pedidos if p["estatus"] == "Entregado"])
-        
-        # 2. Obtener Productos y detectar Stock Bajo
         r_productos = requests.get(f"{API_URL}/productos/")
         if r_productos.status_code == 200:
             productos = r_productos.json()
-            # Identificar productos que necesitan reabastecimiento (Stock Bajo)
             stats["stock_bajo_lista"] = [p for p in productos if p["stock_actual"] <= p.get("stock_minimo", 0)]
             stats["stock_bajo"] = len(stats["stock_bajo_lista"])
-            
-            # Tomar los 5 productos más valiosos o con más stock como "Top"
             stats["top_productos"] = sorted(productos, key=lambda x: x["precio"], reverse=True)[:5]
 
     except Exception as e:
@@ -155,7 +142,6 @@ def gestion_inventario():
     
     productos_data = []
     try:
-        # Petición a la API central con filtros
         params = {"nombre": nombre, "categoria": categoria}
         response = requests.get(f"{API_URL}/productos/", params=params)
         if response.status_code == 200:
@@ -165,8 +151,6 @@ def gestion_inventario():
     except Exception as e:
         print(f"Error conexión API Inventario: {e}")
         flash("No se pudo conectar con el servidor de inventario", "danger")
-
-    # Estadísticas para el dashboard de inventario con seguridad ante errores de llaves
     stats = {
         "total_articulos": len(productos_data),
         "total_unidades": sum([p.get("stock_actual", 0) for p in productos_data]),
@@ -187,16 +171,12 @@ def pedidos():
     
     pedidos_data = []
     try:
-        # Petición a la API central con filtros
         params = {"cliente": cliente, "estatus": estatus}
         response = requests.get(f"{API_URL}/pedidos/", params=params)
         if response.status_code == 200:
             pedidos_data = response.json()
-            
-            # De forma simplificada, vamos a pedir la info de los usuarios para mostrar nombres
-            # (En producción esto se haría con un join en la API, pero aquí para ser explícitos:)
             for p in pedidos_data:
-                user_res = requests.get(f"{API_URL}/usuarios/") # Podríamos filtrar por ID pero esto es una demo
+                user_res = requests.get(f"{API_URL}/usuarios/")
                 if user_res.status_code == 200:
                     users = user_res.json()
                     user = next((u for u in users if u["id"] == p["cliente_id"]), None)
@@ -206,8 +186,6 @@ def pedidos():
     except Exception as e:
         print(f"Error conexión API Pedidos: {e}")
         flash("No se pudo conectar con el servidor de pedidos", "danger")
-
-    # Estadísticas para las tarjetas del dashboard
     stats = {
         "total": len(pedidos_data),
         "proceso": len([p for p in pedidos_data if p["estatus"] == "En Proceso"]),
@@ -228,27 +206,22 @@ def detalle_pedido(id):
         response = requests.get(f"{API_URL}/pedidos/")
         if response.status_code == 200:
             pedidos = response.json()
-            # Encontrar el pedido específico
             pedido = next((p for p in pedidos if p["id"] == id), None)
             
             if not pedido:
                 flash("Pedido no encontrado.", "danger")
                 return redirect(url_for('main.pedidos'))
-
-            # Obtener info del cliente
             user_res = requests.get(f"{API_URL}/usuarios/")
             if user_res.status_code == 200:
                 users = user_res.json()
                 user = next((u for u in users if u["id"] == pedido["cliente_id"]), None)
                 pedido["cliente"] = user
-            
-            # Obtener nombres de productos para los items
             r_prods = requests.get(f"{API_URL}/productos/")
             if r_prods.status_code == 200:
                 productos_map = {p["id"]: p for p in r_prods.json()}
                 for item in pedido.get("detalles", []):
                     prod_info = productos_map.get(item["producto_id"])
-                    item["nombre_producto"] = prod_info["nombre"] if prod_info else "Producto #"+str(item["producto_id"])
+                    item["nombre_producto"] = prod_info["nombre"] if prod_info else "Producto
 
             return render_template("admin/datalle_pedido.html", pedido=pedido)
     except Exception as e:
@@ -277,7 +250,6 @@ def actualizar_estatus_pedido(id):
 @main.route("/perfil")
 @login_required
 def perfil():
-    # Obtener algunas estadísticas básicas para que el perfil se vea más completo
     stats = {
         "productos_totales": 0,
         "pedidos_gestionados": 0,
@@ -309,7 +281,6 @@ def productos():
     
     productos_data = []
     try:
-        # Petición a la API central para el catálogo
         params = {"nombre": nombre, "categoria": categoria}
         response = requests.get(f"{API_URL}/productos/", params=params)
         if response.status_code == 200:
@@ -319,8 +290,6 @@ def productos():
     except Exception as e:
         print(f"Error conexión API Catálogo: {e}")
         flash("No se pudo conectar con el servidor de catálogo", "danger")
-
-    # Estadísticas para el encabezado del catálogo
     stats = {
         "total": len(productos_data),
         "categorias": len(set([p.get("categoria", "N/A") for p in productos_data if p.get("categoria")])),
@@ -369,7 +338,7 @@ def registrar_autoparte():
                 imagen_path = f"uploads/{unique_filename}"
 
             payload = {
-                "nombre": f"{nombre} ({marca})", # Include marca in nombre for now if model doesn't support it directly
+                "nombre": f"{nombre} ({marca})",
                 "categoria": "Autopartes",
                 "precio": float(precio),
                 "stock_actual": int(stock),
@@ -404,26 +373,20 @@ def reporte_clientes():
     }
     
     try:
-        # 1. Obtener Clientes
         r_clientes = requests.get(f"{API_URL}/usuarios/")
         if r_clientes.status_code == 200:
             clientes = r_clientes.json()
             stats["clientes_totales"] = len(clientes)
-            # Mock de top clientes basado en la lista real (para la tabla)
             for i, c in enumerate(clientes[:10]):
                 stats["top_clientes"].append({
                     "nombre": c["nombre"],
                     "siglas": "".join([n[0] for n in c["nombre"].split()[:2]]).upper(),
-                    "pedidos": 10 - i, # Simulado por ahora hasta tener joins
+                    "pedidos": 10 - i,
                     "total": (10 - i) * 1200
                 })
-        
-        # 2. Obtener Pedidos
         r_pedidos = requests.get(f"{API_URL}/pedidos/")
         if r_pedidos.status_code == 200:
             stats["pedidos_totales"] = len(r_pedidos.json())
-            
-        # 3. Obtener Inventario
         r_productos = requests.get(f"{API_URL}/productos/")
         if r_productos.status_code == 200:
             productos = r_productos.json()
@@ -446,7 +409,6 @@ def reportes_pedidos():
 def actualizar_stock(id):
     producto = None
     try:
-        # Recuperar datos del producto actual
         response = requests.get(f"{API_URL}/productos/{id}")
         if response.status_code == 200:
             producto = response.json()
@@ -468,7 +430,6 @@ def actualizar_stock(id):
             flash("Debes completar todos los campos obligatorios", "warning")
         else:
             try:
-                # El esquema espera todos los campos, así que enviamos el objeto actualizado
                 payload = producto.copy()
                 payload["stock_actual"] = int(nueva_cantidad)
                 payload["precio"] = float(nuevo_precio)
@@ -482,9 +443,6 @@ def actualizar_stock(id):
                     file_path = os.path.join(upload_folder, unique_filename)
                     imagen_file.save(file_path)
                     payload["imagen"] = f"uploads/{unique_filename}"
-                
-                # Quitar campos que la API no espera en el body si es necesario (id, etc)
-                # En FastAPI models.ProductoCreate no tiene ID
                 update_response = requests.put(f"{API_URL}/productos/{id}", json=payload)
                 
                 if update_response.status_code == 200:

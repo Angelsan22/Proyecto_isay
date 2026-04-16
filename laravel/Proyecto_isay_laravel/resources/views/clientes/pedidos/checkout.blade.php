@@ -49,7 +49,7 @@
     }
     .form-control::placeholder { color: var(--text-muted); opacity: 0.5; }
 
-    /* Summary Side */
+    
     .summary-card {
         background: rgba(232, 103, 27, 0.03);
         border: 1px solid rgba(232, 103, 27, 0.1);
@@ -140,10 +140,10 @@
     <form action="{{ route('cliente.pedidos.store') }}" method="POST" id="checkoutForm">
         @csrf
         <div class="row g-5">
-            {{-- Left: Shipping & Payment --}}
+            
             <div class="col-lg-7">
                 
-                {{-- Shipping Section --}}
+                
                 <div class="checkout-card mb-4">
                     <div class="section-header">
                         <i class="bi bi-geo-alt-fill"></i>
@@ -177,7 +177,7 @@
                     </div>
                 </div>
 
-                {{-- Payment Section --}}
+                
                 <div class="checkout-card">
                     <div class="section-header">
                         <i class="bi bi-credit-card-2-back-fill"></i>
@@ -211,7 +211,7 @@
 
             </div>
 
-            {{-- Right: Order Summary --}}
+            
             <div class="col-lg-5">
                 <div class="summary-card">
                     <div class="section-header" style="border-bottom-color: rgba(232,103,27,0.1);">
@@ -266,7 +266,6 @@
 </div>
 
 <script>
-    // Validaciones y Máscaras
     document.getElementById('card_num').addEventListener('input', function(e) {
         let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
         let matches = v.match(/\d{4,16}/g);
@@ -287,7 +286,6 @@
         if (v.length > 2) {
             let m = v.substring(0, 2);
             let a = v.substring(2, 4);
-            // Validar meses 01-12
             if (parseInt(m) > 12) m = '12';
             if (parseInt(m) === 0) m = '01';
             e.target.value = m + '/' + a;

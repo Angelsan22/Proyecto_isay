@@ -3,7 +3,7 @@
 
 @push('styles')
 <style>
-    /* ── Page Header ─────────────────────────── */
+    
     .page-header {
         display: flex;
         align-items: center;
@@ -36,7 +36,7 @@
         font-size: 0.9rem;
     }
 
-    /* ── Section Cards ───────────────────────── */
+    
     .section-card {
         background: var(--bg-card);
         border: 1px solid var(--border-color);
@@ -64,7 +64,7 @@
         border-radius: 2px;
     }
 
-    /* ── Search Bar ───────────────────────────── */
+    
     .search-wrap {
         border: 2px solid var(--border-color);
         border-radius: 18px;
@@ -75,7 +75,7 @@
     .search-wrap:focus-within {
         border-color: var(--naranja);
         box-shadow: 0 0 0 4px rgba(232, 103, 27, 0.15);
-        background: #111 !important; /* Force dark background on focus */
+        background: #111 !important; 
     }
     .search-wrap .input-group-text {
         background: transparent;
@@ -98,7 +98,7 @@
     }
     .search-products::placeholder { color: var(--text-muted); opacity: 0.7; }
 
-    /* ── Product Cards ───────────────────────── */
+    
     .product-pick {
         background: var(--bg-body);
         border: 2px solid var(--border-color);
@@ -153,7 +153,7 @@
         box-shadow: 0 5px 15px rgba(232, 103, 27, 0.3);
     }
 
-    /* ── Cart Summary ────────────────────────── */
+    
     .cart-list {
         color: var(--text-muted);
         font-weight: 500;
@@ -196,7 +196,7 @@
         display: block;
     }
 
-    /* Small Quantity Selector in Cart */
+    
     .cart-qty-ctrl {
         display: flex;
         align-items: center;
@@ -244,7 +244,7 @@
         color: #dc2626;
     }
 
-    /* ── Summary Table ───────────────────────── */
+    
     .summary-table {
         width: 100%;
         font-size: 0.95rem;
@@ -275,7 +275,7 @@
         margin: 1.5rem 0;
     }
 
-    /* ── Pay Button ──────────────────────────── */
+    
     .btn-pay {
         background: linear-gradient(135deg, var(--naranja) 0%, #d45a15 100%);
         color: white;
@@ -300,7 +300,7 @@
         box-shadow: none;
     }
 
-    /* ── Empty Cart Icon ─────────────────────── */
+    
     .empty-cart {
         text-align: center;
         padding: 1.5rem 0;
@@ -317,7 +317,7 @@
         font-size: 0.9rem;
     }
 
-    /* ── Stock Ribbons ──────────────────────── */
+    
     .catalog-card-container { position: relative; }
 
     .ribbon-stock {
@@ -374,7 +374,7 @@
 @section('content')
 <div class="container py-4" style="max-width:850px;">
 
-    {{-- Page Header --}}
+    
     <div class="page-header">
         <div class="icon-box">
             <i class="bi bi-cart-plus-fill"></i>
@@ -386,7 +386,7 @@
     </div>
 
     <div class="row g-4">
-        {{-- Left: Products --}}
+        
         <div class="col-lg-7">
             <div class="section-card">
                 <div class="section-title">
@@ -427,7 +427,7 @@
             </div>
         </div>
 
-        {{-- Right: Cart Summary --}}
+        
         <div class="col-lg-5">
             <div class="section-card" style="position:sticky; top:100px;">
                 <div class="section-title">
@@ -477,8 +477,8 @@
 
 </div>
 
-{{-- Hidden Form for Cart Actions --}}
-{{-- Hidden token for Javascript --}}
+
+
 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 @endsection
@@ -497,8 +497,6 @@
 
     function updateQty(id, newQty) {
         if (newQty < 1) return;
-        
-        // Update local object
         const item = carrito.find(i => i.id === id);
         if (item) {
             if (newQty > item.stock) {
@@ -508,8 +506,6 @@
             item.cantidad = newQty;
             renderCarrito();
         }
-
-        // Push to server in background
         const formData = new FormData();
         formData.append('_token', document.querySelector('input[name="_token"]').value);
         formData.append('autoparte_id', id);

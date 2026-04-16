@@ -91,7 +91,7 @@
             box-shadow: 0 15px 35px rgba(232, 103, 27, 0.4); 
         }
         
-        /* Image Upload Side */
+        
         .image-side { 
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -143,7 +143,7 @@
         <div class="form-side">
             <div class="header">
                 <div class="logo"><h1>MACUIN <i class="bi bi-car-front-fill"></i></h1></div>
-                <a href="{{ url_for('inventario.productos') }}" class="btn-regresar"><i class="bi bi-arrow-left"></i> Regresar</a>
+                <a href="{{ url_for('main.productos') }}" class="btn-regresar"><i class="bi bi-arrow-left"></i> Regresar</a>
             </div>
             
             <h2>Registrar autoparte</h2>
@@ -159,7 +159,7 @@
               {% endif %}
             {% endwith %}
 
-            <form action="{{ url_for('inventario.registrar_autoparte') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url_for('main.registrar_autoparte') }}" method="POST" enctype="multipart/form-data">
                 <div class="grid-inputs">
                     <div class="input-group full-width">
                         <label>Nombre de la pieza</label>

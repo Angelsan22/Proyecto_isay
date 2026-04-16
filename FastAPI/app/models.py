@@ -21,6 +21,7 @@ class Usuario(Base):
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(100), nullable=False)
     correo = Column(String(120), unique=True, index=True, nullable=False)
+    password_hash = Column(String(256), nullable=False)
     fecha_registro = Column(DateTime, default=datetime.utcnow)
 
     pedidos = relationship("Pedido", back_populates="cliente")
@@ -32,9 +33,7 @@ class Pedido(Base):
     cliente_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
     fecha = Column(DateTime, default=datetime.utcnow)
     total = Column(Integer, nullable=False)
-    estatus = Column(String(50), default="En Proceso") # En Proceso, Enviado, Entregado
-    
-    # Logistic fields
+    estatus = Column(String(50), default="En Proceso")
     direccion_envio = Column(String(255), nullable=True)
     ciudad = Column(String(100), nullable=True)
     codigo_postal = Column(String(10), nullable=True)

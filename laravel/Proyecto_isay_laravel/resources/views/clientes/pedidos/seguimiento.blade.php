@@ -125,8 +125,8 @@
                     default     => 'background:#64748b; color:white;',
                 };
                 $statusLabel = match($pedido->estado) {
-                    'entregado' => '✓ Entregado', 'en_camino' => '⚡ En Camino',
-                    'confirmado'=> '● Confirmado', 'cancelado' => '❌ Cancelado',
+                    'entregado' => ' Entregado', 'en_camino' => ' En Camino',
+                    'confirmado'=> '● Confirmado', 'cancelado' => ' Cancelado',
                     default => '○ Pendiente',
                 };
             @endphp
@@ -137,7 +137,7 @@
 
         <div class="tracking-body">
 
-            {{-- LEFT: Timeline or Cancelled Message --}}
+            
             <div>
                 <div class="section-title">
                     <i class="bi bi-arrow-up-circle-fill"></i> Estado del Envío
@@ -198,7 +198,7 @@
                 @endif
             </div>
 
-            {{-- RIGHT: Info + Items --}}
+            
             <div>
                 <div class="section-title">
                     <i class="bi bi-info-circle-fill"></i> Información del Pedido

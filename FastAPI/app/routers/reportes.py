@@ -2,23 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import FileResponse, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-import pandas as pd
-from fpdf import FPDF
-from docx import Document
 import io
 import os
 from datetime import datetime
 from typing import Optional
 
-from app import models
-from app.data.database import get_db
+from app import models, database
+from app.database import get_db
 
 router = APIRouter(
     prefix="/reportes",
-    tags=["Reportes y Exportación"]
+    tags=["Administradores"]
 )
-
-# --- Helpers ---
 def get_report_data(tipo: str, db: Session):
     if tipo == "ventas":
         pedidos = db.query(models.Pedido).all()
@@ -39,7 +34,6 @@ def get_report_data(tipo: str, db: Session):
         title = "Reporte de Inventario / Stock"
 
     elif tipo == "clientes":
-        # Clientes con más compras
         res = db.query(
             models.Usuario.nombre, 
             func.count(models.Pedido.id).label("total_pedidos"),
@@ -61,9 +55,8 @@ def get_report_data(tipo: str, db: Session):
 
     return data, columns, title
 
-# --- Generadores ---
-
 def generate_pdf(data, columns, title):
+    from fpdf import FPDF
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", "B", 16)
@@ -71,16 +64,12 @@ def generate_pdf(data, columns, title):
     pdf.set_font("Arial", "", 10)
     pdf.cell(0, 10, f"Generado el: {datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True, align="R")
     pdf.ln(10)
-    
-    # Header
-    pdf.set_fill_color(232, 103, 27) # Naranja Maccuin
+    pdf.set_fill_color(232, 103, 27)
     pdf.set_text_color(255, 255, 255)
     col_width = 190 / len(columns)
     for col in columns:
         pdf.cell(col_width, 10, col, border=1, fill=True)
     pdf.ln()
-    
-    # Rows
     pdf.set_text_color(0, 0, 0)
     for row in data:
         for col in columns:
@@ -90,6 +79,7 @@ def generate_pdf(data, columns, title):
     return pdf.output(dest='S')
 
 def generate_xlsx(data, columns, title):
+    import pandas as pd
     df = pd.DataFrame(data, columns=columns)
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
@@ -97,6 +87,7 @@ def generate_xlsx(data, columns, title):
     return output.getvalue()
 
 def generate_docx(data, columns, title):
+    from docx import Document
     doc = Document()
     doc.add_heading(title, 0)
     doc.add_paragraph(f"Generado el: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
@@ -114,8 +105,6 @@ def generate_docx(data, columns, title):
     output = io.BytesIO()
     doc.save(output)
     return output.getvalue()
-
-# --- Endpoints ---
 
 @router.get("/descargar/{tipo}")
 def descargar_reporte(

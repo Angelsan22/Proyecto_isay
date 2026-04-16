@@ -7,9 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Security\SessionGuard;
 
-/**
- * Middleware para proteger rutas que requieren autenticación de cliente.
- */
+
 class ClienteAutenticado
 {
     public function handle(Request $request, Closure $next): Response

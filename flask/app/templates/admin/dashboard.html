@@ -12,7 +12,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         body { display: flex; min-height: 100vh; background-color: var(--bg-main); color: var(--text-main); }
         
-        /* Sidebar Redesign */
+        
         .sidebar { width: var(--sidebar-width); background-color: var(--sidebar-bg); color: white; display: flex; flex-direction: column; padding: 35px 20px; position: fixed; height: 100vh; border-right: 1px solid #222; z-index: 100; }
         .sidebar-logo { margin-bottom: 40px; }
         .sidebar-logo h1 { font-size: 1.5rem; color: white; display: flex; align-items: center; gap: 10px; font-weight: 800; }
@@ -25,18 +25,18 @@
         .nav-link.active { background: linear-gradient(135deg, var(--primary-orange), #ff9d66); color: white; box-shadow: 0 10px 20px rgba(255, 115, 36, 0.2); }
         .sidebar-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid #222; display: flex; flex-direction: column; gap: 5px; }
 
-        /* Theme Toggle Button */
+        
         .theme-toggle { padding: 12px 18px; border-radius: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.9rem; margin-bottom: 10px; transition: 0.3s; width: 100%; text-align: left; }
         .theme-toggle:hover { background: rgba(255,255,255,0.1); color: white; }
         .theme-toggle i { font-size: 1.1rem; color: var(--primary-orange); }
 
-        /* Main Content Grid */
+        
         .main-content { margin-left: var(--sidebar-width); flex-grow: 1; padding: 40px; display: flex; flex-direction: column; gap: 20px; }
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .page-title h2 { font-size: 1.8rem; font-weight: 800; }
         .page-title span { color: var(--primary-orange); }
 
-        /* KPI Cards with Glassmorphism */
+        
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .kpi-card { background: var(--bg-card); padding: 25px; border-radius: 28px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
         .kpi-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
@@ -50,14 +50,14 @@
         .kpi-card .value { font-size: 2.8rem; font-weight: 800; margin: 10px 0; color: var(--text-main); }
         .kpi-card .trend { font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 5px; }
 
-        /* Charts & Lists Area */
+        
         .dashboard-split { display: grid; grid-template-columns: 1fr 380px; gap: 25px; }
         .chart-panel { background: var(--bg-card); border-radius: 32px; padding: 30px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .panel-header h3 { font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         .panel-header i { color: var(--primary-orange); }
 
-        /* Top Parts List */
+        
         .top-parts-list { display: flex; flex-direction: column; gap: 12px; }
         .part-item { display: flex; align-items: center; gap: 15px; background: var(--item-hover); padding: 15px; border-radius: 20px; border: 1px solid var(--border-color); transition: 0.3s; }
         .part-item:hover { background: var(--bg-main); border-color: var(--primary-orange); cursor: pointer; }
@@ -189,7 +189,6 @@
     </main>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <script>
-        // Inicializar Gráfico
         const ctx = document.getElementById('performanceChart').getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
         gradient.addColorStop(0, 'rgba(255, 115, 36, 0.4)');
@@ -224,8 +223,6 @@
                 }
             }
         });
-
-        // Función para actualizar los colores del gráfico basado en el tema
         function updateChartColors(isDark) {
             const textColor = isDark ? '#94a3b8' : '#666';
             const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
@@ -235,13 +232,9 @@
             myChart.options.scales.y.grid.color = gridColor;
             myChart.update();
         }
-
-        // Escuchar el evento global de cambio de tema
         window.addEventListener('themeChanged', (e) => {
             updateChartColors(e.detail.isDark);
         });
-
-        // Sincronizar al cargar
         window.addEventListener('load', () => {
             updateChartColors(document.body.classList.contains('dark-theme'));
         });

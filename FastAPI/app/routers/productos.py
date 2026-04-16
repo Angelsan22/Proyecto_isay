@@ -2,13 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from app import models, schemas
-from app.data import database
-from app.data.database import get_db
+from app import models, schemas, database
+from app.database import get_db
 
 router = APIRouter(
     prefix="/productos",
-    tags=["Gestión de Inventario"]
+    tags=["Inventario"]
 )
 
 @router.get("/", response_model=List[schemas.ProductoResponse])

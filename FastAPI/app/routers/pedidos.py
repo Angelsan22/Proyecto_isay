@@ -2,13 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 
-from app import models, schemas
-from app.data import database
-from app.data.database import get_db
+from app import models, schemas, database
+from app.database import get_db
 
 router = APIRouter(
     prefix="/pedidos",
-    tags=["Gestión de Pedidos"]
+    tags=["Pedidos"]
 )
 
 @router.get("/", response_model=List[schemas.PedidoResponse])
@@ -19,7 +18,6 @@ def read_pedidos(cliente: Optional[str] = None, cliente_id: Optional[int] = None
         query = query.filter(models.Pedido.cliente_id == cliente_id)
         
     if cliente:
-        # Búsqueda por nombre de cliente a través de la relación
         query = query.join(models.Usuario).filter(models.Usuario.nombre.ilike(f"%{cliente}%"))
     
     if estatus and estatus != "Todos los pedidos":
@@ -36,15 +34,11 @@ def read_pedido(pedido_id: int, db: Session = Depends(database.get_db)):
 
 @router.post("/", response_model=schemas.PedidoResponse)
 def create_pedido(pedido: schemas.PedidoCreate, db: Session = Depends(database.get_db)):
-    # 1. Crear la cabecera del pedido (sin los items)
     pedido_data = pedido.dict(exclude={'items'})
     db_pedido = models.Pedido(**pedido_data)
     db.add(db_pedido)
-    db.flush() # Para obtener el ID del pedido autogenerado
-
-    # 2. Procesar cada item: Guardar detalle y Descontar Stock
+    db.flush()
     for item in pedido.items:
-        # Registrar el detalle
         db_detalle = models.DetallePedido(
             pedido_id=db_pedido.id,
             producto_id=item.producto_id,
@@ -52,15 +46,11 @@ def create_pedido(pedido: schemas.PedidoCreate, db: Session = Depends(database.g
             precio_unitario=item.precio_unitario
         )
         db.add(db_detalle)
-
-        # Buscar el producto y descontar stock
         db_producto = db.query(models.Producto).filter(models.Producto.id == item.producto_id).first()
         if db_producto:
-            # Descontamos la cantidad comprada del stock actual
             if db_producto.stock_actual >= item.cantidad:
                 db_producto.stock_actual -= item.cantidad
             else:
-                # Si no hay suficiente stock, lo dejamos en 0
                 db_producto.stock_actual = 0
             
     db.commit()

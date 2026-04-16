@@ -23,9 +23,7 @@ class PerfilController extends Controller
         return view('clientes.perfil', compact('user'));
     }
 
-    /**
-     * Actualizar datos personales delegando primero a FastAPI.
-     */
+    
     public function updateDatos(Request $request)
     {
         $request->validate([
@@ -35,8 +33,6 @@ class PerfilController extends Controller
         ]);
 
         $user = auth()->user();
-
-        // 1. Delegar actualización a la API (Fuente de verdad)
         if ($user->fastapi_id) {
             $nombreCompleto = $request->name . ' ' . $request->apellidos;
             $exito = $this->apiService->actualizarDatosEnApi($user->fastapi_id, $nombreCompleto, $request->email);
@@ -45,8 +41,6 @@ class PerfilController extends Controller
                 return back()->withErrors(['email' => 'El servidor central no permitió actualizar tus datos.']);
             }
         }
-
-        // 2. Sincronizar espejo local
         $user->update([
             'name'      => $request->name,
             'apellidos' => $request->apellidos,
@@ -56,9 +50,7 @@ class PerfilController extends Controller
         return back()->with('success', 'Tus datos han sido actualizados y sincronizados con éxito.');
     }
 
-    /**
-     * Actualizar contraseña delegando primero la validación y cambio a FastAPI.
-     */
+    
     public function updatePassword(Request $request)
     {
         $request->validate([
@@ -67,8 +59,6 @@ class PerfilController extends Controller
         ]);
 
         $user = auth()->user();
-
-        // 1. Intentar actualizar en la API Central
         if ($user->fastapi_id) {
             $exito = $this->apiService->actualizarPasswordEnApi(
                 $user->fastapi_id, 
@@ -80,8 +70,6 @@ class PerfilController extends Controller
                 return back()->withErrors(['current_password' => 'La contraseña actual es incorrecta o el servidor central rechazó el cambio.']);
             }
         }
-
-        // 2. Sincronizar espejo local para que la sesión de Laravel siga funcionando
         $user->update([
             'password' => Hash::make($request->password)
         ]);

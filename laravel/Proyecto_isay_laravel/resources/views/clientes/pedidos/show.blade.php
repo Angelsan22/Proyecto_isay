@@ -86,7 +86,7 @@
     }
     .btn-cancel:hover { background: rgba(239,68,68,0.1); }
 
-    /* Cancel Modal */
+    
     .cancel-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
     .cancel-overlay.active { display: flex; }
     .cancel-modal { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 36px; max-width: 420px; width: 90%; text-align: center; }
@@ -182,7 +182,7 @@
     <div class="detail-hero">
 
         <div class="detail-banner">
-            {{-- DEBUG: Estado detectado: [{{ $pedido->estado }}] --}}
+            
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
                 <div>
                     <h1>Detalle del Pedido</h1>
@@ -195,8 +195,8 @@
                         default => 'status-pendiente',
                     };
                     $statusLabel = match($pedido->estado) {
-                        'entregado' => '✓ Entregado', 'en_camino' => '⚡ En Camino',
-                        'confirmado'=> '● Confirmado', 'cancelado' => '✗ Cancelado',
+                        'entregado' => ' Entregado', 'en_camino' => ' En Camino',
+                        'confirmado'=> '● Confirmado', 'cancelado' => ' Cancelado',
                         default => '○ Pendiente',
                     };
                 @endphp
@@ -229,7 +229,7 @@
             @foreach($pedido->detalles as $detalle)
                 <div class="item-row">
                     <div class="item-img">
-                        <img src="{{ $detalle->autoparte->imagen_url ?? 'https://placehold.co/70x70/e8671b/ffffff?text=⚙' }}"
+                        <img src="{{ $detalle->autoparte->imagen_url ?? 'https://placehold.co/70x70/e8671b/ffffff?text=' }}"
                              alt="{{ $detalle->autoparte->nombre ?? 'Autoparte' }}">
                     </div>
                     <div class="item-details">
@@ -298,7 +298,7 @@
 @if(!in_array($pedido->estado, ['entregado', 'cancelado']))
 <div class="cancel-overlay" id="cancelModal">
     <div class="cancel-modal">
-        <div style="font-size:3rem; margin-bottom:12px;">⚠️</div>
+        <div style="font-size:3rem; margin-bottom:12px;">️</div>
         <h3>¿Cancelar este pedido?</h3>
         <p>Esta acción no se puede deshacer. El pedido quedará marcado como <strong>Cancelado</strong> y el administrador será notificado.</p>
         <div class="cancel-modal-btns">

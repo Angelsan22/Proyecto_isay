@@ -2,14 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
-from app import models, schemas
-from app.data import database
-from app.data.database import get_db
+from app import models, schemas, database
+from app.database import get_db
 from app.security.helpers import get_password_hash, verify_password
 
 router = APIRouter(
     prefix="/usuarios",
-    tags=["Usuarios Clientes"]
+    tags=["Clientes"]
 )
 
 @router.get("/", response_model=List[schemas.UsuarioResponse])
@@ -34,7 +33,7 @@ def create_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(databas
     db.refresh(db_usuario)
     return db_usuario
 
-@router.post("/login")
+@router.post("/login", tags=["Autentificación"])
 def login_usuario(usuario: schemas.UsuarioLogin, db: Session = Depends(database.get_db)):
     db_usuario = db.query(models.Usuario).filter(models.Usuario.correo == usuario.correo).first()
     if not db_usuario or not verify_password(usuario.password, db_usuario.password_hash):

@@ -22,11 +22,11 @@
         .btn-back { text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 12px; transition: 0.3s; border: 1px solid var(--border-color); background: var(--bg-card); }
         .btn-back:hover { background-color: var(--dark-grey); color: white; transform: translateX(-5px); }
         
-        /* Theme Toggle Button */
+        
         .theme-toggle { background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.85rem; transition: 0.3s; }
         .theme-toggle:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
 
-        /* Stats Grid */
+        
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
         .stat-card { background: var(--bg-card); padding: 22px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 15px; transition: 0.3s; }
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
@@ -35,7 +35,7 @@
         .stat-info h4 { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
         .stat-info p { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
 
-        /* Filters Bar */
+        
         .filter-header { display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); padding: 15px 25px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border-color); flex-wrap: wrap; gap: 20px; }
         .horizontal-filters { display: flex; gap: 20px; align-items: center; }
         .filter-item { display: flex; align-items: center; gap: 10px; }
@@ -63,7 +63,7 @@
 </head>
 <body>
     <div class="main-wrapper">
-        <!-- Dashboard Stats -->
+        
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(255, 115, 36, 0.1); color: var(--primary-orange);"><i class="bi bi-gear-wide"></i></div>
@@ -97,13 +97,13 @@
                         Catálogo de Autopartes
                     </h2>
                 </div>
-                <a href="{{ url_for('inventario.registrar_autoparte') }}" class="btn-back" style="color: var(--primary-orange); border-color: var(--primary-orange);">
+                <a href="{{ url_for('main.registrar_autoparte') }}" class="btn-back" style="color: var(--primary-orange); border-color: var(--primary-orange);">
                     <i class="bi bi-plus-circle-fill"></i> REGISTRAR NUEVA PIEZA
                 </a>
             </div>
 
-            <!-- Rest of the content remains same -->
-            <form action="{{ url_for('inventario.productos') }}" method="GET" class="filter-header">
+            
+            <form action="{{ url_for('main.productos') }}" method="GET" class="filter-header">
                 <div class="horizontal-filters">
                     <div class="filter-item">
                         <label><i class="bi bi-search"></i> Buscar Producto</label>
@@ -125,7 +125,7 @@
                     <button type="submit" class="btn-apply">
                         <i class="bi bi-check-lg"></i> FILTRAR CATÁLOGO
                     </button>
-                    <a href="{{ url_for('inventario.descargar_reporte_autopartes', nombre=filtro_nombre, categoria=filtro_categoria) }}" class="btn-apply" style="background: #333; text-decoration: none;">
+                    <a href="{{ url_for('main.descargar_reporte_autopartes', nombre=filtro_nombre, categoria=filtro_categoria) }}" class="btn-apply" style="background: #333; text-decoration: none;">
                         <i class="bi bi-file-earmark-pdf"></i> PDF
                     </a>
                 </div>
@@ -145,7 +145,7 @@
                     </thead>
                     <tbody>
                         {% for prod in productos %}
-                        <tr onclick="window.location.href='{{ url_for('inventario.actualizar_stock', id=prod.id) }}';">
+                        <tr onclick="window.location.href='{{ url_for('main.actualizar_stock', id=prod.id) }}';">
                             <td>
                                 <div class="product-img-box" style="overflow: hidden;">
                                     {% if prod.get('imagen') %}
@@ -187,6 +187,6 @@
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 </html>
-/div>
+    </div>
 </body>
 </html>

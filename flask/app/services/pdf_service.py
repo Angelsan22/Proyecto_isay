@@ -3,17 +3,12 @@ from datetime import datetime
 
 class PDFGenerator(FPDF):
     def header(self):
-        # Logo text
         self.set_font("helvetica", "B", 24)
-        self.set_text_color(255, 115, 36)  # Primary Orange #FF7324
+        self.set_text_color(255, 115, 36)
         self.cell(0, 10, "MACUIN", ln=True, align="L")
-        
-        # Subtitle
         self.set_font("helvetica", "I", 10)
         self.set_text_color(100, 100, 100)
         self.cell(0, 5, "Refaccionaria y Servicio Automotriz", ln=True, align="L")
-        
-        # Line
         self.set_draw_color(255, 115, 36)
         self.set_line_width(1)
         self.line(10, 30, 200, 30)
@@ -28,14 +23,10 @@ class PDFGenerator(FPDF):
 
     def create_table(self, title, headers, data, column_widths):
         self.add_page()
-        
-        # Report Title
         self.set_font("helvetica", "B", 16)
         self.set_text_color(33, 37, 41)
         self.cell(0, 10, title.upper(), ln=True, align="C")
         self.ln(5)
-        
-        # Table Header
         self.set_font("helvetica", "B", 10)
         self.set_fill_color(255, 115, 36)
         self.set_text_color(255, 255, 255)
@@ -43,8 +34,6 @@ class PDFGenerator(FPDF):
         for i, header in enumerate(headers):
             self.cell(column_widths[i], 10, header, border=1, align="C", fill=True)
         self.ln()
-        
-        # Table Rows
         self.set_font("helvetica", "", 9)
         self.set_text_color(33, 37, 41)
         

@@ -7,10 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-/**
- *  Servicio encargado de consumir la API de productos (FastAPI).
- *  Centraliza toda la lógica de transformación de datos del catálogo.
- */
+
 class ApiProductoService
 {
     private string $apiUrl;
@@ -20,10 +17,7 @@ class ApiProductoService
         $this->apiUrl = rtrim(config('services.fastapi.url', 'http://127.0.0.1:8000'), '/');
     }
 
-    /**
-     * Obtener todos los productos de la API y transformarlos.
-     * Se cachean 60 segundos para evitar llamadas repetidas.
-     */
+    
     public function obtenerTodos(): Collection
     {
         return Cache::remember('api_productos_todos', 60, function () {
@@ -45,9 +39,7 @@ class ApiProductoService
         });
     }
 
-    /**
-     * Obtener un producto específico por ID (usa endpoint dedicado de la API).
-     */
+    
     public function obtenerPorId(int $id): ?object
     {
         return Cache::remember("api_producto_{$id}", 60, function () use ($id) {
@@ -68,36 +60,27 @@ class ApiProductoService
         });
     }
 
-    /**
-     * Obtener un producto con datos extendidos para la vista de detalle.
-     * Usa el endpoint GET /productos/{id} de FastAPI (no descarga toda la lista).
-     */
+    
     public function obtenerDetalle(int $id): ?object
     {
         return $this->obtenerPorId($id);
     }
 
-    /**
-     * Extraer categorías únicas de la colección.
-     */
+    
     public function extraerCategorias(Collection $productos): Collection
     {
         return $productos->pluck('categoria.nombre')->filter()->unique()->values()
             ->map(fn($c) => (object)['id' => strtolower($c), 'nombre' => $c]);
     }
 
-    /**
-     * Extraer marcas únicas de la colección.
-     */
+    
     public function extraerMarcas(Collection $productos): Collection
     {
         return $productos->pluck('marca.nombre')->filter()->unique()->values()
             ->map(fn($m) => (object)['id' => strtolower($m), 'nombre' => $m]);
     }
 
-    /**
-     * Transformar datos crudos de la API en objetos estructurados (para listado).
-     */
+    
     private function transformar(array $rawProductos): Collection
     {
         return collect($rawProductos)->map(function ($p) {
@@ -121,9 +104,7 @@ class ApiProductoService
         });
     }
 
-    /**
-     * Transformar un producto individual para la vista de detalle.
-     */
+    
     private function transformarDetalle(array $producto): object
     {
         $nombre      = $producto['nombre'] ?? 'Sin Nombre';
@@ -149,9 +130,7 @@ class ApiProductoService
         ];
     }
 
-    /**
-     * Extraer el nombre de la marca: de la propiedad directa o del nombre entre paréntesis.
-     */
+    
     private function extraerMarca(string $nombre, array $producto): string
     {
         if (empty($producto['marca']) && preg_match('/ \((.+?)\)$/', $nombre, $matches)) {
@@ -160,9 +139,7 @@ class ApiProductoService
         return $producto['marca'] ?? 'Genérica';
     }
 
-    /**
-     * Limpiar el nombre del producto eliminando la marca entre paréntesis.
-     */
+    
     private function limpiarNombre(string $nombre): string
     {
         return preg_replace('/ \((.+?)\)$/', '', $nombre);

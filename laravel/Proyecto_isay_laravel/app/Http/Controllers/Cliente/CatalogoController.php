@@ -17,8 +17,6 @@ class CatalogoController extends Controller
         $autopartes  = $this->productoService->obtenerTodos();
         $categorias  = $this->productoService->extraerCategorias($autopartes);
         $marcas      = $this->productoService->extraerMarcas($autopartes);
-
-        // Aplicar filtros
         if ($request->filled('buscar')) {
             $buscar     = strtolower($request->buscar);
             $autopartes = $autopartes->filter(
